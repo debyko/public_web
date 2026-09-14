@@ -1,0 +1,41 @@
+name: deploy
+# Every push to main is published to Cloudflare Pages (project "debyko", served at debyko.com).
+# Other branches get a preview URL under debyko.pages.dev. What ships is exactly the commit:
+# the site is staged with git archive, so nothing untracked can reach the host.
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: pages-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require the Cloudflare secrets
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$TOKEN" ] || { echo "::error::Repository secret CLOUDFLARE_API_TOKEN is not set (Cloudflare API token with Pages: Edit)."; exit 1; }
+          [ -n "$ACCOUNT" ] || { echo "::error::Repository secret CLOUDFLARE_ACCOUNT_ID is not set."; exit 1; }
+
+      - name: Stage the committed site
+        run: |
+          mkdir _site
+          git archive HEAD | tar -x -C _site
+          rm -rf _site/.github _site/.gitignore
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.131.2"
+          command: pages deploy _site --project-name=debyko --branch=${{ github.ref_name }} --commit-hash=${{ github.sha }}

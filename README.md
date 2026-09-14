@@ -39,3 +39,21 @@ Every live figure comes from the public CryptoSmith X API (`https://cryptosmithx
 Nothing is filled in when a call fails: the block says what failed. Freshness thresholds in `js/api.js` are provisional until the backend publishes its own.
 
 The waitlist and sales forms have no endpoint yet; submitting says that nothing was sent.
+
+## Deploy
+
+Cloudflare Pages project `debyko` (direct upload), served at https://debyko.com and https://debyko.pages.dev.
+`.github/workflows/deploy.yml` publishes every push: `main` to production, other branches to preview URLs.
+
+Repository secrets it needs:
+
+| Secret | Value |
+|---|---|
+| `CLOUDFLARE_ACCOUNT_ID` | the Cloudflare account id (set) |
+| `CLOUDFLARE_API_TOKEN` | a Cloudflare API token with **Account · Cloudflare Pages · Edit** |
+
+Manual deploy from a clean checkout:
+
+```bash
+git archive HEAD | tar -x -C /tmp/debyko-site && npx wrangler pages deploy /tmp/debyko-site --project-name debyko --branch main
+```
