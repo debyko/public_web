@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en" data-api="production">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DEBYKO — Crypto markets, with the evidence attached</title>
+  <meta name="description" content="Live and historical crypto derivatives data with its source, receive time, age and gaps kept visible — venue comparison, history, API and execution evidence.">
+  <link rel="canonical" href="https://debyko.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://debyko.com/">
+  <meta property="og:title" content="DEBYKO — Crypto markets, with the evidence attached">
+  <meta property="og:description" content="Compare venues live, investigate market history, connect through an API — without hiding the source, age or absence of the data.">
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script type="module" src="js/home.js"></script>
+</head>
+<body>
+
+<!-- Shared SVG patterns: hatching means "nothing stored here", never zero. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="hatch-hours" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1" height="6" fill="rgba(5,7,12,.16)"/></pattern>
+    <pattern id="hatch-candles" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1" height="6" fill="rgba(5,7,12,.16)"/></pattern>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap site-header__bar">
+    <!-- Co-brand, side by side: BlynAI (the company) and DEBYKO (its product family) at equal weight. -->
+    <div class="brand">
+      <a class="brand__blynai" href="https://blynai.eu" aria-label="BlynAI">
+        <svg class="brand__mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/>
+          <circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/>
+        </svg>
+        <span class="brand__name">Blyn<i>AI</i></span>
+      </a>
+      <span class="brand__rule" aria-hidden="true"></span>
+      <a class="site-header__logo" href="#top" aria-label="DEBYKO home"><img src="assets/logo-horizontal.svg" alt="DEBYKO"></a>
+    </div>
+    <nav class="nav" aria-label="Main">
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Products</button>
+        <div class="nav__menu" hidden>
+          <a href="#products">Arena <span class="nav-tag">live</span></a>
+          <a href="#studio-pro">Studio Pro <span class="nav-tag">live</span></a>
+          <a href="#trader">Studio Trader <span class="nav-tag">in development</span></a>
+          <a href="#agent">Agent <span class="nav-tag">prototype</span></a>
+        </div>
+      </div>
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Solutions</button>
+        <div class="nav__menu" hidden>
+          <a href="#evidence">Execution Evidence</a>
+          <a href="#services">Data &amp; Research</a>
+          <a href="#services">Venues &amp; Platforms</a>
+          <a href="#agent">Trading &amp; Automation</a>
+        </div>
+      </div>
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Data</button>
+        <div class="nav__menu" hidden>
+          <a href="#studio-pro">Coverage</a>
+          <a href="#method">Methodology</a>
+          <a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a>
+          <a href="#status">Data Status</a>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__trigger" href="#pricing" style="display:inline-flex;align-items:center;opacity:1">Pricing</a></div>
+      <div class="nav__item"><a class="nav__trigger" href="#method" style="display:inline-flex;align-items:center;opacity:1">Methodology</a></div>
+      <div class="nav__item"><a class="nav__trigger" href="#status" style="display:inline-flex;align-items:center;opacity:1">Status</a></div>
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Company</button>
+        <div class="nav__menu" hidden>
+          <a href="#company">About</a>
+          <a href="#" data-open="sales">Contact Sales</a>
+          <a href="#" data-open="wait">Join the Waitlist</a>
+        </div>
+      </div>
+    </nav>
+    <div class="spacer"></div>
+    <div class="site-header__actions hide-narrow">
+      <button class="btn btn--ghost" data-open="sales"><span>Contact sales</span></button>
+      <button class="btn btn--primary" data-scroll="proof"><span>Explore live data</span></button>
+    </div>
+    <button class="menu-btn" aria-expanded="false">Menu</button>
+  </div>
+  <div class="mobile-nav" hidden>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="#products" data-scroll="products">Arena</a><a href="#studio-pro" data-scroll="studio-pro">Studio Pro</a><a href="#trader" data-scroll="trader">Studio Trader</a><a href="#agent" data-scroll="agent">Agent</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="#evidence" data-scroll="evidence">Execution Evidence</a><a href="#services" data-scroll="services">Data &amp; Research</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="#method" data-scroll="method">Methodology</a><a href="#status" data-scroll="status">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="#pricing" data-scroll="pricing">Pricing</a><a href="#" data-open="sales">Contact Sales</a><a href="#" data-open="wait">Join the Waitlist</a></div>
+    <div class="mobile-nav__actions">
+      <button class="btn btn--primary" data-scroll="proof"><span>Explore live data</span></button>
+      <button class="btn" data-open="sales"><span>Contact sales</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- 1 · Hero -->
+<section class="section section--hero">
+  <div class="wrap">
+    <div class="split split--5-7 split--start">
+      <div class="stack gap-22">
+        <div class="eyebrow">Verifiable crypto market infrastructure</div>
+        <h1 class="h1">Crypto markets, with the evidence attached.</h1>
+        <p class="lead">Compare venues live, investigate market history, connect through an API, or run isolated execution agents — without hiding the source, age or absence of the underlying data.</p>
+        <div class="row gap-10" style="margin-top:4px">
+          <button class="btn btn--primary" data-scroll="proof"><span>Explore live data</span></button>
+          <button class="btn" data-scroll="products"><span>Explore products</span></button>
+          <button class="text-btn" data-open="sales">Contact sales</button>
+        </div>
+        <button class="link-btn" data-open="wait">Join the waitlist for Studio Trader and Agent</button>
+      </div>
+      <div id="live-slice" style="min-width:0;align-self:stretch"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Live market proof -->
+<section id="proof" class="section">
+  <div class="wrap wrap--wide stack gap-32">
+    <div class="split split--5-7 split--end">
+      <div class="stack gap-14">
+        <div class="label">Live market proof</div>
+        <h2 class="h2">One instrument across the venues that quote it, with three clocks per row.</h2>
+      </div>
+      <p class="prose">Ticker, open interest and depth arrive by different calls at different rates. A price two seconds old can sit next to depth several minutes old, so the table shows an age for each group — never one age per row. Freshness is judged per call against that call's expected cadence.</p>
+    </div>
+    <div class="panel" id="live-full"></div>
+    <div class="row gap-10">
+      <button class="btn btn--primary"><span>Open full Arena</span></button>
+      <button class="btn" data-scroll="method"><span>View methodology</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Principles -->
+<section class="section">
+  <div class="wrap split split--5-7">
+    <div class="stack gap-14">
+      <div class="label">Principles</div>
+      <h2 class="h2">Nothing is shown as more than it is.</h2>
+      <p class="prose">Six rules the product is held to. The page above is held to the same rules.</p>
+    </div>
+    <ol class="numbered">
+      <li><span class="numbered__n">01</span><span class="numbered__t">Every value keeps its source venue and instrument.</span></li>
+      <li><span class="numbered__n">02</span><span class="numbered__t">Every value shows when it was received, and its age.</span></li>
+      <li><span class="numbered__n">03</span><span class="numbered__t">Missing data stays missing. It is never turned into zero.</span></li>
+      <li><span class="numbered__n">04</span><span class="numbered__t">Stale data is never presented as live.</span></li>
+      <li><span class="numbered__n">05</span><span class="numbered__t">Derived values say what they were computed from.</span></li>
+      <li><span class="numbered__n">06</span><span class="numbered__t">Coverage limits stay visible.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 4 · Arena -->
+<section id="products" class="section">
+  <div class="wrap split split--5-7 split--start">
+    <div class="stack gap-18">
+      <div class="row gap-10">
+        <span class="label">01 / Live venue comparison</span>
+        <span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg><span>Live</span></span>
+      </div>
+      <div class="product-name">Arena</div>
+      <h2 class="h2">One market. Every available venue. Side by side.</h2>
+      <p class="prose">Compare the same instrument across the venues that quote it. Inspect price, spread, funding, open interest, depth and the age of every observation.</p>
+      <ul class="ruled">
+        <li>Multi-venue comparison</li>
+        <li>Age per data group</li>
+        <li>Missing values stay visible</li>
+        <li>BEST / WORST only when comparable</li>
+        <li>Source behind every number</li>
+      </ul>
+      <div class="price-line"><span class="label">Price</span><span class="price-line__value">Free</span></div>
+      <div class="row gap-10">
+        <button class="btn btn--primary"><span>Explore Arena</span></button>
+        <button class="btn" data-scroll="studio-pro"><span>See coverage</span></button>
+      </div>
+    </div>
+    <div class="stack gap-14">
+      <div id="live-arena" style="min-width:0"></div>
+      <div class="notes-3">
+        <div><span class="rank rank--best">BEST</span> <span class="rank rank--worst">WORST</span> rank live order-book figures only; USD, USDT and USDC are compared as one currency.</div>
+        <div>Hatched cells: the venue publishes no such field. An oracle-vault market has no book, so no spread.</div>
+        <div>Two ages per row here — price and depth arrive by separate calls.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Studio Pro -->
+<section id="studio-pro" class="section">
+  <div class="wrap stack gap-48">
+    <div class="split split--7-5 split--start">
+      <div class="stack gap-18">
+        <div class="row gap-10">
+          <span class="label">02 / Data and history</span>
+          <span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg><span>Live</span></span>
+        </div>
+        <div class="product-name">Studio Pro</div>
+        <h2 class="h2">Market history with its gaps left in.</h2>
+        <p class="prose">Explore instruments and venues, see exactly what was collected and when, inspect historical candles, funding, open interest, trades, liquidations and order-book depth, and reach the same data through an API.</p>
+        <p class="statement">A missing observation is empty, not zero. The age and origin of every value stay visible.</p>
+      </div>
+      <div class="stack gap-18">
+        <ul class="ruled ruled--grid ruled--min-200">
+          <li>Instrument and venue catalogue</li>
+          <li>Trade, mark and index candles where the venue publishes them</li>
+          <li>Funding with its interval</li>
+          <li>Open interest</li>
+          <li>Trades and liquidations</li>
+          <li>Order-book snapshots and depth bands</li>
+          <li>Coverage and gap view</li>
+          <li>API</li>
+        </ul>
+        <div class="price-grid">
+          <span class="label">Individual</span><span class="price-line__value">€99 / month</span>
+          <span class="label">Team</span><span class="price-line__value">€399 / month</span>
+        </div>
+        <div class="row gap-10">
+          <a class="btn btn--primary" href="mailto:hello@blynai.eu?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Individual"><span>Subscribe</span></a>
+          <button class="btn" data-scroll="plans"><span>Compare plans</span></button>
+          <a class="btn" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API documentation</span></a>
+        </div>
+        <div class="meta">Subscribe opens an email to hello@blynai.eu · checkout comes once billing exists</div>
+      </div>
+    </div>
+
+    <div class="workstation">
+      <div class="cell cell--left">
+        <div class="panel__head"><span class="label label--accent">Catalogue · GET /v1/coverage</span><span class="meta-xs" id="catalogue-tag">No data</span></div>
+        <div class="scroll-x">
+          <table class="tbl min-460">
+            <thead><tr><th>Venue</th><th>Datasets</th><th class="r">Instruments</th><th class="r">Listed since</th></tr></thead>
+            <tbody id="catalogue-rows"></tbody>
+          </table>
+        </div>
+        <div id="catalogue-state"></div>
+        <div class="panel__note">Outlined dataset: not collected for this venue · +n: further datasets · Instruments: collected / listed · Since: as published</div>
+      </div>
+
+      <div class="cell">
+        <div class="panel__head"><span class="label">Coverage · GET /v1/coverage/hours</span><span class="meta-xs">Ticker snapshots · last 48 h · UTC · <span id="hours-tag">No data</span></span></div>
+        <div class="cell__body gap-6" style="gap:5px">
+          <div class="hours" id="hours-rows"></div>
+          <div class="hours__row"><span></span><div class="hours__axis"><span>−48 h</span><span>−24 h</span><span>now</span></div></div>
+          <div class="legend-row">
+            <span><span class="swatch swatch--observed"></span>observed · shade = completeness</span>
+            <span><span class="swatch swatch--not-observed"></span>not observed</span>
+            <span><span class="swatch swatch--not-collected dk-hatch"></span>not collected yet</span>
+            <span><span class="swatch swatch--mark"></span>recorded interruption · cause on hover</span>
+          </div>
+          <div class="meta-xs" style="margin-top:auto;padding-top:8px;line-height:1.5">Measured for ticker snapshots only — candles, trades, liquidations and order books are not measured here. A gap without a mark means an unknown cause, not continuity.</div>
+        </div>
+      </div>
+
+      <div class="cell cell--left">
+        <div class="panel__head"><span class="label">Trade candles · 1 h · UTC</span><span class="meta-xs">Structure</span></div>
+        <div class="cell__body gap-8" style="gap:8px">
+          <div class="candles">
+            <svg viewBox="0 0 400 150" preserveAspectRatio="none" aria-label="Illustrative candle structure with a six-hour gap">
+              <line class="grid" x1="0" x2="400" y1="37" y2="37"/>
+              <line class="grid" x1="0" x2="400" y1="75" y2="75"/>
+              <line class="grid" x1="0" x2="400" y1="112" y2="112"/>
+              <rect x="166.7" y="0" width="66.7" height="150" fill="url(#hatch-candles)"/>
+              <line x1="5.6" x2="5.6" y1="112.1" y2="135.0" class="wick"/><rect x="1.5" y="113.5" width="8.1" height="14.8" class="rise"/>
+              <line x1="16.7" x2="16.7" y1="92.0" y2="113.8" class="wick"/><rect x="12.6" y="98.0" width="8.1" height="15.5" class="rise"/>
+              <line x1="27.8" x2="27.8" y1="83.5" y2="102.1" class="wick"/><rect x="23.7" y="83.6" width="8.1" height="14.4" class="rise"/>
+              <line x1="38.9" x2="38.9" y1="79.6" y2="95.3" class="wick"/><rect x="34.8" y="83.6" width="8.1" height="6.8" class="fall"/>
+              <line x1="50.0" x2="50.0" y1="86.0" y2="100.1" class="wick"/><rect x="45.9" y="90.4" width="8.1" height="3.7" class="fall"/>
+              <line x1="61.1" x2="61.1" y1="83.9" y2="96.9" class="wick"/><rect x="57.1" y="88.6" width="8.1" height="5.5" class="rise"/>
+              <line x1="72.2" x2="72.2" y1="86.1" y2="95.6" class="wick"/><rect x="68.2" y="86.3" width="8.1" height="2.3" class="rise"/>
+              <line x1="83.3" x2="83.3" y1="83.7" y2="91.7" class="wick"/><rect x="79.3" y="86.3" width="8.1" height="1.0" class="rise"/>
+              <line x1="94.4" x2="94.4" y1="67.7" y2="87.7" class="wick"/><rect x="90.4" y="74.7" width="8.1" height="11.5" class="rise"/>
+              <line x1="105.6" x2="105.6" y1="74.4" y2="94.4" class="wick"/><rect x="101.5" y="74.7" width="8.1" height="12.7" class="fall"/>
+              <line x1="116.7" x2="116.7" y1="81.8" y2="87.8" class="wick"/><rect x="112.6" y="84.4" width="8.1" height="3.0" class="rise"/>
+              <line x1="127.8" x2="127.8" y1="74.5" y2="86.3" class="wick"/><rect x="123.7" y="75.3" width="8.1" height="9.1" class="rise"/>
+              <line x1="138.9" x2="138.9" y1="68.8" y2="94.7" class="wick"/><rect x="134.8" y="75.3" width="8.1" height="12.7" class="fall"/>
+              <line x1="150.0" x2="150.0" y1="68.1" y2="89.4" class="wick"/><rect x="145.9" y="74.8" width="8.1" height="13.2" class="rise"/>
+              <line x1="161.1" x2="161.1" y1="64.0" y2="81.2" class="wick"/><rect x="157.1" y="68.8" width="8.1" height="6.0" class="rise"/>
+              <line x1="238.9" x2="238.9" y1="54.5" y2="77.1" class="wick"/><rect x="234.8" y="58.7" width="8.1" height="10.1" class="rise"/>
+              <line x1="250.0" x2="250.0" y1="51.4" y2="61.0" class="wick"/><rect x="245.9" y="51.6" width="8.1" height="7.1" class="rise"/>
+              <line x1="261.1" x2="261.1" y1="37.0" y2="51.9" class="wick"/><rect x="257.1" y="41.5" width="8.1" height="10.1" class="rise"/>
+              <line x1="272.2" x2="272.2" y1="36.7" y2="47.1" class="wick"/><rect x="268.2" y="40.6" width="8.1" height="1.0" class="rise"/>
+              <line x1="283.3" x2="283.3" y1="38.7" y2="53.2" class="wick"/><rect x="279.3" y="40.6" width="8.1" height="7.5" class="fall"/>
+              <line x1="294.4" x2="294.4" y1="46.2" y2="52.4" class="wick"/><rect x="290.4" y="48.1" width="8.1" height="2.1" class="fall"/>
+              <line x1="305.6" x2="305.6" y1="42.6" y2="51.8" class="wick"/><rect x="301.5" y="50.2" width="8.1" height="1.1" class="fall"/>
+              <line x1="316.7" x2="316.7" y1="37.2" y2="54.8" class="wick"/><rect x="312.6" y="42.7" width="8.1" height="8.6" class="rise"/>
+              <line x1="327.8" x2="327.8" y1="26.6" y2="48.9" class="wick"/><rect x="323.7" y="34.1" width="8.1" height="8.6" class="rise"/>
+              <line x1="338.9" x2="338.9" y1="21.6" y2="37.9" class="wick"/><rect x="334.8" y="22.2" width="8.1" height="11.9" class="rise"/>
+              <line x1="350.0" x2="350.0" y1="17.0" y2="30.2" class="wick"/><rect x="345.9" y="21.7" width="8.1" height="1.0" class="rise"/>
+              <line x1="361.1" x2="361.1" y1="15.0" y2="40.3" class="wick"/><rect x="357.1" y="21.7" width="8.1" height="12.8" class="fall"/>
+              <line x1="372.2" x2="372.2" y1="32.7" y2="49.8" class="wick"/><rect x="368.2" y="34.4" width="8.1" height="14.8" class="fall"/>
+              <line x1="383.3" x2="383.3" y1="40.2" y2="53.3" class="wick"/><rect x="379.3" y="41.8" width="8.1" height="7.4" class="rise"/>
+              <line x1="394.4" x2="394.4" y1="36.0" y2="45.0" class="wick"/><rect x="390.4" y="37.5" width="8.1" height="4.4" class="rise"/>
+            </svg>
+            <div class="chart-flag" style="left:42.7%">Gap · 6 h · not a zero</div>
+          </div>
+          <div class="hours__axis"><span>00:00</span><span>12:00</span><span>00:00</span><span>12:00</span></div>
+          <div class="meta" style="margin-top:auto;color:var(--dk-text-muted)">Hollow: close above open · filled: close below · hatched: no candles stored for this interval</div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="panel__head"><span class="label">API</span><span class="meta-xs">Field names per /scalar/v1 · <span id="snippet-tag">waiting for the live response</span></span></div>
+        <pre class="snippet" id="api-snippet">GET /v1/snapshot?exchange=okx-perp
+    &amp;symbols=BTC-USDT-SWAP&amp;include=quote,depth,instrument</pre>
+        <div class="panel__note">Three clocks in one row: receivedAt, openInterestAt, depthAt. null means the venue does not provide the field — never 0.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Studio Trader -->
+<section id="trader" class="section">
+  <div class="wrap split split--6-6 split--center">
+    <div class="dark-panel" data-theme="dark">
+      <div class="dark-panel__head"><span class="dark-tag">Concept · in development · not a working product</span><span class="dark-meta">Studio Trader</span></div>
+      <div class="trader">
+        <div class="row dark-label" style="justify-content:space-between;gap:10px"><span>BTC perpetual · venue not selected</span><span>Account · not connected</span></div>
+        <div class="stack gap-6">
+          <span class="dark-label">Mark</span>
+          <span class="trader__big">— <small>USD</small></span>
+          <span class="dark-note" style="line-height:1">Age — · no venue selected, so nothing is shown</span>
+        </div>
+        <div class="trader__pair">
+          <div class="trader__quote"><span class="dark-label">Bid</span><span class="value">—</span></div>
+          <div class="trader__quote"><span class="dark-label">Ask</span><span class="value">—</span></div>
+        </div>
+        <label class="field">
+          <span class="field__label">Size</span>
+          <span class="field__box field__box--lg field__box--disabled"><input class="is-mono" placeholder="0.000" disabled><span class="field__unit">BTC</span></span>
+        </label>
+        <div class="trader__pair">
+          <button class="btn btn--lg btn--full" disabled><span>Buy</span></button>
+          <button class="btn btn--lg btn--full" disabled><span>Sell</span></button>
+        </div>
+        <div class="dark-note">Controls are inactive in this concept. Buy and sell are two separate deliberate actions; there is no one-click order.</div>
+      </div>
+    </div>
+    <div class="stack gap-18">
+      <div class="row gap-10">
+        <span class="label">03 / Manual execution</span>
+        <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
+      </div>
+      <div class="product-name">Studio Trader</div>
+      <h2 class="h2">Trade the market without losing sight of the source.</h2>
+      <p class="prose">A simpler interface for people who need to act rather than study: clear market state, deliberate buy and sell controls, and a connection to an exchange account the user controls.</p>
+      <ul class="ruled ruled--grid ruled--min-180">
+        <li>Large readable values</li>
+        <li>Few elements per screen</li>
+        <li>No flashing prices</li>
+        <li>No urgency pressure</li>
+      </ul>
+      <div class="price-line"><span class="label">Price</span><span class="price-line__value muted">Not available yet</span></div>
+      <div class="row gap-10">
+        <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
+        <button class="btn"><span>Explore Trader</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Agent -->
+<section id="agent" class="section">
+  <div class="wrap stack gap-48">
+    <div class="split split--7-5 split--end">
+      <div class="stack gap-18">
+        <div class="row gap-10">
+          <span class="label">04 / Automated execution</span>
+          <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg><span>Prototype</span></span>
+        </div>
+        <div class="product-name">Agent</div>
+        <h2 class="h2">Automated execution under the operator's control.</h2>
+        <p class="prose">One isolated bot for one exchange account. Every decision is written to a journal the operator can open and review.</p>
+      </div>
+      <div class="stack gap-18">
+        <ul class="ruled ruled--grid ruled--min-160">
+          <li>One account per agent</li>
+          <li>Operational state</li>
+          <li>Decision journal</li>
+          <li>Strategy and risk parameters</li>
+          <li>Pause by setting position size to zero</li>
+        </ul>
+        <div class="price-line"><span class="label">Price</span><span class="price-line__value">Scoped pilot</span></div>
+        <div class="row gap-10">
+          <button class="btn btn--primary" data-open="sales"><span>Request early access</span></button>
+          <button class="btn"><span>Explore Agent</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-console" data-theme="dark">
+      <div class="agent-console__side">
+        <div class="dark-panel__head" style="flex-wrap:nowrap"><span class="dark-label">Process</span><span class="dark-tag dark-tag--sm">Prototype · sample</span></div>
+        <div class="kv">
+          <span class="kv__k">Agent</span><span>agent_01</span>
+          <span class="kv__k">Account</span><span>one exchange account · 1 : 1</span>
+          <span class="kv__k">State</span><span><span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg><span>Running</span></span></span>
+          <span class="kv__k">Last decision</span><span>17:15:44.011 UTC · 8 s</span>
+          <span class="kv__k">Journal</span><span>1,204 entries · replayable</span>
+        </div>
+        <div class="stack gap-10" style="padding:14px">
+          <span class="dark-label dark-label--sm">Parameters</span>
+          <div class="params">
+            <span class="params__k">Instrument</span><span>BTC perpetual</span>
+            <span class="params__k">Position size</span><span>0.050 BTC</span>
+            <span class="params__k">Max order size</span><span>0.010 BTC</span>
+            <span class="params__k">Max ticker age</span><span>5 s</span>
+            <span class="params__k">Max depth age</span><span>10 m</span>
+          </div>
+          <div class="dark-note" style="border-top:1px solid #1E2430;padding-top:10px">Position size 0.000 BTC pauses the agent. There is no separate pause switch.</div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="dark-panel__head" style="flex-wrap:nowrap"><span class="dark-label">Decision journal · UTC</span><span class="dark-meta" style="color:#6D7583">newest last</span></div>
+        <div class="journal">
+          <div class="journal__line"><span class="journal__t">17:15:38.002 UTC</span><span class="journal__id">d_8f21c1</span><span class="journal__k">OBSERVE</span><span class="journal__m">mark 77,352.31 USD · age 2 s · depth age 3 m 12 s</span></div>
+          <div class="journal__line"><span class="journal__t">17:15:38.004 UTC</span><span class="journal__id">d_8f21c1</span><span class="journal__k journal__k--decide">DECIDE</span><span class="journal__m">hold · spread 0.12 bps within limit · no order</span></div>
+          <div class="journal__line"><span class="journal__t">17:15:41.207 UTC</span><span class="journal__id">d_8f21c2</span><span class="journal__k">OBSERVE</span><span class="journal__m">mark 77,352.02 USD · age 2 s · depth age 9 m 4 s</span></div>
+          <div class="journal__line"><span class="journal__t">17:15:41.209 UTC</span><span class="journal__id">d_8f21c2</span><span class="journal__k journal__k--decide">DECIDE</span><span class="journal__m">hold · depth age above 5 m, size capped at 0.000 BTC</span></div>
+          <div class="journal__line journal__line--warn"><span class="journal__t">17:15:44.011 UTC</span><span class="journal__id">d_8f21c3</span><span class="journal__k journal__k--warn">WARN</span><span class="journal__m">depth feed age 27 m 10 s exceeds max depth age 10 m · decision deferred</span></div>
+          <div class="journal__line"><span class="journal__t">17:15:44.013 UTC</span><span class="journal__id">d_8f21c3</span><span class="journal__k">STATE</span><span class="journal__m">running · awaiting fresher depth · position unchanged</span></div>
+          <div class="journal__line"><span class="journal__t">17:15:47.300 UTC</span><span class="journal__id">d_8f21c4</span><span class="journal__k">OBSERVE</span><span class="journal__m">mark 77,351.88 USD · age 3 s · depth age 2 m 48 s</span></div>
+          <div class="journal__line"><span class="journal__t">17:15:47.302 UTC</span><span class="journal__id">d_8f21c4</span><span class="journal__k journal__k--decide">DECIDE</span><span class="journal__m">hold · inputs fresh · size 0.050 BTC unchanged · no order</span></div>
+        </div>
+        <div class="dark-note" style="margin-top:auto;padding:8px 14px;border-top:1px solid #1E2430;font-size:10px">Every line carries a decision ID and the ages of the inputs it used. The journal records decisions, not results.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Execution evidence -->
+<section id="evidence" class="section section--panel">
+  <div class="wrap stack gap-48">
+    <div class="split split--6-6 split--end">
+      <div class="stack gap-18">
+        <div class="eyebrow">For CASPs, brokers and execution teams</div>
+        <h2 class="h2">Reconstruct what other venues showed when an order was executed.</h2>
+      </div>
+      <p class="prose">For a given execution time and instrument, Debyko assembles what it had observed on alternative venues: bid and ask, spread, depth bands, and the age of each observation at that moment — with coverage limits stated in the report.</p>
+    </div>
+
+    <div class="panel panel--strong">
+      <div class="panel__head" style="background:transparent;border-bottom-color:var(--dk-border-strong);padding:10px 14px">
+        <span class="tag-box">Sample layout — not a client report</span>
+        <span class="meta-xs" style="font-size:11px">Report reference · EE-[assigned at issue]</span>
+      </div>
+      <div class="facts">
+        <div class="fact"><span class="fact__k">Execution time</span><span class="fact__v">2026-09-14 14:02:11.480 UTC</span></div>
+        <div class="fact"><span class="fact__k">Executed venue · instrument</span><span class="fact__v">[venue] · [venue symbol]</span></div>
+        <div class="fact"><span class="fact__k">Executed side · size · price</span><span class="fact__v">[from client order record]</span></div>
+        <div class="fact"><span class="fact__k">Alternative venues in report</span><span class="fact__v">those collected at that time</span></div>
+      </div>
+      <div class="scroll-x">
+        <table class="tbl tbl--roomy min-900">
+          <thead><tr>
+            <th>Alternative venue</th><th>Instrument</th><th class="r">Observed bid</th><th class="r">Observed ask</th><th class="r">Spread</th>
+            <th class="r">Depth ±25 bps · bid / ask</th><th class="r th-accent">Age at execution · T / D</th><th>Coverage</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="td-venue">BINANCE-F</td><td class="td-sym">BTCUSDT</td><td class="td-num">77,354.1</td><td class="td-num">77,355.0</td><td class="td-num">0.12 bps</td><td class="td-num">412.816 / 398.104 BTC</td><td class="td-mono r age-col">1 s <span class="faint">/</span> <span class="fg-live">2 m 40 s</span></td><td class="meta muted" style="white-space:nowrap">collected · no gap</td></tr>
+            <tr><td class="td-venue">OKX</td><td class="td-sym">BTC-USDT-SWAP</td><td class="td-num">77,353.9</td><td class="td-num">77,355.3</td><td class="td-num">0.18 bps</td><td class="td-num">190.220 / 184.650 BTC</td><td class="td-mono r age-col">2 s <span class="faint">/</span> <span class="fg-delayed">11 m 04 s</span></td><td class="meta muted" style="white-space:nowrap">collected · depth delayed</td></tr>
+            <tr><td class="td-venue">DERIBIT</td><td class="td-sym">BTC-PERPETUAL</td><td class="td-num">77,352.5</td><td class="td-num">77,356.0</td><td class="td-num">0.45 bps</td><td class="td-num">—</td><td class="td-mono r age-col">4 s <span class="faint">/</span> <span class="fg-missing">—</span></td><td class="meta muted" style="white-space:nowrap">depth not collected in period</td></tr>
+            <tr><td class="td-venue">GMX-V2</td><td class="td-sym">BTC/USD [WBTC]</td><td class="td-num dk-hatch">—</td><td class="td-num dk-hatch">—</td><td class="td-num dk-hatch">—</td><td class="td-num dk-hatch">—</td><td class="td-mono r age-col">5 s <span class="faint">/</span> <span class="fg-missing">—</span></td><td class="meta muted" style="white-space:nowrap">oracle/vault · no book</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel__note" style="padding:6px 14px">Table scrolls sideways · the age-at-execution column is the one that matters</div>
+      <div class="method-notes">
+        <div><b>Method notes</b><br>Observations are the last received before the execution time on each venue; their age at that moment is printed, not hidden. Depth may be minutes old.</div>
+        <div><b>Coverage and gaps</b><br>Venues not collected at the time are listed as not covered. Gaps in collection are stated per venue and per call.</div>
+        <div><b>Derived values</b><br>Spread = (ask − bid) / mid × 10,000 bps. Depth bands measured against the stated reference price.</div>
+      </div>
+    </div>
+
+    <div class="offer-list">
+      <div class="offer offer--head"><span>Offer</span><span class="hide-narrow">Scope</span><span style="text-align:right">Typical scope</span><span></span></div>
+      <div class="offer"><span class="offer__name">Execution Evidence Pilot</span><span class="offer__desc hide-narrow">A bounded set of executions reconstructed against the venues collected at the time, to test the method on real orders.</span><span class="offer__price">€500 – €2,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer"><span class="offer__name">One-off Execution Audit</span><span class="offer__desc hide-narrow">A defined period and instrument set, delivered as a report with coverage limits stated per venue.</span><span class="offer__price">€1,000 – €5,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer"><span class="offer__name">Continuous Execution Monitoring</span><span class="offer__desc hide-narrow">Recurring reconstruction for an execution desk, with the same coverage statements every period.</span><span class="offer__price">€500 – €3,000 / month</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer"><span class="offer__name">Venue Comparison Report</span><span class="offer__desc hide-narrow">Spread, depth and funding across venues for one instrument over one period, with ages and gaps shown.</span><span class="offer__price">€1,000 – €5,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <p class="prose" style="font-size:12px;line-height:1.6;color:var(--dk-text-muted);margin-top:14px">Scope and final price depend on venues, instruments, history, order volume and reporting requirements. Reconstruction covers only periods and venues Debyko was collecting at the time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · Services -->
+<section id="services" class="section">
+  <div class="wrap split split--4-8 split--start">
+    <div class="stack gap-14">
+      <div class="label">Data and engineering services</div>
+      <h2 class="h2">Need a dataset, connector or analysis that does not fit a standard plan?</h2>
+      <p class="prose">Scoped engagements, priced by scope. Ranges are typical, not quotes.</p>
+    </div>
+    <div class="offer-list">
+      <div class="offer offer--top"><span class="offer__name">Custom historical dataset or export</span><span class="offer__desc hide-narrow">A defined slice of stored observations, with collection start and gaps documented.</span><span class="offer__price offer__price--sm">€500 – €5,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer offer--top"><span class="offer__name">Market microstructure research</span><span class="offer__desc hide-narrow">Analysis of spread, depth, funding or liquidation behaviour over collected history.</span><span class="offer__price offer__price--sm">€1,000 – €5,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer offer--top"><span class="offer__name">Exchange or protocol connector</span><span class="offer__desc hide-narrow">A collector for a venue not yet covered, with its cadence and fields stated.</span><span class="offer__price offer__price--sm">€1,500 – €10,000<br><span class="muted">+ €200 – €1,000 / month maintenance</span></span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer offer--top"><span class="offer__name">White-label Arena widget or API</span><span class="offer__desc hide-narrow">The comparison table or its API under another name, with provenance intact.</span><span class="offer__price offer__price--sm">€2,000 – €10,000<br><span class="muted">+ €300 – €2,000 / month</span></span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer offer--top"><span class="offer__name">Enterprise API and infrastructure</span><span class="offer__desc hide-narrow">Dedicated capacity, retention and support terms agreed per engagement.</span><span class="offer__price offer__price--sm">Custom</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="rule-end"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Methodology -->
+<section id="method" class="section section--panel">
+  <div class="wrap stack gap-48">
+    <div class="split split--5-7 split--end">
+      <div class="stack gap-14">
+        <div class="label">Methodology</div>
+        <h2 class="h2">The method is part of the product.</h2>
+      </div>
+      <div class="clock-card">
+        <span class="fact__k">Two timestamps exist. Age is the difference to now.</span>
+        <div class="clocks">
+          <div class="clock clock--dashed"><span class="clock__k">Venue time</span><span class="clock__v">if supplied · 17:15:52.118</span></div>
+          <span class="clocks__arrow">→</span>
+          <div class="clock"><span class="clock__k">Received</span><span class="clock__v">always · 17:15:52.301</span></div>
+          <span class="clocks__arrow">→</span>
+          <div class="clock clock--age"><span class="clock__k accent">Age</span><span class="clock__v">now − received · 2 s</span></div>
+        </div>
+        <span class="meta">There is no stored "written" or "available" time, so none is shown.</span>
+      </div>
+    </div>
+    <div class="method-grid">
+      <div><span class="method-grid__n">01</span><span class="method-grid__t">What is collected</span><span class="method-grid__b">Ticker, open interest and depth per venue and instrument, each by its own call, each stored with the time it was received.</span></div>
+      <div><span class="method-grid__n">02</span><span class="method-grid__t">How instruments are grouped</span><span class="method-grid__b">By base asset and contract type — BTC perpetual — because no cross-venue canonical ID is published. The selector lists what the store holds.</span></div>
+      <div><span class="method-grid__n">03</span><span class="method-grid__t">Venue time vs received time</span><span class="method-grid__b">Venue time is printed only where the venue sends one. Received time is always present. No other timestamp is stored.</span></div>
+      <div><span class="method-grid__n">04</span><span class="method-grid__t">Age and status</span><span class="method-grid__b">Age is now minus received. LIVE, DELAYED and STALE are computed per call against that call's expected cadence, set by the collector.</span></div>
+      <div><span class="method-grid__n">05</span><span class="method-grid__t">Gaps vs not collected yet</span><span class="method-grid__b">A gap is a period inside collection with no observation. Not collected yet is a period before collection began. They look different and are named differently.</span></div>
+      <div><span class="method-grid__n">06</span><span class="method-grid__t">Derived values</span><span class="method-grid__b">Spread = (ask − bid) / mid × 10,000. OI notional = OI × mark. Depth bands within 10 / 25 / 50 bps of a stated reference. Each shows its inputs.</span></div>
+      <div><span class="method-grid__n">07</span><span class="method-grid__t">When a comparison is valid</span><span class="method-grid__b">BEST and WORST rank bid, ask, spread and depth among venues whose value is present, live and from an order book, with USD, USDT and USDC treated as one currency. A figure left out says why in its provenance.</span></div>
+      <div><span class="method-grid__n">08</span><span class="method-grid__t">What the platform cannot know</span><span class="method-grid__b">Anything a venue does not publish, anything between two observations, and anything before collection started.</span></div>
+      <div><span class="method-grid__n">09</span><span class="method-grid__t">Venue-reported vs derived</span><span class="method-grid__b">Bid, ask, mark, index, funding and open interest are venue-reported. Spread, notional and depth bands are derived and say so.</span></div>
+    </div>
+    <div class="row gap-10">
+      <button class="btn btn--primary"><span>Read the methodology</span></button>
+      <button class="btn" data-scroll="studio-pro"><span>Inspect data coverage</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · Status -->
+<section id="status" class="section">
+  <div class="wrap stack gap-32">
+    <div class="split split--5-7 split--end">
+      <div class="stack gap-14">
+        <div class="label">Status and quality</div>
+        <h2 class="h2">Data quality is public system state.</h2>
+      </div>
+      <p class="prose">Per venue and per collector, with ages. There is no single "all systems operational" badge: a degraded depth feed on one venue is shown as exactly that.</p>
+    </div>
+    <div class="panel">
+      <div class="panel__head">
+        <div class="row gap-14">
+          <span class="label">Collectors · per venue · GET /v1/health</span>
+          <span class="row gap-8 meta-xs muted" id="status-overall" hidden>Overall, as the API states it:<span id="status-overall-word" class="fresh"></span></span>
+        </div>
+        <span class="meta-xs" id="status-tag">No data</span>
+      </div>
+      <div class="scroll-x" id="status-table" hidden>
+        <table class="tbl tbl--roomy min-900">
+          <thead><tr><th>Venue</th><th>Collector state</th><th class="r">Last success · age</th><th class="r">Consecutive failures</th><th class="r">Last error · age</th><th class="r">Instruments stale</th><th class="r">Latest observation</th></tr></thead>
+          <tbody id="status-rows"></tbody>
+        </table>
+      </div>
+      <div id="status-state"></div>
+    </div>
+    <div class="row gap-10">
+      <button class="btn btn--primary"><span>View data status</span></button>
+      <button class="btn" disabled><span>Incident history · coming</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · Pricing -->
+<section id="pricing" class="section">
+  <div class="wrap split split--4-8 split--start">
+    <div class="stack gap-14">
+      <div class="label">Pricing</div>
+      <h2 class="h2">Monthly. No annual toggle, no discounts.</h2>
+      <p class="prose">Products that do not exist yet are listed as such.</p>
+    </div>
+    <div class="stack">
+      <div class="pricing-row"><span class="offer__name">Arena</span><span class="offer__price" style="text-align:left">€0</span><span class="pricing-row__status hide-narrow">Live</span><button class="btn btn--sm btn--full" data-scroll="products"><span>Explore Arena</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Studio Pro · Individual</span><span class="offer__price" style="text-align:left">€99 / month</span><span class="pricing-row__status hide-narrow">Live · subscribe by email</span><a class="btn btn--primary btn--sm btn--full" href="mailto:hello@blynai.eu?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Individual"><span>Subscribe</span></a></div>
+      <div class="pricing-row"><span class="offer__name">Studio Pro · Team</span><span class="offer__price" style="text-align:left">€399 / month</span><span class="pricing-row__status hide-narrow">Live · subscribe by email</span><a class="btn btn--primary btn--sm btn--full" href="mailto:hello@blynai.eu?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Team"><span>Subscribe</span></a></div>
+      <div class="pricing-row"><span class="offer__name">Studio Trader</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Agent</span><span class="offer__price" style="text-align:left">Scoped pilot</span><span class="pricing-row__status hide-narrow">Prototype</span><button class="btn btn--sm btn--full" data-open="sales"><span>Request early access</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Sales-led engagements</span><span class="offer__price" style="text-align:left">Typical scope ranges</span><span class="pricing-row__status hide-narrow">Execution Evidence · services</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="rule-end"></div>
+      <div class="row gap-10" style="margin-top:18px"><button class="btn" data-scroll="plans"><span>Compare plans</span></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12b · Compare plans (temporary, until a pricing page exists) -->
+<section id="plans" class="section">
+  <div class="wrap stack gap-32">
+    <div class="split split--5-7 split--end">
+      <div class="stack gap-14">
+        <div class="label">Compare plans</div>
+        <h2 class="h2">Arena is free. Studio Pro adds the history and the API.</h2>
+      </div>
+      <p class="prose">Individual and Team carry the same data; they differ in who uses it. Subscribing is by email for now — checkout comes once billing exists.</p>
+    </div>
+    <div class="panel scroll-x">
+      <table class="plans">
+        <thead>
+          <tr>
+            <th scope="col"><span class="label">Included</span></th>
+            <th scope="col"><span class="plans__name">Arena</span><span class="plans__price">€0</span><span class="plans__for">Anyone</span></th>
+            <th scope="col"><span class="plans__name">Studio Pro · Individual</span><span class="plans__price">€99 / month</span><span class="plans__for">One person</span></th>
+            <th scope="col"><span class="plans__name">Studio Pro · Team</span><span class="plans__price">€399 / month</span><span class="plans__for">A team · seats agreed by email</span></th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr><th scope="row">Live venue comparison, with the age of every figure</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Instrument and venue catalogue</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Trade, mark and index candles where the venue publishes them</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Funding with its interval, open interest</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Trades and liquidations</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Order-book snapshots and depth bands</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Coverage and gap view</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">API</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row"></th>
+            <td><button class="btn btn--full" data-scroll="products"><span>Explore Arena</span></button></td>
+            <td><a class="btn btn--primary btn--full" href="mailto:hello@blynai.eu?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Individual"><span>Subscribe</span></a></td>
+            <td><a class="btn btn--primary btn--full" href="mailto:hello@blynai.eu?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Team"><span>Subscribe</span></a></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="meta">Subscribe opens an email to hello@blynai.eu with the plan in the subject. Monthly prices; no annual plan, no discounts.</div>
+  </div>
+</section>
+
+<!-- 13 · Closing -->
+<section class="section section--panel">
+  <div class="wrap split split--1-1">
+    <div class="closing">
+      <span class="label">Product interest</span>
+      <h2 class="h2 h2--small">Join the waitlist for Studio Trader and Agent.</h2>
+      <p class="prose prose--sm">One address, one product of interest. Nothing else is asked.</p>
+      <div><button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button></div>
+    </div>
+    <div class="closing">
+      <span class="label">Scoped work</span>
+      <h2 class="h2 h2--small">Contact sales about Execution Evidence, datasets or connectors.</h2>
+      <p class="prose prose--sm">Describe the venues, instruments and period. Scope comes back before price.</p>
+      <div><button class="btn" data-open="sales"><span>Contact sales</span></button></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="company" class="site-footer">
+  <div class="wrap stack gap-48">
+    <div class="site-footer__cols">
+      <div class="stack gap-14">
+        <img src="assets/logo-horizontal-descriptor.svg" alt="DEBYKO — Market data. In context." style="height:30px;width:auto;display:block;align-self:flex-start">
+        <p class="credit">Built by
+          <a class="credit__brand" href="https://blynai.eu"><svg class="credit__mark credit__mark--blynai" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/>
+            <circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/>
+          </svg><span>Blyn<i>AI</i></span></a>
+          on the
+          <span class="credit__brand"><svg class="credit__mark credit__mark--csx" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M20 23.54 L15.97 27.57 L12.43 24.03 L16.46 20 L12.43 15.97 L15.97 12.43 L20 16.46 L24.03 12.43 L27.57 15.97 L23.54 20 L27.57 24.03 L24.03 27.57 Z" fill="#DE1A8C"/>
+            <circle cx="6.6" cy="20" r="2" fill="#B8129F"/><circle cx="33.4" cy="20" r="2" fill="#B8129F"/>
+          </svg><span>CryptoSmith X</span></span>
+          market data engine.</p>
+      </div>
+      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="#products">Arena</a><a href="#studio-pro">Studio Pro</a><a href="#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="#agent">Agent <span class="nav-tag">prototype</span></a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="#evidence">Execution Evidence</a><a href="#services">Data &amp; Research</a><a href="#services">Venues &amp; Platforms</a><a href="#agent">Trading &amp; Automation</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="#studio-pro">Coverage</a><a href="#method">Methodology</a><a href="#status">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="#" data-open="sales">Contact Sales</a><a href="#" data-open="wait">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </div>
+    <div class="site-footer__bottom"><span>© 2026 MB Blynai</span><span>debyko.com · Times are UTC</span></div>
+  </div>
+</footer>
+
+<!-- Dialogs. No endpoint receives these forms yet; submitting says so instead of pretending. -->
+<div class="dialog-scrim" id="dialog-wait" hidden>
+  <form class="dialog dialog--narrow" role="dialog" aria-modal="true" aria-label="Join the waitlist">
+    <header class="dialog__head"><h2 class="dialog__title">Join the waitlist</h2><span class="dialog__meta">Product interest</span>
+      <button type="button" class="dialog__close" data-close aria-label="Close"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+    <div class="dialog__body">
+      <div class="stack gap-14" data-part="form">
+        <p>Studio Trader is in development; Agent is a prototype. The address is used for one message when the chosen product opens. No account is created.</p>
+        <label class="field"><span class="field__label">Email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
+        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>Studio Trader</option><option>Agent</option><option>Both</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <span class="meta">Endpoint pending · nothing is sent until a handler is connected</span>
+      </div>
+      <p data-part="result" data-success="Recorded. One message follows when the product opens; nothing else is sent." hidden></p>
+    </div>
+    <footer class="dialog__foot">
+      <button type="button" class="btn btn--ghost" data-close><span>Close</span></button>
+      <button type="submit" class="btn btn--primary" data-part="submit"><span>Join the waitlist</span></button>
+    </footer>
+  </form>
+</div>
+
+<div class="dialog-scrim" id="dialog-sales" hidden>
+  <form class="dialog" role="dialog" aria-modal="true" aria-label="Contact sales">
+    <header class="dialog__head"><h2 class="dialog__title">Contact sales</h2><span class="dialog__meta">Scoped work</span>
+      <button type="button" class="dialog__close" data-close aria-label="Close"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+    <div class="dialog__body">
+      <div class="stack gap-14" data-part="form">
+        <p>State the venues, instruments and period. A scope comes back before any price is quoted.</p>
+        <div class="fields-2">
+          <label class="field"><span class="field__label">Work email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
+          <label class="field"><span class="field__label">Organisation</span><span class="field__box"><input name="organisation" placeholder="Company or protocol"></span></label>
+        </div>
+        <label class="field"><span class="field__label">Engagement</span><span class="field__box field__box--select"><select name="engagement">
+          <option>Execution Evidence Pilot</option><option>One-off Execution Audit</option><option>Continuous Execution Monitoring</option><option>Venue Comparison Report</option>
+          <option>Custom dataset or export</option><option>Connector</option><option>White-label</option><option>Enterprise API</option><option>Studio Pro access</option><option>Agent early access</option>
+        </select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <label class="field"><span class="field__label">Venues · instruments · period</span><textarea name="scope" rows="4" placeholder="e.g. BTC perpetual on three venues, 12–14 Sep 2026, 40 executions"></textarea></label>
+        <span class="meta">Endpoint pending · nothing is sent until a handler is connected · no response time is promised</span>
+      </div>
+      <p data-part="result" data-success="Recorded. The request is read by a person; a scope follows before any price." hidden></p>
+    </div>
+    <footer class="dialog__foot">
+      <button type="button" class="btn btn--ghost" data-close><span>Close</span></button>
+      <button type="submit" class="btn btn--primary" data-part="submit"><span>Send request</span></button>
+    </footer>
+  </form>
+</div>
+
+</body>
+</html>

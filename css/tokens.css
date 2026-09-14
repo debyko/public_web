@@ -1,0 +1,223 @@
+/* DEBYKO design system tokens — copied from the design export (_ds/debyko-design-system/tokens).
+   Fonts are linked in index.html (Montserrat, IBM Plex Mono from Google Fonts). */
+
+/* ---- colors ---- */
+:root{
+/* --- raw scale: one accent, two neutral families ------------------------ */
+--dk-magenta-400:#EE2F72;--dk-magenta-500:#DE1A8C;--dk-magenta-600:#B8129F;
+--dk-graphite-500:#4A5060;--dk-graphite-300:#8A91A3;
+--dk-slate-600:#30323E;--dk-slate-300:#9BA6B8;
+--dk-ink-900:#05070C;--dk-ink-700:#33383F;--dk-ink-600:#5A6172;--dk-ink-500:#6B7280;--dk-ink-400:#8A8E98;--dk-ink-300:#C9CACF;
+--dk-paper-000:#FFFFFF;--dk-paper-025:#FAFAFB;--dk-paper-050:#F7F8FA;--dk-paper-100:#F7F7F8;--dk-paper-150:#F2F2F4;--dk-paper-200:#E6E6E9;
+--dk-night-950:#06080D;--dk-night-900:#0E1116;--dk-night-850:#12161E;--dk-night-800:#161A22;--dk-night-700:#1E2430;--dk-night-600:#2A323F;
+--dk-night-fg-100:#EDEFF3;--dk-night-fg-200:#C6CCD8;--dk-night-fg-300:#9BA6B8;--dk-night-fg-400:#6D7583;
+/* --- the only two gradients in the system ------------------------------- */
+--dk-gradient-signal:linear-gradient(135deg,#EE2F72 0%,#DE1A8C 52%,#B8129F 100%); /* @kind color */
+--dk-gradient-ring:linear-gradient(135deg,#B8129F 0%,#DE1A8C 52%,#EE2F72 100%); /* @kind color */
+
+/* --- semantic aliases · LIGHT (Arena, public pages, print) -------------- */
+--dk-surface-page:var(--dk-paper-100);
+--dk-surface-panel:var(--dk-paper-000);
+--dk-surface-raised:var(--dk-paper-000);
+--dk-surface-subtle:var(--dk-paper-150);
+--dk-surface-inset:var(--dk-paper-025);
+--dk-surface-head:var(--dk-paper-150);
+--dk-surface-invert:var(--dk-ink-900);
+--dk-border-hairline:var(--dk-paper-200);
+--dk-border-strong:var(--dk-ink-300);
+--dk-border-accent:var(--dk-magenta-500);
+--dk-text-primary:var(--dk-ink-900);
+--dk-text-secondary:var(--dk-ink-700);
+--dk-text-muted:var(--dk-ink-600);
+--dk-text-faint:var(--dk-ink-400);
+--dk-text-accent:var(--dk-magenta-600);
+--dk-text-invert:var(--dk-paper-050);
+--dk-accent:var(--dk-magenta-500);
+--dk-accent-strong:var(--dk-magenta-600);
+--dk-accent-fg:#FFFFFF;
+--dk-accent-tint:rgba(222,26,140,.10);
+--dk-accent-tint-strong:rgba(222,26,140,.18);
+--dk-focus-ring:rgba(222,26,140,.45);
+--dk-hatch:rgba(5,7,12,.16);
+--dk-scrim:rgba(5,7,12,.46);
+/* age of a number: density, never hue */
+--dk-fresh-live:var(--dk-magenta-500);
+--dk-fresh-0:var(--dk-ink-900);
+--dk-fresh-1:var(--dk-ink-600);
+--dk-fresh-2:var(--dk-ink-400);
+--dk-fresh-stale:var(--dk-ink-300);
+--dk-fresh-none:var(--dk-ink-400);
+/* danger is stated in ink, never in red */
+--dk-danger-bg:var(--dk-ink-900);
+--dk-danger-fg:var(--dk-paper-050);
+--dk-danger-rule:var(--dk-magenta-500);
+/* rank: the one exception to ink and magenta — green marks BEST, red marks WORST; never direction, never P&L */
+--dk-rank-best:#1F9D5B;
+--dk-rank-worst:#D23B3B;
+}
+[data-theme="dark"]{
+--dk-surface-page:var(--dk-night-950);
+--dk-surface-panel:var(--dk-night-900);
+--dk-surface-raised:var(--dk-night-800);
+--dk-surface-subtle:var(--dk-night-850);
+--dk-surface-inset:var(--dk-night-950);
+--dk-surface-head:var(--dk-night-800);
+--dk-surface-invert:var(--dk-paper-050);
+--dk-border-hairline:var(--dk-night-700);
+--dk-border-strong:var(--dk-night-600);
+--dk-border-accent:var(--dk-magenta-400);
+--dk-text-primary:var(--dk-night-fg-100);
+--dk-text-secondary:var(--dk-night-fg-200);
+--dk-text-muted:var(--dk-night-fg-300);
+--dk-text-faint:var(--dk-night-fg-400);
+--dk-text-accent:var(--dk-magenta-400);
+--dk-text-invert:var(--dk-ink-900);
+--dk-accent:var(--dk-magenta-500);
+--dk-accent-strong:var(--dk-magenta-400);
+--dk-accent-fg:#FFFFFF;
+--dk-accent-tint:rgba(238,47,114,.12);
+--dk-accent-tint-strong:rgba(238,47,114,.22);
+--dk-focus-ring:rgba(238,47,114,.55);
+--dk-hatch:rgba(237,239,243,.14);
+--dk-scrim:rgba(2,3,6,.66);
+--dk-fresh-live:var(--dk-magenta-400);
+--dk-fresh-0:var(--dk-night-fg-100);
+--dk-fresh-1:var(--dk-night-fg-300);
+--dk-fresh-2:var(--dk-night-fg-400);
+--dk-fresh-stale:var(--dk-night-600);
+--dk-fresh-none:var(--dk-night-fg-400);
+--dk-danger-bg:var(--dk-paper-050);
+--dk-danger-fg:var(--dk-ink-900);
+--dk-danger-rule:var(--dk-magenta-400);
+}
+
+/* ---- typography ---- */
+:root{
+--dk-font-display:"Montserrat",Helvetica,Arial,sans-serif;
+--dk-font-text:"Helvetica Neue",Helvetica,Arial,sans-serif;
+--dk-font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+/* sizes carried over from the brand kit, unrounded */
+--dk-text-2xs:11px;--dk-text-xs:12px;--dk-text-sm:13px;--dk-text-base:14px;--dk-text-md:15px;
+--dk-text-lg:18px;--dk-text-xl:22px;--dk-text-2xl:30px;--dk-text-3xl:40px;--dk-text-4xl:56px;
+--dk-lh-flat:1; /* @kind font */
+--dk-lh-tight:1.15; /* @kind font */
+--dk-lh-snug:1.3; /* @kind font */
+--dk-lh-normal:1.45; /* @kind font */
+--dk-lh-relaxed:1.55; /* @kind font */
+--dk-lh-prose:1.65; /* @kind font */
+--dk-lh-loose:1.7; /* @kind font */
+--dk-weight-regular:400; /* @kind font */
+--dk-weight-medium:500; /* @kind font */
+--dk-weight-semibold:600; /* @kind font */
+--dk-weight-bold:700; /* @kind font */
+--dk-track-display:-.02em; /* @kind font */
+--dk-track-label:.18em; /* @kind font */
+--dk-track-eyebrow:.2em; /* @kind font */
+--dk-track-descriptor:.38em; /* @kind font */
+--dk-track-num:0; /* @kind font */
+/* composed roles */
+--dk-type-display:var(--dk-weight-bold) var(--dk-text-2xl)/var(--dk-lh-tight) var(--dk-font-display); /* @kind font */
+--dk-type-heading:var(--dk-weight-semibold) var(--dk-text-lg)/var(--dk-lh-snug) var(--dk-font-display); /* @kind font */
+--dk-type-subheading:var(--dk-weight-semibold) var(--dk-text-sm)/var(--dk-lh-snug) var(--dk-font-display); /* @kind font */
+--dk-type-body:var(--dk-weight-regular) var(--dk-text-base)/var(--dk-lh-relaxed) var(--dk-font-text); /* @kind font */
+--dk-type-prose:var(--dk-weight-regular) var(--dk-text-sm)/var(--dk-lh-prose) var(--dk-font-text); /* @kind font */
+--dk-type-label:var(--dk-weight-semibold) var(--dk-text-2xs)/var(--dk-lh-flat) var(--dk-font-mono); /* @kind font */
+--dk-type-meta:var(--dk-weight-regular) var(--dk-text-2xs)/var(--dk-lh-normal) var(--dk-font-mono); /* @kind font */
+--dk-type-num:var(--dk-weight-regular) var(--dk-text-sm)/var(--dk-lh-snug) var(--dk-font-mono); /* @kind font */
+--dk-type-num-lg:var(--dk-weight-regular) var(--dk-text-xl)/var(--dk-lh-flat) var(--dk-font-mono); /* @kind font */
+--dk-type-num-xl:var(--dk-weight-regular) var(--dk-text-3xl)/var(--dk-lh-flat) var(--dk-font-mono); /* @kind font */
+}
+
+/* ---- spacing ---- */
+:root{
+/* the kit's own rhythm: 4 / 8 / 10 / 14 / 18 / 22 / 26 / 32 / 48 / 64 */
+--dk-space-0:0;--dk-space-px:1px;--dk-space-1:4px;--dk-space-2:8px;--dk-space-3:10px;--dk-space-4:14px;
+--dk-space-5:18px;--dk-space-6:22px;--dk-space-7:26px;--dk-space-8:32px;--dk-space-9:48px;--dk-space-10:64px;--dk-space-11:96px;
+--dk-gutter-panel:var(--dk-space-7);
+--dk-gutter-page:var(--dk-space-7);
+--dk-cell-pad-y:7px;--dk-cell-pad-x:10px;
+--dk-cell-pad-y-dense:5px;--dk-cell-pad-x-dense:8px;
+--dk-row-h:34px;--dk-row-h-dense:26px;--dk-row-h-tall:56px;
+--dk-control-h-sm:26px;--dk-control-h:32px;--dk-control-h-lg:44px;
+--dk-sidebar-w:232px;--dk-sidebar-w-collapsed:52px;--dk-topbar-h:48px;
+--dk-measure-prose:68ch; /* @kind spacing */
+--dk-max-page:1440px; /* @kind spacing */
+}
+
+/* ---- radii ---- */
+:root{
+/* DEBYKO is a square system: 0 is the default, 2px exists only for chips */
+--dk-radius-0:0;--dk-radius-1:2px;--dk-radius-2:3px;--dk-radius-pill:999px;
+--dk-border-w:1px;--dk-border-w-strong:2px;--dk-rule-accent:2px;
+}
+
+/* ---- shadows ---- */
+:root{
+/* shadows are for things that float above the page — nothing else */
+--dk-shadow-none:none;
+--dk-shadow-sticky:0 1px 0 0 var(--dk-border-hairline);
+--dk-shadow-popover:0 8px 24px rgba(5,7,12,.12);
+--dk-shadow-modal:0 24px 64px rgba(5,7,12,.28);
+--dk-inset-hairline:inset 0 0 0 1px var(--dk-border-hairline);
+}
+[data-theme="dark"]{
+--dk-shadow-popover:0 8px 24px rgba(2,3,6,.5);
+--dk-shadow-modal:0 24px 64px rgba(2,3,6,.7);
+}
+
+/* ---- motion ---- */
+:root{
+/* data moves; the interface does not */
+--dk-dur-instant:0ms; /* @kind other */
+--dk-dur-fast:90ms; /* @kind other */
+--dk-dur-base:140ms; /* @kind other */
+--dk-dur-slow:220ms; /* @kind other */
+--dk-ease-standard:cubic-bezier(.2,0,.38,1); /* @kind other */
+--dk-ease-out:cubic-bezier(0,0,.35,1); /* @kind other */
+--dk-ease-linear:linear; /* @kind other */
+--dk-transition-control:background-color var(--dk-dur-fast) var(--dk-ease-standard),border-color var(--dk-dur-fast) var(--dk-ease-standard),color var(--dk-dur-fast) var(--dk-ease-standard); /* @kind other */
+}
+
+/* ---- charts ---- */
+:root{
+/* direction is shape, never hue: rising candles are hollow, falling are filled */
+--dk-chart-ink:var(--dk-text-primary);
+--dk-chart-ink-soft:var(--dk-text-muted);
+--dk-chart-grid:var(--dk-border-hairline);
+--dk-chart-axis:var(--dk-text-faint);
+--dk-chart-candle-body:var(--dk-text-primary);
+--dk-chart-candle-hollow:var(--dk-surface-panel);
+--dk-chart-candle-wick:var(--dk-text-secondary);
+--dk-chart-line:var(--dk-text-primary);
+--dk-chart-line-accent:var(--dk-accent);
+--dk-chart-band:var(--dk-accent-tint);
+--dk-chart-depth-near:rgba(5,7,12,.22);
+--dk-chart-depth-far:rgba(5,7,12,.10);
+--dk-chart-marker:var(--dk-accent);
+--dk-chart-gap:var(--dk-hatch);
+--dk-chart-candle-w:7px; /* @kind spacing */
+--dk-chart-candle-gap:3px; /* @kind spacing */
+--dk-chart-stroke:1.5px; /* @kind spacing */
+}
+[data-theme="dark"]{
+--dk-chart-depth-near:rgba(237,239,243,.20);
+--dk-chart-depth-far:rgba(237,239,243,.09);
+}
+
+/* ---- base ---- */
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--dk-surface-page);color:var(--dk-text-primary);font:var(--dk-type-body);-webkit-font-smoothing:antialiased}
+a{color:var(--dk-text-accent);text-decoration:none}
+a:hover{opacity:.65}
+a:active{opacity:.85}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--dk-focus-ring);outline-offset:1px}
+::selection{background:var(--dk-accent-tint-strong)}
+h1,h2,h3,h4{font-family:var(--dk-font-display);font-weight:var(--dk-weight-semibold);letter-spacing:var(--dk-track-display);margin:0}
+/* every digit in DEBYKO is monospaced and aligned by place */
+.dk-num{font-family:var(--dk-font-mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"zero" 1;text-align:right;white-space:nowrap}
+.dk-label{font:var(--dk-type-label);letter-spacing:var(--dk-track-label);text-transform:uppercase;color:var(--dk-text-faint)}
+.dk-meta{font:var(--dk-type-meta);color:var(--dk-text-faint)}
+.dk-hatch{background-image:repeating-linear-gradient(45deg,var(--dk-hatch) 0 1px,transparent 1px 5px)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;transition-duration:1ms!important}}
+
+@keyframes dk-spin{to{transform:rotate(360deg)}}
