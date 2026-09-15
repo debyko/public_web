@@ -215,19 +215,6 @@ a.btn, a.btn:hover { opacity: 1; }
 .site-header__bar { height: 56px; display: flex; align-items: center; gap: 26px; }
 .site-header__logo { display: flex; align-items: center; opacity: 1; }
 .site-header__logo img { height: 32px; width: auto; display: block; }
-/* BlynAI | DEBYKO at one height. Measured from logo-horizontal.svg at 32px: the DEBYKO mark is 27.2px
-   tall with its centre 1.1px above the image centre, the letters 13.3px tall with their centre 2.2px
-   above. The BlynAI mark (drawn height 61.5% of its box) gets a 44.2px box so it is 27.2px tall, and
-   the BlynAI wordmark (cap height 13.3px at 19px) is lifted to the same centre as DEBYKO's letters. */
-.brand { display: flex; align-items: center; gap: 14px; flex: none; }
-.brand__blynai { display: inline-flex; align-items: center; gap: 4px; color: #05070C; opacity: 1; }
-.brand__blynai:hover { opacity: .8; }
-.brand__mark { width: 44.2px; height: 44.2px; margin: -6px -8px -6px -8px; transform: translateY(-1.1px); }
-.brand__name { font: 600 19px/1 var(--dk-font-display); letter-spacing: .02em; transform: translateY(-2px); }
-.brand__name i { font-style: normal; color: var(--dk-text-accent); }
-.brand__rule { width: 1px; height: 28px; background: var(--dk-border-strong); }
-/* logo-horizontal.svg starts with ~2px of empty canvas before the mark. */
-.brand .site-header__logo { margin-left: -2px; }
 .nav { display: flex; align-items: center; gap: 2px; flex: 1; }
 .nav__item { position: relative; }
 .nav__trigger { background: none; border: 0; margin: 0; height: 56px; padding: 0 12px; cursor: pointer; font: 500 13px/1 var(--dk-font-text); color: var(--dk-text-secondary); }
@@ -363,13 +350,11 @@ a.btn, a.btn:hover { opacity: 1; }
 
 .closing { display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--dk-border-strong); padding-top: 22px; }
 
-/* Footer credit: the company and the engine, each with its mark at the cap height of the line. */
+/* Footer credit: the author, and the engine with its mark at the cap height of the line. */
 .credit { margin: 0; font: 400 12px/1.7 var(--dk-font-text); color: var(--dk-text-muted); }
 .credit__brand { display: inline-flex; align-items: baseline; gap: 3px; font-weight: 600; color: var(--dk-text-primary); white-space: nowrap; opacity: 1; }
 a.credit__brand:hover { opacity: .65; }
-.credit__brand i { font-style: normal; color: var(--dk-text-accent); }
 .credit__mark { display: inline-block; align-self: center; }
-.credit__mark--blynai { width: 14px; height: 14px; }
 .credit__mark--csx { width: 22.7px; height: 22.7px; margin: -6px -3px; }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
@@ -469,9 +454,9 @@ a.credit__brand:hover { opacity: .65; }
 .fields-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
 
 /* ── Narrow screens ─────────────────────────────────────────────────────── */
-/* The header needs about 1,270px for both logos, seven menus and two buttons; below that the menus
-   fold into Menu while the buttons stay. */
-@media (max-width: 1320px) {
+/* The header needs about 1,100px for the logo, seven menus and two buttons; below that the menus fold
+   into Menu while the buttons stay. */
+@media (max-width: 1160px) {
   .nav { display: none !important; }
   .menu-btn { display: inline-flex; }
 }
@@ -486,12 +471,4 @@ a.credit__brand:hover { opacity: .65; }
   .section { padding: 56px 0; }
   .offer, .pricing-row { grid-template-columns: minmax(0, 1fr) auto; }
   .offer > .btn, .pricing-row > .btn { grid-column: 1 / -1; }
-}
-
-@media (max-width: 480px) {
-  .brand { gap: 10px; }
-  .site-header__logo img { height: 26px; }
-  .brand__mark { width: 35.9px; height: 35.9px; margin: -5px -6.5px; transform: translateY(-.9px); }
-  .brand__name { font-size: 15.4px; transform: translateY(-1.8px); }
-  .brand__rule { height: 22px; }
 }
