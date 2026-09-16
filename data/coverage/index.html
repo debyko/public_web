@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../../css/site.css">
   <link rel="stylesheet" href="../../css/pages.css">
   <script defer src="../../js/nav.js"></script>
+  <script type="module" src="../../js/pages/coverage.js"></script>
 </head>
 <body>
 
@@ -69,14 +70,14 @@
         <button class="nav__trigger" aria-expanded="false">Company</button>
         <div class="nav__menu" hidden>
           <a href="../../#company">About</a>
-          <a href="../../#company">Contact Sales</a>
-          <a href="../../#company">Join the Waitlist</a>
+          <a href="../../?open=sales">Contact Sales</a>
+          <a href="../../?open=wait">Join the Waitlist</a>
         </div>
       </div>
     </nav>
     <div class="spacer"></div>
     <div class="site-header__actions hide-narrow">
-      <a class="btn btn--ghost" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn btn--ghost" href="../../?open=sales"><span>Contact sales</span></a>
       <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
     </div>
     <button class="menu-btn" aria-expanded="false">Menu</button>
@@ -85,10 +86,10 @@
     <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader</a><a href="../../#agent">Agent</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
     <div class="mobile-nav__actions">
       <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
-      <a class="btn" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn" href="../../?open=sales"><span>Contact sales</span></a>
     </div>
   </div>
 </header>
@@ -105,7 +106,7 @@
       </div>
       <p class="prose">Totals, datasets and counts on this page are rendered from the coverage response when the page loads. None of them is written into the page, because all of them change.</p>
     </div>
-    <div class="mount mount--line" id="coverage-totals" data-mount="Totals line from GET /v1/coverage totals: venues collecting, instruments collected, trading and listed, and the date collection began. One line, mono, no chart."></div>
+    <div class="meta-xs" id="coverage-totals">Requesting</div>
   </div>
 </section>
 
@@ -116,14 +117,17 @@
         <div class="label">Catalogue</div>
         <h2 class="h2">Every collecting venue, perpetual and spot.</h2>
       </div>
-      <p class="prose">Fifteen perpetual segments and three spot segments are collected. They are grouped by kind, because a perpetual and a spot listing answer different questions and are never compared against each other.</p>
+      <p class="prose">Grouped by kind, with each group's own count in its heading below, because a perpetual and a spot listing answer different questions and are never compared against each other.</p>
     </div>
     <div class="panel">
       <div class="panel__head">
         <span class="label label--accent">Catalogue · GET /v1/coverage</span>
         <span class="meta-xs">Grouped by kind · venue · datasets · instruments · since</span>
       </div>
-      <div class="mount mount--tall" id="coverage-catalogue" data-mount="One table, grouped by kind with a group row per kind (Perpetual, Spot) and its venue count. Columns in order: venue name and segment code · datasets as chips · instruments collected / trading / listed · since. Each venue row carries id equal to its segment code, so /data/coverage/#okx-perp addresses it."></div>
+      <div class="scroll-x"><table class="tbl min-640">
+        <thead><tr><th class="l">Venue</th><th>Datasets</th><th class="r">Collected / trading / listed</th><th class="r">Since</th></tr></thead>
+        <tbody id="coverage-catalogue-rows"><tr><td colspan="4" style="padding:14px">Requesting</td></tr></tbody>
+      </table></div>
       <div class="panel__note">Filled chip: the dataset is collected on this venue · outlined chip: it is not · Instruments: collected / trading / listed, as published · Since: as published.<br>Every venue row has its own address, for example /data/coverage/#okx-perp, so a table row elsewhere on the site can link to its venue.</div>
     </div>
   </div>
@@ -150,7 +154,7 @@
           <span class="meta-xs">UTC · one row per venue</span>
         </div>
       </div>
-      <div class="mount mount--tall" id="coverage-hours" data-mount="Hour strip: one row per collecting venue, one cell per hour for the range selected above, shaded by completeness where the hour was observed, hatched before collection began, outlined where nothing was observed. A recorded interruption puts a mark above its hour. Range switch writes days into the request."></div>
+      <div class="scroll-x"><div class="hours" id="coverage-hours">Requesting</div></div>
       <div class="panel__note">
         <span class="legend-row" style="margin:0">
           <span><span class="swatch swatch--observed"></span>observed · shade = completeness</span>
@@ -166,7 +170,7 @@
         <span class="label">Recorded interruptions</span>
         <span class="meta-xs">Same response as the strip above</span>
       </div>
-      <div class="mount" id="coverage-interruptions" data-mount="Table of the interruptions recorded in the selected range. Columns in order: venue · collector · start · end · cause. Listed here as well as marked on the strip, because a mark's tooltip cannot be reached on a touch screen. When the range holds none, the block says no interruption was recorded in it — not that there were none."></div>
+      <div id="coverage-interruptions">Requesting</div>
       <div class="panel__note">Times are UTC. A cause is shown only where the collector recorded one.</div>
     </div>
   </div>
@@ -214,7 +218,7 @@
       <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../../#agent">Agent <span class="nav-tag">prototype</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a><a href="../../#services">Venues &amp; Platforms</a><a href="../../#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
     </div>
     <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
