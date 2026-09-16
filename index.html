@@ -45,7 +45,7 @@
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Products</button>
         <div class="nav__menu" hidden>
-          <a href="#products">Arena <span class="nav-tag">live</span></a>
+          <a href="/arena/">Arena <span class="nav-tag">live</span></a>
           <a href="#studio-pro">Studio Pro <span class="nav-tag">live</span></a>
           <a href="#trader">Studio Trader <span class="nav-tag">in development</span></a>
           <a href="#agent">Agent <span class="nav-tag">prototype</span></a>
@@ -63,15 +63,15 @@
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Data</button>
         <div class="nav__menu" hidden>
-          <a href="#studio-pro">Coverage</a>
-          <a href="#method">Methodology</a>
+          <a href="/data/coverage/">Coverage</a>
+          <a href="/data/methodology/">Methodology</a>
           <a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a>
-          <a href="#status">Data Status</a>
+          <a href="/data/status/">Data Status</a>
         </div>
       </div>
       <div class="nav__item"><a class="nav__trigger" href="#pricing" style="display:inline-flex;align-items:center;opacity:1">Pricing</a></div>
-      <div class="nav__item"><a class="nav__trigger" href="#method" style="display:inline-flex;align-items:center;opacity:1">Methodology</a></div>
-      <div class="nav__item"><a class="nav__trigger" href="#status" style="display:inline-flex;align-items:center;opacity:1">Status</a></div>
+      <div class="nav__item"><a class="nav__trigger" href="/data/methodology/" style="display:inline-flex;align-items:center;opacity:1">Methodology</a></div>
+      <div class="nav__item"><a class="nav__trigger" href="/data/status/" style="display:inline-flex;align-items:center;opacity:1">Status</a></div>
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Company</button>
         <div class="nav__menu" hidden>
@@ -84,17 +84,17 @@
     <div class="spacer"></div>
     <div class="site-header__actions hide-narrow">
       <button class="btn btn--ghost" data-open="sales"><span>Contact sales</span></button>
-      <button class="btn btn--primary" data-scroll="proof"><span>Explore live data</span></button>
+      <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
     </div>
     <button class="menu-btn" aria-expanded="false">Menu</button>
   </div>
   <div class="mobile-nav" hidden>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="#products" data-scroll="products">Arena</a><a href="#studio-pro" data-scroll="studio-pro">Studio Pro</a><a href="#trader" data-scroll="trader">Studio Trader</a><a href="#agent" data-scroll="agent">Agent</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="/arena/">Arena</a><a href="#studio-pro" data-scroll="studio-pro">Studio Pro</a><a href="#trader" data-scroll="trader">Studio Trader</a><a href="#agent" data-scroll="agent">Agent</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="#evidence" data-scroll="evidence">Execution Evidence</a><a href="#services" data-scroll="services">Data &amp; Research</a></div>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="#method" data-scroll="method">Methodology</a><a href="#status" data-scroll="status">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="/data/methodology/">Methodology</a><a href="/data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="#pricing" data-scroll="pricing">Pricing</a><a href="#" data-open="sales">Contact Sales</a><a href="#" data-open="wait">Join the Waitlist</a></div>
     <div class="mobile-nav__actions">
-      <button class="btn btn--primary" data-scroll="proof"><span>Explore live data</span></button>
+      <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
       <button class="btn" data-open="sales"><span>Contact sales</span></button>
     </div>
   </div>
@@ -111,7 +111,7 @@
         <h1 class="h1">Crypto markets, with the evidence attached.</h1>
         <p class="lead">Compare venues live, investigate market history, connect through an API, or run isolated execution agents — without hiding the source, age or absence of the underlying data.</p>
         <div class="row gap-10" style="margin-top:4px">
-          <button class="btn btn--primary" data-scroll="proof"><span>Explore live data</span></button>
+          <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
           <button class="btn" data-scroll="products"><span>Explore products</span></button>
           <button class="text-btn" data-open="sales">Contact sales</button>
         </div>
@@ -134,7 +134,7 @@
     </div>
     <div class="panel" id="live-full"></div>
     <div class="row gap-10">
-      <button class="btn btn--primary"><span>Open full Arena</span></button>
+      <a class="btn btn--primary" href="/arena/"><span>Open full Arena</span></a>
       <button class="btn" data-scroll="method"><span>View methodology</span></button>
     </div>
   </div>
@@ -179,8 +179,8 @@
       </ul>
       <div class="price-line"><span class="label">Price</span><span class="price-line__value">Free</span></div>
       <div class="row gap-10">
-        <button class="btn btn--primary"><span>Explore Arena</span></button>
-        <button class="btn" data-scroll="studio-pro"><span>See coverage</span></button>
+        <a class="btn btn--primary" href="/arena/"><span>Explore Arena</span></a>
+        <a class="btn" href="/data/coverage/"><span>See coverage</span></a>
       </div>
     </div>
     <div class="stack gap-14">
@@ -542,8 +542,8 @@
       <div><span class="method-grid__n">09</span><span class="method-grid__t">Venue-reported vs derived</span><span class="method-grid__b">Bid, ask, mark, index, funding and open interest are venue-reported. Spread, notional and depth bands are derived and say so.</span></div>
     </div>
     <div class="row gap-10">
-      <button class="btn btn--primary"><span>Read the methodology</span></button>
-      <button class="btn" data-scroll="studio-pro"><span>Inspect data coverage</span></button>
+      <a class="btn btn--primary" href="/data/methodology/"><span>Read the methodology</span></a>
+      <a class="btn" href="/data/coverage/"><span>Inspect data coverage</span></a>
     </div>
   </div>
 </section>
@@ -575,7 +575,7 @@
       <div id="status-state"></div>
     </div>
     <div class="row gap-10">
-      <button class="btn btn--primary"><span>View data status</span></button>
+      <a class="btn btn--primary" href="/data/status/"><span>View data status</span></a>
       <button class="btn" disabled><span>Incident history · coming</span></button>
     </div>
   </div>
@@ -688,7 +688,7 @@
       </div>
       <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="#products">Arena</a><a href="#studio-pro">Studio Pro</a><a href="#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="#agent">Agent <span class="nav-tag">prototype</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="#evidence">Execution Evidence</a><a href="#services">Data &amp; Research</a><a href="#services">Venues &amp; Platforms</a><a href="#agent">Trading &amp; Automation</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="#studio-pro">Coverage</a><a href="#method">Methodology</a><a href="#status">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="#" data-open="sales">Contact Sales</a><a href="#" data-open="wait">Join the Waitlist</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
     </div>
