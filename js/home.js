@@ -2,7 +2,8 @@
 
 import { createStore, normaliseCoverage, normaliseCoverageHours, normaliseHealth, submitLead } from './api.js';
 import { mountSlice, mountFull, mountArena, closeProvenance } from './live-market.js';
-import { esc, fmt, age, utcTime, utcMinute, stateBlock } from './format.js';
+import { esc, fmt, age, utcTime, stateBlock } from './format.js';
+import { sourceText, sourceTimeText, metaStateBlock, coverageTotalsLine, datasetChips, filterHealthToCoverage } from './pages/shared.js';
 
 const store = createStore();
 const $ = sel => document.querySelector(sel);
@@ -73,6 +74,11 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.nav__menu').forEach(m => { m.hidden = true; });
 });
 
+// The data pages' header and footer link "Contact sales" and "Join the waitlist" here, at
+// ?open=sales / ?open=wait, because the dialogs live only in this document.
+const openOnLoad = new URLSearchParams(location.search).get('open');
+if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
+
 // ── Live market blocks ──────────────────────────────────────────────────────────────────────
 
 mountSlice($('#live-slice'), store, () => scrollToId('proof'));
@@ -81,34 +87,26 @@ mountArena($('#live-arena'), store);
 
 // ── Studio Pro: catalogue, coverage hours, API snippet ──────────────────────────────────────
 
-const SETS = ['ticker', 'candles', 'funding', 'oi', 'trades', 'liq', 'depth'];
-const sourceText = (block, what) => (block.src === 'live' ? 'Live · ' + store.env + (what ? ' · ' + what : '') : 'Saved · ' + utcMinute(block.at));
-const metaBlock = (S, path) => stateBlock(S.metaLoaded ? 'error' : 'loading',
-  S.metaLoaded ? 'The service did not answer and no saved response is on disk' : 'Requesting',
-  path + ' · nothing is shown in its place.', { compact: true });
-
 function renderCatalogue(S) {
   const rows = S.cov ? normaliseCoverage(S.cov.data) : [];
-  $('#catalogue-tag').textContent = S.cov && rows.length ? sourceText(S.cov, 'perp venues · collected / listed') : 'No data';
+  $('#catalogue-tag').textContent = S.cov && rows.length ? sourceText(S.cov, store.env, 'perp venues · collected / listed') : 'No data';
   $('#catalogue-rows').innerHTML = rows.map(v => `<tr>
     <td class="td-venue">${esc(v.venue)}</td>
-    <td style="padding:6px 10px"><div class="row gap-6" style="gap:4px">${SETS.map(n => `<span class="dataset-chip${v.groups.includes(n) ? ' dataset-chip--on' : ''}">${n}</span>`).join('')}${v.other.length ? `<span class="dataset-chip dataset-chip--more">+${v.other.length}</span>` : ''}</div></td>
+    <td style="padding:6px 10px"><div class="row gap-6" style="gap:4px">${datasetChips(v)}</div></td>
     <td class="td-num">${v.collected != null ? fmt(v.collected, 0) + (v.listed != null ? ' / ' + fmt(v.listed, 0) : '') : '—'}</td>
     <td class="td-mono r">${v.since ? esc(String(v.since).slice(0, 10)) : '—'}</td>
   </tr>`).join('');
-  $('#catalogue-state').innerHTML = rows.length ? '' : `<div style="padding:14px">${metaBlock(S, 'GET /v1/coverage')}</div>`;
+  $('#catalogue-state').innerHTML = rows.length ? '' : `<div style="padding:14px">${metaStateBlock(S.metaLoaded, 'GET /v1/coverage')}</div>`;
   // The table lists the perp venues this page compares; the totals are every collecting venue, spot
   // included — which is why the two counts differ, and the response says both.
-  const t = S.cov && S.cov.data && S.cov.data.totals;
-  if (t) $('#catalogue-totals').textContent = 'All venues · ' + fmt(t.venues, 0) + ' collecting · '
-    + fmt(t.instruments, 0) + ' instruments collected · ' + fmt(t.trading, 0) + ' trading · ' + fmt(t.listed, 0) + ' listed'
-    + (t.since ? ' · since ' + String(t.since).slice(0, 10) : '');
+  const line = coverageTotalsLine(S.cov && S.cov.data && S.cov.data.totals);
+  if (line) $('#catalogue-totals').textContent = line;
 }
 
 function renderHours(S) {
   const rows = S.covHours ? normaliseCoverageHours(S.covHours.data, 48) : null;
-  $('#hours-tag').textContent = rows ? sourceText(S.covHours) : S.covHours ? 'Shape not recognised' : 'No data';
-  if (!rows || !rows.length) { $('#hours-rows').innerHTML = metaBlock(S, 'GET /v1/coverage/hours?days=7'); return; }
+  $('#hours-tag').textContent = rows ? sourceText(S.covHours, store.env) : S.covHours ? 'Shape not recognised' : 'No data';
+  if (!rows || !rows.length) { $('#hours-rows').innerHTML = metaStateBlock(S.metaLoaded, 'GET /v1/coverage/hours?days=7'); return; }
   // This strip covers every collecting venue, spot included — more than the perp venues in the tables above.
   $('#hours-scope').textContent = rows.length + ' collecting venues · perp and spot';
   $('#hours-rows').innerHTML = rows.map(v => {
@@ -142,13 +140,9 @@ function renderSnippet(S) {
 // ── Status ──────────────────────────────────────────────────────────────────────────────────
 
 function renderStatus(S) {
-  const H = S.health ? normaliseHealth(S.health.data) : null;
   // /health also reports internal service segments (the rollup runs under one); only venues listed
   // by /coverage are shown, once that list is known.
-  if (H && S.cov && Array.isArray(S.cov.data.venues)) {
-    const venues = new Set(S.cov.data.venues.map(v => v.code.toUpperCase()));
-    H.rows = H.rows.filter(r => venues.has(r.code));
-  }
+  const H = S.health ? filterHealthToCoverage(normaliseHealth(S.health.data), S.cov && S.cov.data) : null;
   if (!H) {
     $('#status-table').hidden = true;
     $('#status-overall').hidden = true;
@@ -163,7 +157,7 @@ function renderStatus(S) {
   const overall = H.overall || 'unknown';
   $('#status-overall-word').textContent = overall;
   $('#status-overall-word').className = 'fresh ' + (overall === 'ok' ? 'st-live' : 'st-delayed');
-  $('#status-tag').textContent = S.health.src === 'live' ? 'Live · ' + store.env + ' · ' + utcTime(S.health.at) : 'Saved · ' + utcMinute(S.health.at);
+  $('#status-tag').textContent = sourceTimeText(S.health, store.env);
   $('#status-rows').innerHTML = H.rows.map(r => {
     const kind = !r.fails ? 'live' : r.fails >= 5 ? 'stale' : 'delayed';
     return `<tr>
