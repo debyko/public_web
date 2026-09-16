@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="../css/pages.css">
   <script defer src="../js/nav.js"></script>
+  <script type="module" src="../js/pages/arena.js"></script>
 </head>
 <body>
 
@@ -69,14 +70,14 @@
         <button class="nav__trigger" aria-expanded="false">Company</button>
         <div class="nav__menu" hidden>
           <a href="../#company">About</a>
-          <a href="../#company">Contact Sales</a>
-          <a href="../#company">Join the Waitlist</a>
+          <a href="../?open=sales">Contact Sales</a>
+          <a href="../?open=wait">Join the Waitlist</a>
         </div>
       </div>
     </nav>
     <div class="spacer"></div>
     <div class="site-header__actions hide-narrow">
-      <a class="btn btn--ghost" href="../#company"><span>Contact sales</span></a>
+      <a class="btn btn--ghost" href="../?open=sales"><span>Contact sales</span></a>
       <a class="btn btn--primary" href="../arena/"><span>Explore live data</span></a>
     </div>
     <button class="menu-btn" aria-expanded="false">Menu</button>
@@ -85,10 +86,10 @@
     <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../arena/">Arena</a><a href="../#studio-pro">Studio Pro</a><a href="../#trader">Studio Trader</a><a href="../#agent">Agent</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../#evidence">Execution Evidence</a><a href="../#services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../data/coverage/">Coverage</a><a href="../data/methodology/">Methodology</a><a href="../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../#pricing">Pricing</a><a href="../#company">Contact Sales</a><a href="../#company">Join the Waitlist</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../#pricing">Pricing</a><a href="../?open=sales">Contact Sales</a><a href="../?open=wait">Join the Waitlist</a></div>
     <div class="mobile-nav__actions">
       <a class="btn btn--primary" href="../arena/"><span>Explore live data</span></a>
-      <a class="btn" href="../#company"><span>Contact sales</span></a>
+      <a class="btn" href="../?open=sales"><span>Contact sales</span></a>
     </div>
   </div>
 </header>
@@ -115,7 +116,7 @@
         </div>
       </div>
     </div>
-    <p class="page-head__note">Perpetual contracts only — 15 perpetual venues. <a href="../data/coverage/">Spot listings are collected and listed on Coverage.</a></p>
+    <p class="page-head__note">Perpetual contracts only — <span data-perp-count>Requesting</span> perpetual venues. <a href="../data/coverage/">Spot listings are collected and listed on Coverage.</a></p>
   </div>
 </section>
 
@@ -126,7 +127,7 @@
         <span class="label label--accent">Live comparison · GET /v1/snapshot per venue</span>
         <span class="meta-xs">Instrument · metric · range · venue toggles · source and last-response time</span>
       </div>
-      <div class="mount mount--chart" id="arena-live" data-mount="Full live block: controls (instrument, metric, range, venue toggles), cross-venue chart with legend, comparison table (bid/ask pair, spread, mark/index pair, funding with its interval, open interest, depth, venue and received time, ages T / OI / D, row status under the venue name), observation line, request log. Reads the instrument, metric and range from the page address and writes them back. States rendered here, with their strings: &quot;Requesting the latest snapshot&quot; · &quot;Requesting &lt;metric&gt; history per venue&quot; · &quot;n/m perp venues answered&quot; · legend tags &quot;Unsupported&quot;, &quot;No answer&quot;, &quot;No data&quot; per venue · &quot;No venue returned &lt;metric&gt; in this range&quot; · &quot;The data service did not answer and no saved response is on disk&quot; · &quot;Saved · &lt;time&gt;&quot;. data/saved/ holds no responses yet, so until it does a failed call shows the error state."></div>
+      <div id="arena-live">Requesting the latest snapshot</div>
       <div class="panel__foot"><span>Every figure opens its provenance: venue, instrument, clocks, age, and the formula where the value is derived</span><span>Table scrolls sideways inside the panel · the venue column stays</span></div>
     </div>
   </div>
@@ -201,7 +202,7 @@
       <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../arena/">Arena</a><a href="../#studio-pro">Studio Pro</a><a href="../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../#agent">Agent <span class="nav-tag">prototype</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../#evidence">Execution Evidence</a><a href="../#services">Data &amp; Research</a><a href="../#services">Venues &amp; Platforms</a><a href="../#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../data/coverage/">Coverage</a><a href="../data/methodology/">Methodology</a><a href="../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../#company">About</a><a href="../#company">Contact Sales</a><a href="../#company">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../#company">About</a><a href="../?open=sales">Contact Sales</a><a href="../?open=wait">Join the Waitlist</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
     </div>
     <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
