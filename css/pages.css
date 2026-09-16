@@ -1,0 +1,69 @@
+/* debyko.com — classes added in pass 2, on top of css/tokens.css and css/site.css.
+   Every class here exists because site.css has no equivalent; the reason is in the design note. */
+
+/* Inner-page top block. .section--hero is built for the homepage 5/7 hero with the live slice. */
+.page-head { border-top: 0; padding: 56px 0 40px; }
+.page-head__meta { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: baseline; }
+.page-head__note { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; border-top: 1px solid var(--dk-border-strong); border-bottom: 1px solid var(--dk-border-strong); padding: 12px 0; font: 600 14px/1.45 var(--dk-font-display); letter-spacing: -.01em; color: var(--dk-text-primary); }
+.page-head__note a { font-family: var(--dk-font-text); font-weight: 400; font-size: 13px; }
+
+/* In-page navigation: the site had none before pass 2. */
+.toc { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 32px; border-top: 1px solid var(--dk-border-strong); }
+.toc > li { border-bottom: 1px solid var(--dk-border-hairline); }
+.toc a { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding: 9px 0; font: 400 14px/1.4 var(--dk-font-text); color: var(--dk-text-primary); opacity: 1; }
+.toc a:hover { color: var(--dk-text-accent); opacity: 1; }
+.toc__n { font: 400 11px/1.5 var(--dk-font-mono); color: var(--dk-text-faint); }
+
+/* Long-form reading column. .method-grid is a nine-card teaser grid, not a column of prose. */
+.article { display: flex; flex-direction: column; border-top: 1px solid var(--dk-border-strong); }
+.article > section { display: flex; flex-direction: column; gap: 12px; padding: 26px 0; border-bottom: 1px solid var(--dk-border-hairline); scroll-margin-top: 70px; }
+.article h2 { font: 600 22px/1.25 var(--dk-font-display); letter-spacing: -.02em; color: var(--dk-text-primary); display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+.article h3 { font: 600 13px/1 var(--dk-font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dk-text-faint); }
+.article p { margin: 0; font: 400 15px/1.65 var(--dk-font-text); color: var(--dk-text-secondary); max-width: var(--dk-measure-prose); text-wrap: pretty; }
+.article__n { font: 400 12px/1 var(--dk-font-mono); color: var(--dk-text-faint); }
+
+/* The # beside a heading. */
+.anchor { font: 400 12px/1 var(--dk-font-mono); color: var(--dk-border-strong); opacity: 0; }
+.article h2:hover .anchor, .anchor:focus-visible { opacity: 1; }
+
+/* One formula on one line. .snippet is a whole code panel. */
+.formula { font: 400 13px/1.6 var(--dk-font-mono); color: var(--dk-text-primary); background: var(--dk-surface-inset); border-left: 2px solid var(--dk-accent); padding: 8px 12px; overflow-x: auto; }
+
+/* Group row inside a table: the .lm-table .group treatment, lifted out of .lm-table. */
+.group-row th { padding: 6px 14px; text-align: left; font: 600 10px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-accent); background: var(--dk-surface-subtle); border-bottom: 1px solid var(--dk-border-hairline); }
+
+/* Expandable venue row: .tbl has no nested rows. */
+.row-toggle { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; font: 600 13px/1 var(--dk-font-display); letter-spacing: -.01em; color: var(--dk-text-primary); }
+.row-toggle .icon { color: var(--dk-text-faint); transition: transform var(--dk-dur-fast) var(--dk-ease-standard); }
+.row-toggle[aria-expanded="true"] .icon { transform: rotate(90deg); }
+tr.is-detail > td { background: var(--dk-surface-inset); }
+tr.is-detail > td:first-child { padding-left: 34px; }
+
+/* Venue symbols keep the venue's own casing, so they cannot use the uppercase .dataset-chip. */
+.sym-list { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 400 12px/1.5 var(--dk-font-mono); color: var(--dk-text-primary); }
+.sym-list > span { white-space: nowrap; }
+.sym-list .age { color: var(--dk-text-faint); margin-left: 5px; }
+
+/* .ruled with a fixed date column. */
+.ruled--dated > li { display: grid; grid-template-columns: 11ch minmax(0, 1fr); gap: 14px; }
+.ruled--dated .date { font: 400 12px/1.4 var(--dk-font-mono); color: var(--dk-text-faint); }
+
+/* Review only. Marks where a live block mounts; the script replaces the contents.
+   Print the id and the description without extra markup. */
+.mount { border: 1px dashed var(--dk-border-strong); background: var(--dk-surface-inset); padding: 18px 14px; display: flex; flex-direction: column; gap: 7px; }
+.mount::before { content: attr(id); font: 600 11px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-accent); }
+.mount::after { content: attr(data-mount); font: 400 12px/1.55 var(--dk-font-mono); color: var(--dk-text-muted); max-width: 88ch; }
+.mount--tall { min-height: 300px; }
+.mount--chart { min-height: 560px; }
+.mount--line { padding: 12px 14px; }
+
+/* Narrow screens: one column, tables keep scrolling inside their own panel. */
+@media (max-width: 960px) {
+  .page-head { padding: 40px 0 32px; }
+  .article h2 { font-size: 18px; }
+  .article p { font-size: 14px; }
+  .toc { grid-template-columns: minmax(0, 1fr); }
+  .anchor { opacity: 1; }
+  .mount--chart { min-height: 420px; }
+  .ruled--dated > li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}

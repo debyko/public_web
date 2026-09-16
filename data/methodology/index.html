@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Methodology — how every figure is made | DEBYKO</title>
+  <meta name="description" content="The rules behind every figure: what is collected, the three clocks, freshness thresholds, gaps, derived values, and when a comparison is valid.">
+  <link rel="canonical" href="https://debyko.com/data/methodology/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://debyko.com/data/methodology/">
+  <meta property="og:title" content="DEBYKO Methodology — the method is part of the product">
+  <meta property="og:description" content="What is collected, the three clocks, thresholds, gaps, derived values, and when a comparison is valid.">
+  <meta property="og:image" content="https://debyko.com/og/debyko-og-1200x630.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DEBYKO — every value keeps its source, its time and its age.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DEBYKO Methodology — the method is part of the product">
+  <meta name="twitter:description" content="Every value keeps its source, its time and its age.">
+  <meta name="twitter:image" content="https://debyko.com/og/debyko-og-1200x630.png">
+  <link rel="icon" href="../../assets/logo-mark.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/site.css">
+  <link rel="stylesheet" href="../../css/pages.css">
+  <script defer src="../../js/nav.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap site-header__bar">
+    <a class="site-header__logo" href="../../" aria-label="DEBYKO home"><img src="../../assets/logo-horizontal.svg" alt="DEBYKO"></a>
+    <nav class="nav" aria-label="Main">
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Products</button>
+        <div class="nav__menu" hidden>
+          <a href="../../arena/">Arena <span class="nav-tag">live</span></a>
+          <a href="../../#studio-pro">Studio Pro <span class="nav-tag">live</span></a>
+          <a href="../../#trader">Studio Trader <span class="nav-tag">in development</span></a>
+          <a href="../../#agent">Agent <span class="nav-tag">prototype</span></a>
+        </div>
+      </div>
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Solutions</button>
+        <div class="nav__menu" hidden>
+          <a href="../../#evidence">Execution Evidence</a>
+          <a href="../../#services">Data &amp; Research</a>
+          <a href="../../#services">Venues &amp; Platforms</a>
+          <a href="../../#agent">Trading &amp; Automation</a>
+        </div>
+      </div>
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Data</button>
+        <div class="nav__menu" hidden>
+          <a href="../../data/coverage/">Coverage</a>
+          <a href="../../data/methodology/">Methodology</a>
+          <a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a>
+          <a href="../../data/status/">Data Status</a>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__trigger" href="../../#pricing" style="display:inline-flex;align-items:center;opacity:1">Pricing</a></div>
+      <div class="nav__item"><a class="nav__trigger" href="../../data/methodology/" style="display:inline-flex;align-items:center;opacity:1">Methodology</a></div>
+      <div class="nav__item"><a class="nav__trigger" href="../../data/status/" style="display:inline-flex;align-items:center;opacity:1">Status</a></div>
+      <div class="nav__item">
+        <button class="nav__trigger" aria-expanded="false">Company</button>
+        <div class="nav__menu" hidden>
+          <a href="../../#company">About</a>
+          <a href="../../#company">Contact Sales</a>
+          <a href="../../#company">Join the Waitlist</a>
+        </div>
+      </div>
+    </nav>
+    <div class="spacer"></div>
+    <div class="site-header__actions hide-narrow">
+      <a class="btn btn--ghost" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
+    </div>
+    <button class="menu-btn" aria-expanded="false">Menu</button>
+  </div>
+  <div class="mobile-nav" hidden>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader</a><a href="../../#agent">Agent</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+    <div class="mobile-nav__actions">
+      <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
+      <a class="btn" href="../../#company"><span>Contact sales</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="section page-head">
+  <div class="wrap stack gap-22">
+    <div class="page-head__meta"><span class="eyebrow">Data · methodology</span><span class="label">Published 2026-09-16 · last change 2026-09-16</span></div>
+    <div class="split split--7-5 split--end">
+      <div class="stack gap-18">
+        <h1 class="h1">The method is part of the product.</h1>
+        <p class="lead">Every value is stored with its source and the time it was collected. This page states the rules every figure on this site follows, and changes only by a dated entry in the list at the end.</p>
+      </div>
+      <div class="clock-card">
+        <span class="fact__k">Two timestamps exist. Age is the difference to now.</span>
+        <div class="clocks">
+          <div class="clock clock--dashed"><span class="clock__k">Venue time</span><span class="clock__v">only where the venue sends one</span></div>
+          <span class="clocks__arrow">→</span>
+          <div class="clock"><span class="clock__k">Received</span><span class="clock__v">always stored</span></div>
+          <span class="clocks__arrow">→</span>
+          <div class="clock clock--age"><span class="clock__k accent">Age</span><span class="clock__v">now − received</span></div>
+        </div>
+        <span class="meta">There is no stored "written" or "available" time, so none is shown.</span>
+      </div>
+    </div>
+    <ol class="toc">
+      <li><a href="#collected"><span class="toc__n">01</span><span>What is collected, and by which call</span></a></li>
+      <li><a href="#instruments"><span class="toc__n">02</span><span>Instruments and how they are grouped</span></a></li>
+      <li><a href="#clocks"><span class="toc__n">03</span><span>Venue time, received time, age</span></a></li>
+      <li><a href="#thresholds"><span class="toc__n">04</span><span>Freshness thresholds</span></a></li>
+      <li><a href="#gaps"><span class="toc__n">05</span><span>Gaps and periods not collected yet</span></a></li>
+      <li><a href="#derived"><span class="toc__n">06</span><span>Derived values, with their formulas</span></a></li>
+      <li><a href="#comparison"><span class="toc__n">07</span><span>When a comparison is valid</span></a></li>
+      <li><a href="#numbers"><span class="toc__n">08</span><span>How numbers are displayed</span></a></li>
+      <li><a href="#unknown"><span class="toc__n">09</span><span>What the platform cannot know</span></a></li>
+      <li><a href="#reported"><span class="toc__n">10</span><span>Venue-reported and derived</span></a></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="article">
+      <section id="collected">
+        <h2><span class="article__n">01</span>What is collected, and by which call <a class="anchor" href="#collected" aria-label="Link to this section">#</a></h2>
+        <p>Ticker snapshots — bid, ask, bid and ask size, last price, mark, index, funding rate and open interest — are collected per venue instrument by the snapshot call.</p>
+        <p>Order-book depth within 10, 25 and 50 basis points of a reference price has its own collector and its own rate, and is returned by the same call when depth is requested.</p>
+        <p>Trade, mark and index candles are collected where the venue publishes them; Coverage lists which, per venue. Where a venue publishes no bars of a kind, that metric is unsupported there rather than empty.</p>
+        <p>Raw history of tickers, funding, open interest and depth is served in windows of at most 48 hours per request.</p>
+        <p>Every stored row carries its segment code, the venue's own symbol, and the time it was received.</p>
+        <div class="mount mount--line" id="method-sample-row" data-mount="The one live illustration on this page: a single real snapshot row with its three timestamps named — venue time, received, age, plus the open-interest and depth times. One call on load, no refresh. If the call fails, the state block replaces it and nothing is filled in."></div>
+      </section>
+
+      <section id="instruments">
+        <h2><span class="article__n">02</span>Instruments and how they are grouped <a class="anchor" href="#instruments" aria-label="Link to this section">#</a></h2>
+        <p>Instruments are grouped by base asset and contract kind — BTC perpetual — because no cross-venue canonical identifier is published. There is no single call that returns one instrument across venues; the comparison is assembled venue by venue.</p>
+        <p>Venue symbols are printed exactly as the venue spells them, and are never normalised.</p>
+        <p>Contract multiplier, price step and funding interval come from the instruments call, per venue.</p>
+        <p>Open interest is shown as the venue reports it: in base units where the contract multiplier is 1, otherwise in contracts. The multiplier is printed beside it.</p>
+        <p>The instrument list offered in Arena is computed when the page loads: the base assets with a fresh snapshot on at least half the perpetual venues. It is never written into the page.</p>
+      </section>
+
+      <section id="clocks">
+        <h2><span class="article__n">03</span>Venue time, received time, age <a class="anchor" href="#clocks" aria-label="Link to this section">#</a></h2>
+        <p>Two timestamps exist: venue time, only where the venue sends one, and received time, which is always stored.</p>
+        <p>Age is now minus received time.</p>
+        <p>Ticker, open interest and depth are separate calls with separate received times, so one row carries three ages. A price two seconds old can sit beside depth several minutes old, and both ages are printed.</p>
+        <p>There is no stored "written" or "available" time, so none is shown.</p>
+      </section>
+
+      <section id="thresholds">
+        <h2><span class="article__n">04</span>Freshness thresholds <a class="anchor" href="#thresholds" aria-label="Link to this section">#</a></h2>
+        <p>The service returns ages, not verdicts. LIVE, DELAYED and STALE are computed per call group against the thresholds below. These thresholds are provisional and are owned by the backend; this page changes when they are published.</p>
+        <div class="panel">
+          <div class="panel__head"><span class="label label--accent">Provisional thresholds · per call group</span><span class="meta-xs">Age measured from received time</span></div>
+          <table class="tbl tbl--roomy">
+            <thead><tr><th>Call group</th><th class="r">LIVE up to</th><th class="r">DELAYED up to</th><th class="r">Beyond</th></tr></thead>
+            <tbody>
+              <tr><td class="td-venue">Ticker</td><td class="td-num">15 s</td><td class="td-num">60 s</td><td class="td-mono r">STALE</td></tr>
+              <tr><td class="td-venue">Open interest</td><td class="td-num">2 min</td><td class="td-num">10 min</td><td class="td-mono r">STALE</td></tr>
+              <tr><td class="td-venue">Depth</td><td class="td-num">5 min</td><td class="td-num">15 min</td><td class="td-mono r">STALE</td></tr>
+            </tbody>
+          </table>
+          <div class="panel__note">Provisional · set by the backend, not by this page</div>
+        </div>
+        <p>MISSING means the response carried no value for the field. UNSUPPORTED means the venue publishes no such field. STALE means the value is present but older than its threshold. The three are different states and are shown differently.</p>
+        <p>Status is never conveyed by colour alone; every chip carries its word.</p>
+      </section>
+
+      <section id="gaps">
+        <h2><span class="article__n">05</span>Gaps and periods not collected yet <a class="anchor" href="#gaps" aria-label="Link to this section">#</a></h2>
+        <p>A gap is an hour inside collection with no observation. A period not collected yet is any time before collection on that venue began. They are drawn differently and named differently.</p>
+        <p>Where the collector recorded an interruption, its cause is shown on the coverage strip and listed under it. A hole with no recorded interruption has a cause this platform does not know.</p>
+        <p>Coverage is measured for ticker snapshots.</p>
+        <p>On a chart, a line never bridges a gap: the line breaks and the empty region stays empty.</p>
+      </section>
+
+      <section id="derived">
+        <h2><span class="article__n">06</span>Derived values, with their formulas <a class="anchor" href="#derived" aria-label="Link to this section">#</a></h2>
+        <p>A derived figure states what it was computed from. Its provenance lists the inputs and the formula below.</p>
+        <p class="formula">spread_bps = (ask − bid) / mid × 10 000 &nbsp;·&nbsp; mid = (bid + ask) / 2</p>
+        <p class="formula">depth_band = quote notional resting within 10 / 25 / 50 bps of the reference price &nbsp;·&nbsp; bid side and ask side separately</p>
+        <p>Open-interest notional is the value the service publishes, in the quote currency, printed with the contract multiplier beside it. This page does not compute it.</p>
+        <p>Funding is shown as the venue publishes it, per the venue's own interval (% / n h).</p>
+        <p>The comparison table shows the depth band at ±25 basis points; the 10 and 50 basis-point bands are collected and available through the API.</p>
+        <p>The reference price used for a depth band is printed, because venues do not all measure depth against the same price.</p>
+      </section>
+
+      <section id="comparison">
+        <h2><span class="article__n">07</span>When a comparison is valid <a class="anchor" href="#comparison" aria-label="Link to this section">#</a></h2>
+        <p>BEST and WORST are computed for four columns only: bid, where a higher value is better; ask, where a lower value is better; spread, where a narrower value is better, compared rounded to 0.01 basis points; and depth, taken as the bid side plus the ask side, where more is better.</p>
+        <p>Mark, index, funding and open interest are never ranked. Intervals, contract multipliers and index compositions differ by venue, so the figures are not like for like.</p>
+        <p>A row enters a ranking only if three things hold: the venue runs an order book and is not an oracle-vault market; its quote currency is USD, USDT, USDC or USDT0, which are treated as one currency; and the value is LIVE.</p>
+        <p>If fewer than two values pass those tests, or if every value that passes them is equal, no BEST or WORST is shown. A figure left out of a ranking says why in its provenance.</p>
+        <p>The rank slot is always reserved, so a mark appearing or disappearing moves no column.</p>
+      </section>
+
+      <section id="numbers">
+        <h2><span class="article__n">08</span>How numbers are displayed <a class="anchor" href="#numbers" aria-label="Link to this section">#</a></h2>
+        <p>Prices are shown at the venue's own price step. No decimal is invented.</p>
+        <p>Digits in a column share a right edge, units sit in fixed-width slots, and a short fraction is padded with figure spaces rather than zeros — a zero would claim a precision the venue did not publish.</p>
+        <p>An absent value is an em dash with the reason in its provenance. Never a zero, never "n/a", never an empty cell.</p>
+        <p>Ages always carry a unit. Absolute times are UTC and say so.</p>
+      </section>
+
+      <section id="unknown">
+        <h2><span class="article__n">09</span>What the platform cannot know <a class="anchor" href="#unknown" aria-label="Link to this section">#</a></h2>
+        <ul class="ruled ruled--grid ruled--min-200">
+          <li>Anything a venue does not publish</li>
+          <li>Anything between two observations</li>
+          <li>Anything before collection on that venue began</li>
+          <li>Whether a venue's own timestamp is accurate — it is printed as received</li>
+          <li>The cause of a hole the collector did not record</li>
+        </ul>
+      </section>
+
+      <section id="reported">
+        <h2><span class="article__n">10</span>Venue-reported and derived <a class="anchor" href="#reported" aria-label="Link to this section">#</a></h2>
+        <div class="panel">
+          <div class="panel__head"><span class="label label--accent">Where a figure comes from</span><span class="meta-xs">Every figure on this site is one or the other</span></div>
+          <table class="tbl tbl--roomy">
+            <thead><tr><th>Venue-reported</th><th>Derived by this platform</th></tr></thead>
+            <tbody>
+              <tr><td>Bid, ask, bid and ask size, last price</td><td>Spread in basis points</td></tr>
+              <tr><td>Mark price, index price</td><td>Open-interest notional, as the service publishes it</td></tr>
+              <tr><td>Funding rate, predicted funding, next funding time</td><td>Depth bands against the stated reference price</td></tr>
+              <tr><td>Open interest</td><td>Age of every observation</td></tr>
+              <tr><td>24-hour volume and turnover</td><td>LIVE, DELAYED and STALE</td></tr>
+              <tr><td>Venue timestamp, where the venue sends one</td><td>BEST and WORST, and the observation line</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="updates">
+        <h2><span class="article__n">—</span>Methodology updates <a class="anchor" href="#updates" aria-label="Link to this section">#</a></h2>
+        <ul class="ruled ruled--dated">
+          <li><span class="date">2026-09-16</span><span>First publication of this page.</span></li>
+        </ul>
+        <p>Each later change to a rule is added here with its date, so a figure can be read against the rules in force when it was shown.</p>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split split--1-1">
+    <div class="closing">
+      <span class="label">Coverage</span>
+      <h2 class="h2 h2--small">See the record these rules describe.</h2>
+      <p class="prose prose--sm">Venues, datasets, and the hours in which nothing was observed.</p>
+      <div><a class="btn" href="../coverage/"><span>Inspect data coverage</span></a></div>
+    </div>
+    <div class="closing">
+      <span class="label">Arena</span>
+      <h2 class="h2 h2--small">See the rules applied to live figures.</h2>
+      <p class="prose prose--sm">One instrument across the perpetual venues that quote it.</p>
+      <div><a class="btn btn--primary" href="../../arena/"><span>Explore Arena</span></a></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="company" class="site-footer">
+  <div class="wrap stack gap-48">
+    <div class="site-footer__cols">
+      <div class="stack gap-14">
+        <img src="../../assets/logo-horizontal-descriptor.svg" alt="DEBYKO — Market data. In context." style="height:30px;width:auto;display:block;align-self:flex-start">
+        <p class="credit">Built by
+          <a class="credit__brand" href="https://bykovas.lt">Denisas Bykovas</a>
+          at
+          <a class="credit__brand" href="https://blynai.eu"><svg class="credit__mark credit__mark--blynai" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/>
+            <circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/>
+          </svg><span>Blyn<i>AI</i></span></a>
+          on the
+          <span class="credit__brand"><svg class="credit__mark credit__mark--csx" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M20 23.54 L15.97 27.57 L12.43 24.03 L16.46 20 L12.43 15.97 L15.97 12.43 L20 16.46 L24.03 12.43 L27.57 15.97 L23.54 20 L27.57 24.03 L24.03 27.57 Z" fill="#DE1A8C"/>
+            <circle cx="6.6" cy="20" r="2" fill="#B8129F"/><circle cx="33.4" cy="20" r="2" fill="#B8129F"/>
+          </svg><span>CryptoSmith X</span></span>
+          market data engine.</p>
+      </div>
+      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../../#agent">Agent <span class="nav-tag">prototype</span></a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a><a href="../../#services">Venues &amp; Platforms</a><a href="../../#agent">Trading &amp; Automation</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </div>
+    <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
+  </div>
+</footer>
+
+</body>
+</html>
