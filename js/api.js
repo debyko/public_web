@@ -66,10 +66,13 @@ export async function get(base, path, log, timeout = 9000) {
   }
 }
 
-/** A saved response: data/saved/<name>.json holding { savedAt, request, data }. */
+/** A saved response: data/saved/<name>.json holding { savedAt, request, data }. Resolved against
+ *  this module's own URL, not the page's — 'data/saved/…' is relative to whatever page imported
+ *  it, so a page one or more folders deep (/arena/, /data/coverage/) asked its own, nonexistent
+ *  data/saved/ instead of the site's, and every failed call logged a spurious 404. */
 export async function saved(name) {
   try {
-    const res = await fetch('data/saved/' + name + '.json', { cache: 'no-store' });
+    const res = await fetch(new URL('../data/saved/' + name + '.json', import.meta.url), { cache: 'no-store' });
     if (!res.ok) return null;
     const json = await res.json();
     return json && json.data ? json : null;
@@ -260,6 +263,19 @@ export async function loadSeries(base, targets, metric, range, log) {
 
 // ── Health and coverage ─────────────────────────────────────────────────────────────────────
 
+/** Strips the exception-class prefix, then any URL or host:port the collector's own error text
+ *  carries — several venues' errors include the request URL verbatim — before cutting to 48
+ *  characters. The status page promises no internal address is shown; this is where that holds. */
+export function scrubError(raw) {
+  if (!raw) return null;
+  const text = String(raw)
+    .replace(/^[A-Za-z.]+(Exception|Error):\s*/, '')
+    .replace(/https?:\/\/\S+/gi, '[address]')
+    .replace(/\b(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}:\d{2,5}\b/gi, '[address]')
+    .replace(/\b\d{1,3}(?:\.\d{1,3}){3}:\d{2,5}\b/g, '[address]');
+  return text.slice(0, 48);
+}
+
 /** GET /v1/health summarised per venue: worst failure streak, latest success, latest error. */
 export function normaliseHealth(d) {
   if (!d || !Array.isArray(d.collectors)) return null;
@@ -279,7 +295,7 @@ export function normaliseHealth(d) {
     const failing = cols.filter(c => (c.consecutiveFailures || 0) > 0).map(c => c.collector);
     return {
       code: code.toUpperCase(), fails, lastSuccessAt, lastSuccessAge,
-      lastError: withError ? String(withError.lastError).replace(/^[A-Za-z.]+(Exception|Error):\s*/, '').slice(0, 48) : null,
+      lastError: withError ? scrubError(withError.lastError) : null,
       lastErrorAge: withError && withError.lastErrorAgeSeconds != null ? Math.round(withError.lastErrorAgeSeconds) : null,
       stale: staleBy.get(code) || 0,
       note: failing.length ? failing.join(' · ') + ' failing' : cols.length + ' collectors'
@@ -288,19 +304,21 @@ export function normaliseHealth(d) {
   return { overall: String(d.status || '').toLowerCase() || null, rows };
 }
 
-/** GET /v1/coverage: perp venues with the dataset groups each collects. */
+/** GET /v1/coverage: enabled venues with the dataset groups each collects. Perp only by default,
+ *  which is what the homepage catalogue and Arena's venue count read; pass { allKinds: true } for
+ *  the coverage page's full catalogue (perp and spot together). */
 export const DATASET_GROUPS = [
   ['ticker', /ticker|snapshot|quote/], ['candles', /^candles/], ['funding', /funding/],
   ['oi', /open.?interest|^oi/], ['trades', /trade/], ['liq', /liquidation/], ['depth', /depth|book|order/]
 ];
-export function normaliseCoverage(d) {
-  return (d && Array.isArray(d.venues) ? d.venues : []).filter(v => v.kind === 'perp').map(v => {
+export function normaliseCoverage(d, { allKinds = false } = {}) {
+  return (d && Array.isArray(d.venues) ? d.venues : []).filter(v => allKinds || v.kind === 'perp').map(v => {
     const raw = v.datasets || [];
     return {
-      venue: v.code.toUpperCase(),
+      venue: v.code.toUpperCase(), code: v.code, name: v.name || v.code, kind: v.kind,
       groups: DATASET_GROUPS.filter(([, re]) => raw.some(n => re.test(n))).map(([g]) => g),
       other: raw.filter(n => !DATASET_GROUPS.some(([, re]) => re.test(n))),
-      collected: num(v.instruments), listed: num(v.listed), since: v.since || null
+      collected: num(v.instruments), trading: num(v.trading), listed: num(v.listed), since: v.since || null
     };
   });
 }
@@ -349,20 +367,45 @@ export function createStore() {
   let generation = 0;
   const store = {
     env, base,
-    state: { loading: true, metaLoaded: false, universe: null, asset: 'BTC', plan: null, live: null, savedMarket: null, health: null, cov: null, covHours: null, series: null, log: [], now: Date.now() },
+    // covHoursDays: the /coverage/hours range the meta poll reads, 7 by default — what the homepage
+    // strip has always requested. Coverage.js is the only caller that changes it, and it does so on
+    // its own store instance, so the homepage's own poll is never affected.
+    state: { loading: true, metaLoaded: false, universe: null, asset: 'BTC', plan: null, live: null, savedMarket: null, health: null, cov: null, covHours: null, covHoursDays: 7, series: null, log: [], now: Date.now() },
     subscribe(fn, kinds) { const s = { fn, kinds }; subs.add(s); return () => subs.delete(s); }
   };
   const emit = kind => subs.forEach(s => { if (!s.kinds || s.kinds.includes(kind)) { try { s.fn(store.state, kind); } catch (e) { console.warn('[store] subscriber failed', e); } } });
   const set = (patch, kind) => { store.state = { ...store.state, ...patch }; emit(kind); };
   const keepLog = (entries, dropPrefix) => store.state.log.filter(l => !dropPrefix || !l.path.startsWith(dropPrefix)).concat(entries).slice(-80);
 
+  let metaTimer = null, metaGen = 0;
   async function loadMeta() {
+    const gen = ++metaGen;
+    if (metaTimer) { clearTimeout(metaTimer); metaTimer = null; }
     const log = [];
-    const [health, cov, hours] = await Promise.all([get(base, '/health', log), get(base, '/coverage', log), get(base, '/coverage/hours?days=7', log, 20000)]);
+    const days = store.state.covHoursDays;
+    const [health, cov, hours] = await Promise.all([get(base, '/health', log), get(base, '/coverage', log), get(base, '/coverage/hours?days=' + days, log, 20000)]);
+    if (gen !== metaGen) return; // superseded by a later call — e.g. the range control changed again mid-flight
     const pick = async (r, name) => (r.ok ? { data: r.data, at: r.entry.at, src: 'live' } : (await saved(name).then(s => (s ? { data: s.data, at: s.savedAt, src: 'saved' } : null))));
-    set({ metaLoaded: true, health: await pick(health, 'health'), cov: await pick(cov, 'coverage'), covHours: await pick(hours, 'coverage-hours'), log: keepLog(log) }, 'meta');
-    setTimeout(loadMeta, META_REFRESH_MS);
+    const hoursPicked = await pick(hours, 'coverage-hours');
+    // forDays: what covHoursDays this response actually answers — coverage.js compares it to the
+    // then-current state.covHoursDays so a range switch shows loading rather than a stale response
+    // sliced to a range it was never fetched for.
+    set({ metaLoaded: true, health: await pick(health, 'health'), cov: await pick(cov, 'coverage'), covHours: hoursPicked ? { ...hoursPicked, forDays: days } : null, log: keepLog(log) }, 'meta');
+    metaTimer = setTimeout(loadMeta, META_REFRESH_MS);
   }
+
+  /** Coverage.js's range switch: re-reads /coverage/hours at a different span, immediately rather
+   *  than waiting for the next 30 s cycle. Only the store this was called on is affected. */
+  store.setHoursDays = days => {
+    if (store.state.covHoursDays === days) return;
+    set({ covHoursDays: days }, 'meta');
+    loadMeta();
+  };
+
+  /** Starts only the health/coverage/coverage-hours cadence — no universe load, no asset selection,
+   *  no snapshot fan-out. What coverage.js and status.js need: neither mounts a live market table.
+   *  A page that does (the homepage, Arena) uses the full store.start() instead. */
+  store.startMeta = () => { loadMeta(); };
 
   async function poll(gen) {
     if (gen !== generation || !store.state.plan) return;
@@ -399,14 +442,20 @@ export function createStore() {
     set({ series: { key, loading: false, list: series }, log: keepLog(log) }, 'series');
   };
 
-  store.start = async () => {
+  /** initialAsset: what Arena's ?asset= asked for, unvalidated. Used only if the loaded universe
+   *  actually offers it; otherwise the existing BTC-or-first default applies, exactly as before —
+   *  callers that pass nothing (the homepage) see no change in behaviour. */
+  store.start = async initialAsset => {
     loadMeta();
     setInterval(() => set({ now: Date.now() }, 'tick'), 1000);
     const log = [];
     const universe = await loadUniverse(base, log);
     set({ universe, log: keepLog(log) }, 'market');
-    if (universe) store.setAsset(universe.assets.some(a => a.asset === 'BTC') ? 'BTC' : (universe.assets[0] || {}).asset || 'BTC');
-    else {
+    if (universe) {
+      const wanted = String(initialAsset || '').toUpperCase();
+      const known = wanted && universe.assets.some(a => a.asset === wanted) ? wanted : null;
+      store.setAsset(known || (universe.assets.some(a => a.asset === 'BTC') ? 'BTC' : (universe.assets[0] || {}).asset || 'BTC'));
+    } else {
       const fallback = await saved('market');
       set({ loading: false, savedMarket: fallback ? { targets: fallback.data, at: fallback.savedAt } : null }, 'snapshot');
     }
