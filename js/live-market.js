@@ -2,14 +2,18 @@
 // Every figure is a button that opens its provenance: venue, instrument, clocks, age, method.
 
 import { esc, fmt, age, utcTime, utcMinute, icon, stateBlock } from './format.js';
-import { UNSUP, METRICS, RANGES, normalise, loadSeries } from './api.js';
+import { UNSUP, NOTCOL, METRICS, RANGES, normalise, loadSeries } from './api.js';
 
 const RANK = { LIVE: 0, DELAYED: 1, STALE: 2, MISSING: 3 };
 const STROKES = [
   { stroke: '#DE1A8C', dash: '' }, { stroke: '#05070C', dash: '' }, { stroke: '#5A6172', dash: '' }, { stroke: '#8A8E98', dash: '' },
   { stroke: '#05070C', dash: '4 3' }, { stroke: '#5A6172', dash: '4 3' }, { stroke: '#8A8E98', dash: '4 3' }
 ];
-const kindClass = kind => 'st-' + kind.toLowerCase();
+const kindClass = kind => 'st-' + kind.toLowerCase().replace(/_/g, '-');
+/** The word a chip prints: NOT_COLLECTED reads as two words. */
+const kindWord = kind => kind.replace(/_/g, ' ');
+/** States that describe what exists, not how fresh it is — they never set a row's status. */
+const NOT_FRESHNESS = new Set(['UNSUPPORTED', 'NOT_COLLECTED']);
 
 // The shareable URL spells metric and range as short lowercase slugs (?metric=funding&range=24h),
 // not the internal METRICS/RANGES keys, which are the display labels ("Funding", "24 h") — a
@@ -28,8 +32,8 @@ function createRegistry() {
 }
 
 function cell(reg, r, key, val, unit, group, opts = {}) {
-  const kind = val === UNSUP ? 'UNSUPPORTED' : val == null ? 'MISSING' : r.st[group];
-  const empty = kind === 'UNSUPPORTED' || kind === 'MISSING';
+  const kind = val === UNSUP ? 'UNSUPPORTED' : val === NOTCOL ? 'NOT_COLLECTED' : val == null ? 'MISSING' : r.st[group];
+  const empty = kind === 'UNSUPPORTED' || kind === 'MISSING' || kind === 'NOT_COLLECTED';
   const ag = r.ag[group];
   const received = group === 't' ? r.rt : group === 'o' ? r.rto : r.rtd;
   const lines = [
@@ -38,15 +42,16 @@ function cell(reg, r, key, val, unit, group, opts = {}) {
     { k: 'Venue timestamp', v: r.vt ? r.vt + ' UTC' : 'venue sends none' },
     { k: 'Received', v: received ? received + ' UTC' : '—' },
     { k: 'Age', v: age(ag) },
-    { k: 'Status', v: kind + ' · provisional threshold for this call group' }
+    { k: 'Status', v: kindWord(kind) + (NOT_FRESHNESS.has(kind) ? '' : ' · provisional threshold for this call group') }
   ];
   if (opts.formula) lines.push({ k: 'Derived', v: opts.formula });
   if (kind === 'MISSING') lines.push({ k: 'Note', v: 'This snapshot carries no value for the field. Shown as empty, not as zero.' });
+  if (kind === 'NOT_COLLECTED') lines.push({ k: 'Note', v: 'This service does not collect the order book on this venue — GET /v1/coverage lists no depth dataset for it. Not a freshness problem, and not a statement that the venue has no book.' });
   if (kind === 'UNSUPPORTED') lines.push({ k: 'Note', v: r.model === 'oracle_vault' ? 'Oracle/vault market: no order book, so bid, ask, spread and depth are not published.' : 'The venue publishes no such field.' });
   const prov = reg.add({ title: key, lines });
   return {
     kind, prov, lines, hatch: kind === 'UNSUPPORTED',
-    text: opts.chip ? (kind === 'UNSUPPORTED' ? '—' : age(ag)) : empty ? '—' : (typeof val === 'number' ? fmt(val, opts.decimals ?? 8) : val),
+    text: opts.chip ? (NOT_FRESHNESS.has(kind) ? '—' : age(ag)) : empty ? '—' : (typeof val === 'number' ? fmt(val, opts.decimals ?? 8) : val),
     unit: empty ? '' : unit,
     state: kind === 'STALE' ? 'is-stale' : empty ? 'is-empty' : ''
   };
@@ -57,7 +62,7 @@ function buildRows(targets, now, reg) {
     const mid = typeof r.bid === 'number' && typeof r.ask === 'number' ? (r.bid + r.ask) / 2 : null;
     const spreadVal = mid ? (r.ask - r.bid) / mid * 1e4 : r.bid === UNSUP ? UNSUP : null;
     const quote = r.quote || '';
-    const depth = r.db === UNSUP ? UNSUP : r.db == null || r.da == null ? null : compact(r.db) + ' / ' + compact(r.da);
+    const depth = r.db === UNSUP ? UNSUP : r.db === NOTCOL ? NOTCOL : r.db == null || r.da == null ? null : compact(r.db) + ' / ' + compact(r.da);
     const oiInBase = r.mult === 1;
     const fund = cell(reg, r, 'Funding', r.fund, '%', 't', { decimals: 4 });
     if (fund.unit) fund.unit = '% / ' + (r.fint != null ? r.fint + ' h' : '— h');
@@ -78,10 +83,11 @@ function buildRows(targets, now, reg) {
       received: cell(reg, r, 'Received', r.rt, '', 't'),
       ageT: cell(reg, r, 'Age · ticker', 1, '', 't', { chip: true }),
       ageO: cell(reg, r, 'Age · open interest', 1, '', 'o', { chip: true }),
-      ageD: cell(reg, r, 'Age · depth', r.model === 'oracle_vault' ? UNSUP : r.ag.d == null ? null : 1, '', 'd', { chip: true })
+      ageD: cell(reg, r, 'Age · depth', r.model === 'oracle_vault' ? UNSUP : r.st.d === 'NOT_COLLECTED' ? NOTCOL : r.ag.d == null ? null : 1, '', 'd', { chip: true })
     };
-    // A field the venue does not publish is not a freshness problem, so UNSUPPORTED never sets the row status.
-    const worst = [c.ageT, c.ageO, c.ageD].map(x => x.kind).filter(k => k !== 'UNSUPPORTED').reduce((a, b) => (RANK[b] > RANK[a] ? b : a), 'LIVE');
+    // A field the venue does not publish, or one this service does not collect there, is not a
+    // freshness problem, so neither UNSUPPORTED nor NOT_COLLECTED ever sets the row status.
+    const worst = [c.ageT, c.ageO, c.ageD].map(x => x.kind).filter(k => !NOT_FRESHNESS.has(k)).reduce((a, b) => (RANK[b] > RANK[a] ? b : a), 'LIVE');
     c.status = { kind: worst, prov: reg.add({ title: 'Status', lines: [{ k: 'Venue', v: r.venue }, { k: 'Status', v: worst + ' · the worst of the three call groups in this row' }] }) };
     return { r, c, spreadVal };
   });
@@ -127,7 +133,7 @@ function rank(rows) {
       const cellKind = x.c[col.key].kind;
       if (x.r.model !== 'orderbook') return 'oracle/vault market, not an order book';
       if (!USD_LIKE.test(x.r.quote)) return 'quoted in ' + (x.r.quote || 'an unknown currency') + ', not USD, USDT or USDC';
-      if (cellKind !== 'LIVE') return 'value is ' + cellKind.toLowerCase();
+      if (cellKind !== 'LIVE') return 'value is ' + kindWord(cellKind).toLowerCase();
       if (typeof col.value(x) !== 'number') return 'no value in this snapshot';
       return null;
     };
@@ -158,9 +164,9 @@ const pair = (c, top, bottom, ranked) => `<td class="${c[top].hatch ? 'dk-hatch'
 const UNIT_WIDTH = { bid: 'u5', ask: 'u5', mark: 'u5', index: 'u5', spread: 'u3', fund: 'u7', oi: 'u9' };
 const figure = (x, col, ranked = false) => `<button class="fig ${x.state}" data-prov="${x.prov}">${esc(x.text)}<span class="fig__unit ${UNIT_WIDTH[col] || ''}">${esc(x.unit)}</span>${ranked ? rankSlot(x) : ''}</button>`;
 const td = (x, inner) => `<td class="${x.hatch ? 'dk-hatch' : ''}">${inner}</td>`;
-const freshChip = (x, value) => `<span class="fresh ${kindClass(x.kind)}"><span class="fresh__value">${esc(value)}</span>${x.kind}</span>`;
+const freshChip = (x, value) => `<span class="fresh ${kindClass(x.kind)}"><span class="fresh__value">${esc(value)}</span>${kindWord(x.kind)}</span>`;
 const chipCell = x => `<button class="fig fig--chip" data-prov="${x.prov}">${freshChip(x, x.text)}</button>`;
-const smallChip = (x, lbl) => `<button class="fresh fresh--small ${kindClass(x.kind)}" data-prov="${x.prov}"><span class="fresh__lbl">${lbl}</span><span class="fresh__value">${esc(x.text)}</span>${x.kind}</button>`;
+const smallChip = (x, lbl) => `<button class="fresh fresh--small ${kindClass(x.kind)}" data-prov="${x.prov}"><span class="fresh__lbl">${lbl}</span><span class="fresh__value">${esc(x.text)}</span>${kindWord(x.kind)}</button>`;
 
 // ── Source line shared by every block ───────────────────────────────────────────────────────
 
@@ -314,7 +320,7 @@ export function mountArena(root, store) {
           `<td class="td-num ${c.spread.hatch ? 'dk-hatch' : ''}">${esc(c.spread.text)}<span class="unit u3">${esc(c.spread.unit)}</span>${rankSlot(c.spread)}</td>` +
           `<td class="r">${spark}</td>` +
           `<td class="td-num ${c.fund.hatch ? 'dk-hatch' : ''}">${esc(c.fund.text)}<span class="unit u7">${esc(c.fund.unit)}</span></td>` +
-          `<td class="age">${esc(c.ageT.text)} <span class="faint">/</span> <span class="fg-${c.ageD.kind === 'UNSUPPORTED' ? 'missing' : c.ageD.kind.toLowerCase()}">${esc(c.ageD.text)}</span></td></tr>`;
+          `<td class="age">${esc(c.ageT.text)} <span class="faint">/</span> <span class="fg-${NOT_FRESHNESS.has(c.ageD.kind) ? 'missing' : c.ageD.kind.toLowerCase()}">${esc(c.ageD.text)}</span></td></tr>`;
       }).join('')}</tbody>
     </table></div>`;
   };
@@ -431,13 +437,13 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
     }
 
     const list = ser.list.map((s, i) => ({ ...s, style: STROKES[i % STROKES.length] }));
-    const drawable = list.filter(s => !s.unsupported && s.points.length && !ui.hidden[s.venue]);
+    const drawable = list.filter(s => !s.unsupported && !s.notCollected && s.points.length && !ui.hidden[s.venue]);
     const all = drawable.flatMap(s => s.points.map(p => p.v));
     const now = Date.now(), x0 = now - RANGES[ui.range].ms;
 
     $('legend').innerHTML = list.map(s => {
-      const off = s.unsupported || !s.points.length;
-      const tag = s.unsupported ? 'Unsupported' : s.failed ? 'No answer' : !s.points.length ? 'No data' : '';
+      const off = s.unsupported || s.notCollected || !s.points.length;
+      const tag = s.unsupported ? 'Unsupported' : s.notCollected ? 'Not collected' : s.failed ? 'No answer' : !s.points.length ? 'No data' : '';
       return `<button class="lm-legend__item" data-venue="${esc(s.venue)}" aria-pressed="${!off && !ui.hidden[s.venue]}"${off ? ' disabled' : ''}>` +
         `<span class="lm-legend__box"></span><svg width="18" height="8" style="flex:none"><line x1="0" y1="4" x2="18" y2="4" stroke="${s.style.stroke}" stroke-dasharray="${s.style.dash}" stroke-width="2"/></svg>` +
         `<span class="lm-legend__venue">${esc(s.venue)}</span>${tag ? `<span class="unsup-tag">${tag}</span>` : ''}</button>`;
@@ -494,7 +500,7 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
         <tr><th class="l sticky">Venue · status</th><th>Bid / Ask</th><th>Spread</th><th>Mark / Index</th><th>Funding</th><th>Open interest</th><th>Depth ±25 bps</th><th>Venue / received</th><th>Age · T / OI / D</th></tr>
       </thead>
       <tbody>${rows.map(({ r, c }) => `<tr>
-        <td class="venue">${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="fresh fresh--small row-status ${kindClass(c.status.kind)}" data-prov="${c.status.prov}">${c.status.kind}</button></td>
+        <td class="venue">${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="fresh fresh--small row-status ${kindClass(c.status.kind)}" data-prov="${c.status.prov}">${kindWord(c.status.kind)}</button></td>
         ${pair(c, 'bid', 'ask', true)}${td(c.spread, figure(c.spread, 'spread', true))}${pair(c, 'mark', 'index', false)}
         ${td(c.fund, figure(c.fund, 'fund'))}${td(c.oi, figure(c.oi, 'oi'))}${td(c.depth, figure({ ...c.depth, unit: '' }, 'depth', true))}
         <td><button class="fig fig--stack" data-prov="${c.received.prov}"><span class="${c.venueTime.kind === 'MISSING' ? 'faint' : 'muted'}">${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}</span><span>${esc(c.received.text)}</span></button></td>

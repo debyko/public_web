@@ -116,7 +116,7 @@ a.btn, a.btn:hover { opacity: 1; }
 .st-live { color: #1F6B3F; border-color: rgba(31,107,63,.45); background: rgba(31,107,63,.08); }
 .st-delayed { color: #8A5A00; border-color: rgba(138,90,0,.45); background: rgba(138,90,0,.08); }
 .st-stale { color: #9B2C3A; border-color: rgba(155,44,58,.45); background: rgba(155,44,58,.08); }
-.st-missing, .st-unsupported { color: var(--dk-text-muted); border-color: var(--dk-border-strong); background: transparent; }
+.st-missing, .st-unsupported, .st-not-collected { color: var(--dk-text-muted); border-color: var(--dk-border-strong); background: transparent; }
 .fg-live { color: #1F6B3F; } .fg-delayed { color: #8A5A00; } .fg-stale { color: #9B2C3A; } .fg-missing { color: var(--dk-text-muted); }
 
 /* Source tag: where the figures on a panel came from */

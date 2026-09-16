@@ -32,6 +32,9 @@ export const THRESHOLDS = { t: [15, 60], o: [120, 600], d: [300, 900] };
 
 /** Marker for "the venue publishes no such field" — different from a missing value. */
 export const UNSUP = 'UNSUP';
+/** A field the venue may well publish but this service does not collect on that venue — read from
+ *  GET /v1/coverage datasets. Not a freshness problem and not the venue's absence either. */
+export const NOTCOL = 'NOTCOL';
 
 /** An asset is offered in the selector when at least this share of perp venues has a fresh
  *  snapshot for it. Measured 2026-09-14: 25 assets on 11–15 of 15 venues, then 2 of 15. */
@@ -95,6 +98,15 @@ export async function loadUniverse(base, log) {
   if (!ex.ok) return null;
   const segments = ex.data.filter(s => s.kind === 'perp' && s.status === 'enabled');
   const perpCodes = new Set(segments.map(s => s.code));
+
+  // Which datasets each venue actually collects. Without it a venue whose book is not collected
+  // (coinbase-perp today) shows depth as MISSING on every row, and that MISSING becomes the row's
+  // status. If the call fails, datasets stay unknown and the old reading applies.
+  const cov = await get(base, '/coverage', log);
+  if (cov.ok && Array.isArray(cov.data.venues)) {
+    const byCode = new Map(cov.data.venues.map(v => [v.code, v.datasets || []]));
+    for (const s of segments) if (byCode.has(s.code)) s.datasets = byCode.get(s.code);
+  }
 
   const snap = await get(base, '/snapshot?status=trading&maxAgeSeconds=' + FRESH_SECONDS, log, 15000);
   const fresh = new Map(); // asset -> Map(segment -> [rows])
@@ -166,6 +178,7 @@ export function normalise(t, now) {
   const r = t.row || {}, seg = t.seg || {}, inst = t.inst || {};
   const oracle = seg.marketModel === 'oracle_vault';
   const quoteOrUnsup = v => (oracle && v == null ? UNSUP : num(v));
+  const noDepth = !oracle && Array.isArray(seg.datasets) && !seg.datasets.includes('depth');
 
   const elapsed = Math.max(0, (now - (t.fetchedAt || now)) / 1000);
   const serverNow = r.receivedAt != null && r.ageSeconds != null ? Date.parse(r.receivedAt) + r.ageSeconds * 1000 : null;
@@ -188,13 +201,13 @@ export function normalise(t, now) {
     // Price decimals follow the venue's own price step (0.1 → 1, 1 → 0); a venue that publishes no step gets 2.
     pdec: inst.priceStep ? Math.min(8, Math.max(0, Math.ceil(-Math.log10(Number(inst.priceStep)) - 1e-9))) : 2,
     oi: num(r.openInterest), oiNotional: num(r.openInterestNotional), mult: num(inst.contractMultiplier),
-    db: oracle ? UNSUP : num(r.depthBid25Bps), da: oracle ? UNSUP : num(r.depthAsk25Bps), depthRef: num(r.depthRef),
+    db: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthBid25Bps), da: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthAsk25Bps), depthRef: num(r.depthRef),
     vt: utcMillis(r.venueTs), rt: utcMillis(r.receivedAt), rto: utcMillis(r.openInterestAt), rtd: utcMillis(r.depthAt),
     ag: { t: ageT, o: ageO, d: ageD },
     st: {
       t: tier('t', ageT) || 'MISSING',
       o: tier('o', ageO) || 'MISSING',
-      d: oracle ? 'UNSUPPORTED' : (tier('d', ageD) || 'MISSING')
+      d: oracle ? 'UNSUPPORTED' : noDepth ? 'NOT_COLLECTED' : (tier('d', ageD) || 'MISSING')
     },
     failed: !!t.failed
   };
@@ -238,6 +251,7 @@ export async function loadSeries(base, targets, metric, range, log) {
     const venue = String(t.code).toUpperCase();
     const enc = '?exchange=' + encodeURIComponent(t.code) + '&symbols=' + encodeURIComponent(t.inst.symbol);
     if (m.bookOnly && t.seg.marketModel === 'oracle_vault') return { venue, points: [], unsupported: true };
+    if (m.path === '/depth' && Array.isArray(t.seg.datasets) && !t.seg.datasets.includes('depth')) return { venue, points: [], notCollected: true };
 
     if (m.kind === 'candles') {
       const r = await get(base, '/candles' + enc + '&tf=' + rg.tf + '&limit=' + rg.bars + '&priceType=' + m.priceType, log);
