@@ -369,8 +369,12 @@ export function mountFull(root, store) {
     const S = store.state, src = source(store, S);
     const assets = S.universe ? S.universe.assets : [{ asset: S.asset, venues: null }];
     const optionsHtml = assets.map(a => `<option value="${esc(a.asset)}"${a.asset === S.asset ? ' selected' : ''}>${esc(a.asset)} perpetual${a.venues ? ' · ' + a.venues + ' venues' : ''}</option>`).join('');
-    if ($('asset').dataset.html !== optionsHtml) { $('asset').innerHTML = optionsHtml; $('asset').dataset.html = optionsHtml; }
-    $('metric').value = ui.metric;
+    // This runs once a second, and writing to a <select> — even the value it already has — shuts an
+    // open dropdown. Touch a select only when it is not the one the reader is using, and only when
+    // what it holds is actually out of date.
+    const idle = el => document.activeElement !== el;
+    if ($('asset').dataset.html !== optionsHtml && idle($('asset'))) { $('asset').innerHTML = optionsHtml; $('asset').dataset.html = optionsHtml; }
+    if ($('metric').value !== ui.metric && idle($('metric'))) $('metric').value = ui.metric;
     const candles = METRICS[ui.metric].kind === 'candles';
     root.querySelectorAll('[data-range]').forEach(b => {
       b.setAttribute('aria-pressed', String(b.dataset.range === ui.range));
