@@ -12,8 +12,8 @@ B. which existing components you reuse and which new ones you need (names usable
 C. the data each live block reads, mapped to the endpoints in §4;
 D. every sentence that states a fact about the product, so it can be checked.
 
-After approval: desktop and mobile layouts for the four pages, the changes to the homepage (§3), and
-page metadata (§7).
+After approval: desktop and mobile layouts for the four pages, and page metadata (§7).
+**The homepage is not changed in this pass** (§3).
 
 ---
 
@@ -48,23 +48,32 @@ reference for density, type and states.
 Clean URLs: each page is a folder with `index.html` (Cloudflare Pages serves `/arena/` from
 `arena/index.html`).
 
-## 3. Homepage vs pages — move, do not duplicate
+## 3. The homepage stays as it is — trimming it is a separate, later pass
 
-The homepage is 13,600 px tall with 14 sections. Each page in this pass becomes the full version of a
-homepage section; the homepage keeps a short teaser that links to it. Nothing is maintained twice.
+**Nothing is removed from the homepage in this pass.** The full sections stay where they are while
+the new pages are built. The order is fixed:
 
-| Homepage section today | After pass 2 |
+1. You design the four pages (this pass).
+2. The developer builds them and wires the live data.
+3. The owner reviews them live on debyko.com.
+4. **Only then**, in its own pass (see §8, "Homepage trim"), the homepage is cut down to teasers that
+   link to these pages.
+
+So in this pass the new pages carry the **full** versions of the blocks, even where the homepage
+still shows the same block. That overlap is temporary and intended — it keeps the site complete at
+every step. Live blocks are shared scripts, so the two places run the same code, not a copy.
+
+For orientation only — this is the plan for the later trim, not work for this pass:
+
+| Homepage section today | Planned for the homepage trim |
 |---|---|
 | Hero with live slice | stays |
-| Live market proof (chart + full table, 2,100 px) | **moves to `/arena/`**; homepage keeps nothing of it — the hero slice and the Arena teaser already show the live data |
-| 01 Arena (compact table) | stays as the teaser; "Explore Arena" → `/arena/` |
-| 02 Studio Pro workstation (catalogue, coverage strip, candles, API) | stays in this pass; the catalogue and strip also appear in full on `/data/coverage/` (the homepage versions become a 5-row preview + link) |
-| Methodology (9 items) | homepage keeps a lead and 3 items; "Read the methodology" → `/data/methodology/` |
-| Status (full collector table) | homepage keeps one summary line computed from the same response (shape: "N venues · N collecting · N degraded · N instruments stale") + "View data status" → `/data/status/` |
-| Other sections | unchanged in this pass |
-
-Live blocks are shared scripts, so a table on a page and its preview on the homepage are the same
-code with a different row limit — not a copy.
+| Live market proof (chart + full table, 2,100 px) | moves to `/arena/`; nothing of it stays — the hero slice and the Arena teaser already show live data |
+| 01 Arena (compact table) | stays as the teaser, linked to `/arena/` |
+| 02 Studio Pro workstation (catalogue, coverage strip, candles, API) | catalogue and strip become a 5-row preview linked to `/data/coverage/` |
+| Methodology (9 items) | a lead and 3 items, linked to `/data/methodology/` |
+| Status (full collector table) | one summary line computed from the same response, linked to `/data/status/` |
+| Other sections | unchanged |
 
 ## 4. Data — what exists (measured 2026-09-16)
 
@@ -153,9 +162,11 @@ no invented zeros · what the platform cannot know · venue-reported vs derived 
 
 ## 6. Navigation after pass 2
 
-Point these at the new pages: Products → Arena; Data → Coverage, Methodology, Data Status; top-level
-Methodology and Status; footer Data column; homepage buttons "Open full Arena", "Explore Arena",
-"See coverage", "Inspect data coverage", "Read the methodology", "View data status".
+When the pages are live, these links point at them: Products → Arena; Data → Coverage, Methodology,
+Data Status; top-level Methodology and Status; footer Data column; the homepage buttons "Open full
+Arena", "Explore Arena", "See coverage", "Inspect data coverage", "Read the methodology", "View data
+status" (today they do nothing or scroll within the homepage). Pointing a link at a new page is the
+only homepage change in this pass — no section is removed or shortened.
 Still inert until later passes: Explore Trader, Explore Agent, Incident history, Privacy, Terms.
 
 ## 7. Metadata per page
@@ -168,6 +179,7 @@ no venues we do not collect). Add each page to `sitemap.xml`.
 
 | Pass | Pages | Blocked on |
 |---|---|---|
+| Homepage trim | the homepage: full sections replaced by teasers linking to the pages of pass 2 (plan in §3) | pass 2 built, wired and reviewed live by the owner |
 | 3 | `/studio-pro/`, `/studio-trader/`, `/agent/`, `/api/`, `/pricing/` | nothing |
 | 4 | `/solutions/execution-evidence/`, `/solutions/data-research/`, `/solutions/venues-platforms/`, `/contact-sales/`, `/waitlist/` | form endpoints do not exist yet |
 | 5 | `/company/`, `/legal/privacy/`, `/legal/terms/` | the owner's texts; privacy needs the real list of processors (Cloudflare, Google Fonts, email) |
