@@ -11,6 +11,14 @@ const STROKES = [
 ];
 const kindClass = kind => 'st-' + kind.toLowerCase();
 
+// The shareable URL spells metric and range as short lowercase slugs (?metric=funding&range=24h),
+// not the internal METRICS/RANGES keys, which are the display labels ("Funding", "24 h") — a
+// label with a space is an ugly, easy-to-mistype query value. One map serves both directions.
+const METRIC_SLUGS = { trade: 'Trade price', mark: 'Mark', index: 'Index', spread: 'Spread', funding: 'Funding', oi: 'Open interest', depth: 'Depth' };
+const RANGE_SLUGS = { '1h': '1 h', '24h': '24 h', '7d': '7 d', '30d': '30 d' };
+const METRIC_TO_SLUG = Object.fromEntries(Object.entries(METRIC_SLUGS).map(([slug, key]) => [key, slug]));
+const RANGE_TO_SLUG = Object.fromEntries(Object.entries(RANGE_SLUGS).map(([slug, key]) => [key, slug]));
+
 // ── Rows and cells ──────────────────────────────────────────────────────────────────────────
 
 /** A provenance registry per render: cells carry an index, a click looks the lines up. */
@@ -317,9 +325,30 @@ export function mountArena(root, store) {
 
 // ── Full comparison ─────────────────────────────────────────────────────────────────────────
 
-export function mountFull(root, store) {
+/**
+ * @param {{ syncUrl?: boolean }} opts syncUrl: read asset/metric/range from the page's own query
+ *   string on mount (falling back to the same defaults as always for anything missing or not a
+ *   real METRICS/RANGES key), and write the resolved state back with history.replaceState on every
+ *   change — what Arena needs for a shareable view. Off by default, so the homepage's #live-full
+ *   mount behaves exactly as it always has and never touches the homepage's own URL.
+ */
+export function mountFull(root, store, { syncUrl = false } = {}) {
   let registry = null;
-  const ui = { metric: 'Trade price', range: '24 h', hidden: {} };
+  const params = syncUrl ? new URLSearchParams(location.search) : null;
+  let initialMetric = (params && METRIC_SLUGS[params.get('metric')]) || 'Trade price';
+  let initialRange = (params && RANGE_SLUGS[params.get('range')]) || '24 h';
+  // Same rule the metric selector's own change handler applies: a non-candle metric cannot show a
+  // candles-only range, so an incompatible pair from the query string is corrected the same way.
+  if (METRICS[initialMetric].kind !== 'candles' && RANGES[initialRange].candlesOnly) initialRange = '24 h';
+  const ui = { metric: initialMetric, range: initialRange, hidden: {} };
+  const writeUrl = () => {
+    if (!syncUrl) return;
+    const p = new URLSearchParams(location.search);
+    p.set('asset', store.state.asset);
+    p.set('metric', METRIC_TO_SLUG[ui.metric] || ui.metric);
+    p.set('range', RANGE_TO_SLUG[ui.range] || ui.range);
+    history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash);
+  };
   root.innerHTML = `
     <div class="lm-controls">
       <label class="field"><span class="field__label">Instrument</span><span class="field__box field__box--select"><select data-slot="asset"></select>${icon('chevron-down', 14)}</span></label>
@@ -361,6 +390,7 @@ export function mountFull(root, store) {
   const seriesKey = () => store.state.asset + '|' + ui.metric + '|' + ui.range;
   function requestSeries() {
     renderControls();
+    writeUrl();
     if (store.state.plan && (!store.state.series || store.state.series.key !== seriesKey())) store.loadSeries(ui.metric, ui.range);
     renderChart();
   }
