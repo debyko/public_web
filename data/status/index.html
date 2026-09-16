@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../../css/site.css">
   <link rel="stylesheet" href="../../css/pages.css">
   <script defer src="../../js/nav.js"></script>
+  <script type="module" src="../../js/pages/status.js"></script>
 </head>
 <body>
 
@@ -69,14 +70,14 @@
         <button class="nav__trigger" aria-expanded="false">Company</button>
         <div class="nav__menu" hidden>
           <a href="../../#company">About</a>
-          <a href="../../#company">Contact Sales</a>
-          <a href="../../#company">Join the Waitlist</a>
+          <a href="../../?open=sales">Contact Sales</a>
+          <a href="../../?open=wait">Join the Waitlist</a>
         </div>
       </div>
     </nav>
     <div class="spacer"></div>
     <div class="site-header__actions hide-narrow">
-      <a class="btn btn--ghost" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn btn--ghost" href="../../?open=sales"><span>Contact sales</span></a>
       <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
     </div>
     <button class="menu-btn" aria-expanded="false">Menu</button>
@@ -85,10 +86,10 @@
     <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader</a><a href="../../#agent">Agent</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
     <div class="mobile-nav__actions">
       <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
-      <a class="btn" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn" href="../../?open=sales"><span>Contact sales</span></a>
     </div>
   </div>
 </header>
@@ -110,8 +111,8 @@
         <span class="label label--accent">Overall · GET /v1/health</span>
         <span class="meta-xs" id="status-tag">Time of the last response, printed from the response</span>
       </div>
-      <div class="mount mount--line" id="status-overall" data-mount="The word the service reports — ok or degraded — as a fresh chip, never on its own."></div>
-      <div class="mount mount--line" id="status-counts" data-mount="The counts the overall word summarises: venues reporting, collectors reporting, collectors with consecutive failures, instruments stale. Computed from the same response, in the facts layout."></div>
+      <div class="row gap-10" id="status-overall" style="padding:10px 14px">Requesting</div>
+      <div class="facts" id="status-counts"></div>
       <div class="panel__note">Only venues listed by the coverage response are shown; internal service segments in the health response are hidden.</div>
     </div>
   </div>
@@ -131,7 +132,10 @@
         <span class="label label--accent">Collectors · per venue · GET /v1/health</span>
         <span class="meta-xs">Expandable rows · ages beside every timestamp</span>
       </div>
-      <div class="mount mount--tall" id="status-collectors" data-mount="Table, one row per venue, expandable into one row per collector. Columns in order: venue (row-toggle) · collector state with its word · last success and its age · consecutive failures · last error and its age · instruments stale. Error text is shortened to one line."></div>
+      <div class="scroll-x"><table class="tbl tbl--roomy min-900">
+        <thead><tr><th class="l">Venue</th><th>Collector state</th><th class="r">Last success · age</th><th class="r">Consecutive failures</th><th>Last error · age</th><th class="r">Instruments stale</th></tr></thead>
+        <tbody id="status-collector-rows"><tr><td colspan="6" style="padding:14px">Requesting</td></tr></tbody>
+      </table></div>
       <div class="panel__note">Error text is shortened. No stack trace and no internal address is shown. Status is never colour alone — every chip carries its word.</div>
     </div>
   </div>
@@ -148,7 +152,7 @@
     </div>
     <div class="panel">
       <div class="panel__head"><span class="label label--accent">Stale · from the same response</span><span class="meta-xs">Grouped by venue · symbols as the venue spells them</span></div>
-      <div class="mount" id="status-stale" data-mount="Stale instruments grouped by venue: venue name linking to its Coverage anchor, then the symbols in a wrapping list, each with the age of its latest snapshot. When the response lists none, the block says the response lists none."></div>
+      <div id="status-stale" style="padding:14px">Requesting</div>
     </div>
   </div>
 </section>
@@ -195,7 +199,7 @@
       <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../../#agent">Agent <span class="nav-tag">prototype</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a><a href="../../#services">Venues &amp; Platforms</a><a href="../../#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
     </div>
     <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
