@@ -11,3 +11,11 @@
 # Logos are content-stable: a new lock-up would be a new file.
 /assets/*
   Cache-Control: public, max-age=86400, must-revalidate
+
+# The same site also answers on Cloudflare's own hostnames (the production alias and every
+# branch preview). Those copies must not compete with debyko.com in search results.
+https://debyko-public-web.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:branch.debyko-public-web.pages.dev/*
+  X-Robots-Tag: noindex
