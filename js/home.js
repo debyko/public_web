@@ -97,6 +97,12 @@ function renderCatalogue(S) {
     <td class="td-mono r">${v.since ? esc(String(v.since).slice(0, 10)) : '—'}</td>
   </tr>`).join('');
   $('#catalogue-state').innerHTML = rows.length ? '' : `<div style="padding:14px">${metaBlock(S, 'GET /v1/coverage')}</div>`;
+  // The table lists the perp venues this page compares; the totals are every collecting venue, spot
+  // included — which is why the two counts differ, and the response says both.
+  const t = S.cov && S.cov.data && S.cov.data.totals;
+  if (t) $('#catalogue-totals').textContent = 'All venues · ' + fmt(t.venues, 0) + ' collecting · '
+    + fmt(t.instruments, 0) + ' instruments collected · ' + fmt(t.trading, 0) + ' trading · ' + fmt(t.listed, 0) + ' listed'
+    + (t.since ? ' · since ' + String(t.since).slice(0, 10) : '');
 }
 
 function renderHours(S) {
