@@ -41,15 +41,6 @@
    state uses, so the highlight reads as "found", not as a new colour meaning. */
 .tbl tr:target { background: var(--dk-accent-tint); }
 
-/* Review only. Marks where a live block mounts; the script replaces the contents.
-   Print the id and the description without extra markup. */
-.mount { border: 1px dashed var(--dk-border-strong); background: var(--dk-surface-inset); padding: 18px 14px; display: flex; flex-direction: column; gap: 7px; }
-.mount::before { content: attr(id); font: 600 11px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-accent); }
-.mount::after { content: attr(data-mount); font: 400 12px/1.55 var(--dk-font-mono); color: var(--dk-text-muted); max-width: 88ch; }
-.mount--tall { min-height: 300px; }
-.mount--chart { min-height: 560px; }
-.mount--line { padding: 12px 14px; }
-
 /* Expandable venue row: .tbl has no nested rows. */
 .row-toggle { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; font: 600 13px/1 var(--dk-font-display); letter-spacing: -.01em; color: var(--dk-text-primary); }
 .row-toggle .icon { color: var(--dk-text-faint); transition: transform var(--dk-dur-fast) var(--dk-ease-standard); }
@@ -73,6 +64,5 @@ tr.is-detail > td:first-child { padding-left: 34px; }
   .article p { font-size: 14px; }
   .toc { grid-template-columns: minmax(0, 1fr); }
   .anchor { opacity: 1; }
-  .mount--chart { min-height: 420px; }
   .ruled--dated > li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
