@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../../css/site.css">
   <link rel="stylesheet" href="../../css/pages.css">
   <script defer src="../../js/nav.js"></script>
+  <script type="module" src="../../js/pages/methodology.js"></script>
 </head>
 <body>
 
@@ -69,14 +70,14 @@
         <button class="nav__trigger" aria-expanded="false">Company</button>
         <div class="nav__menu" hidden>
           <a href="../../#company">About</a>
-          <a href="../../#company">Contact Sales</a>
-          <a href="../../#company">Join the Waitlist</a>
+          <a href="../../?open=sales">Contact Sales</a>
+          <a href="../../?open=wait">Join the Waitlist</a>
         </div>
       </div>
     </nav>
     <div class="spacer"></div>
     <div class="site-header__actions hide-narrow">
-      <a class="btn btn--ghost" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn btn--ghost" href="../../?open=sales"><span>Contact sales</span></a>
       <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
     </div>
     <button class="menu-btn" aria-expanded="false">Menu</button>
@@ -85,10 +86,10 @@
     <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader</a><a href="../../#agent">Agent</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
     <div class="mobile-nav__actions">
       <a class="btn btn--primary" href="../../arena/"><span>Explore live data</span></a>
-      <a class="btn" href="../../#company"><span>Contact sales</span></a>
+      <a class="btn" href="../../?open=sales"><span>Contact sales</span></a>
     </div>
   </div>
 </header>
@@ -140,7 +141,7 @@
         <p>Trade, mark and index candles are collected where the venue publishes them; Coverage lists which, per venue. Where a venue publishes no bars of a kind, that metric is unsupported there rather than empty.</p>
         <p>Raw history of tickers, funding, open interest and depth is served in windows of at most 48 hours per request.</p>
         <p>Every stored row carries its segment code, the venue's own symbol, and the time it was received.</p>
-        <div class="mount mount--line" id="method-sample-row" data-mount="The one live illustration on this page: a single real snapshot row with its three timestamps named — venue time, received, age, plus the open-interest and depth times. One call on load, no refresh. If the call fails, the state block replaces it and nothing is filled in."></div>
+        <div id="method-sample-row">Requesting</div>
       </section>
 
       <section id="instruments">
@@ -297,7 +298,7 @@
       <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../../#agent">Agent <span class="nav-tag">prototype</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a><a href="../../#services">Venues &amp; Platforms</a><a href="../../#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../#company">Contact Sales</a><a href="../../#company">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="../../#company">About</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
     </div>
     <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
