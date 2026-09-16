@@ -103,6 +103,8 @@ function renderHours(S) {
   const rows = S.covHours ? normaliseCoverageHours(S.covHours.data, 48) : null;
   $('#hours-tag').textContent = rows ? sourceText(S.covHours) : S.covHours ? 'Shape not recognised' : 'No data';
   if (!rows || !rows.length) { $('#hours-rows').innerHTML = metaBlock(S, 'GET /v1/coverage/hours?days=7'); return; }
+  // This strip covers every collecting venue, spot included — more than the perp venues in the tables above.
+  $('#hours-scope').textContent = rows.length + ' collecting venues · perp and spot';
   $('#hours-rows').innerHTML = rows.map(v => {
     const cells = v.cells.map((h, i) => {
       const when = h.hour ? new Date(h.hour).toISOString().slice(5, 13).replace('T', ' ') + ':00 UTC' : '';

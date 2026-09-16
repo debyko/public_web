@@ -164,7 +164,9 @@ function source(store, S) {
     const liveAge = Math.max(0, Math.round((S.now - Date.parse(S.live.at)) / 1000));
     return {
       mode: 'live', tag: 'Live · ' + store.env + ' · ' + utcTime(S.live.at), tagClass: 'source-tag--live',
-      line: ('Last response ' + utcTime(S.live.at) + ' · age ' + age(liveAge) + ' · ' + answered + '/' + S.live.targets.length + ' venues answered').toUpperCase(),
+      // "perp venues", not "venues": the instrument is a perpetual, so the spot venues that quote the
+      // same asset are not in this comparison and the count must not read as the whole coverage.
+      line: ('Last response ' + utcTime(S.live.at) + ' · age ' + age(liveAge) + ' · ' + answered + '/' + S.live.targets.length + ' perp venues answered').toUpperCase(),
       targets: S.live.targets
     };
   }
@@ -465,7 +467,7 @@ export function mountFull(root, store) {
         <td><div class="fig-chips">${smallChip(c.ageT, 'T')}${smallChip(c.ageO, 'OI')}${smallChip(c.ageD, 'D')}</div></td>
       </tr>`).join('')}</tbody>
     </table></div>
-    <div class="panel__foot"><span>Table scrolls sideways · venue column stays</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    <div class="panel__foot"><span>Perpetual venues only · table scrolls sideways · venue column stays</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
 
     const published = rows.filter(x => x.c.fund.kind !== 'MISSING' && x.c.fund.kind !== 'UNSUPPORTED');
     const positive = published.filter(x => x.r.fund > 0).length;
