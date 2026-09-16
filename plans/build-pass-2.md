@@ -11,7 +11,14 @@ Cloudflare Pages publishes the repository root as it is.
 ## Read first
 
 - `plans/brief-pass-2.md`: what the pages are for, the data that exists (§4) and the rules (§9).
-- `plans/design/pass-2-export.md`: the designer's note. It lists every mount and what feeds it.
+- `plans/design/pass-2-export.md` and `plans/design/pass-2-prompt-for-developer.md`: the designer's
+  notes. They list every mount and what feeds it. Where they conflict with this file, this file
+  wins. In particular, the designer allows "15 perpetual / 3 spot" as static text; the owner does
+  not. Take those counts from the API too.
+- From the designer's prompt, keep:
+  - text width is set by the column, never capped on the paragraph;
+  - the em dash means an absent measurement and nothing else;
+  - the two methodology date slots are filled on the day the page goes live.
 - The four pages as the designer delivered them: `arena/index.html`, `data/coverage/index.html`,
   `data/status/index.html`, `data/methodology/index.html`. Also `css/pages.css` and `js/nav.js`.
 - The live homepage code, which you will reuse and must not fork:
@@ -110,7 +117,7 @@ the `.mount*` rules from `css/pages.css`.
   - the buttons "Open full Arena", "Explore Arena", "See coverage", "Inspect data coverage",
     "Read the methodology" and "View data status";
   - "Explore live data" → `/arena/`.
-- **Remove nothing from the homepage and shorten nothing.** Trimming the homepage is a separate,
+- **Remove nothing from the homepage and shorten nothing. The homepage layout and content are frozen; only `href` targets and the `?open=` handler change.** Trimming the homepage is a separate,
   later pass.
 - Header and footer markup must stay identical on all five pages, apart from relative path
   prefixes. If you change one, change all five.
