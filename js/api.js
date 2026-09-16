@@ -273,7 +273,11 @@ export function scrubError(raw) {
     .replace(/https?:\/\/\S+/gi, '[address]')
     .replace(/\b(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}:\d{2,5}\b/gi, '[address]')
     .replace(/\b\d{1,3}(?:\.\d{1,3}){3}:\d{2,5}\b/g, '[address]');
-  return text.slice(0, 48);
+  // Cut at a word boundary and say it was cut, rather than stopping mid-word ("does not ind").
+  if (text.length <= 48) return text;
+  const cut = text.slice(0, 48);
+  const space = cut.lastIndexOf(' ');
+  return (space > 24 ? cut.slice(0, space) : cut).replace(/[\s,.;:·-]+$/, '') + ' …';
 }
 
 /** GET /v1/health summarised per venue: worst failure streak, latest success, latest error. */

@@ -34,6 +34,9 @@
    panel would stretch the page to match, breaking scroll position and anchor links further down. */
 .scroll-x--tall { max-height: 480px; overflow-y: auto; }
 
+/* The venue name stays in view while the hour strip scrolls sideways under it. */
+#coverage-hours .hours__venue { position: sticky; left: 0; z-index: 1; background: var(--dk-surface-panel); padding-right: 10px; margin-right: -10px; }
+
 /* Group row inside a table: the .lm-table .group treatment, lifted out of .lm-table. */
 .group-row th { padding: 6px 14px; text-align: left; font: 600 10px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-accent); background: var(--dk-surface-subtle); border-bottom: 1px solid var(--dk-border-hairline); }
 
