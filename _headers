@@ -1,0 +1,13 @@
+# Cloudflare Pages headers.
+#
+# The page, its stylesheets and its scripts ship together and one without the
+# other is a broken page — a table drawn by last week's script with this week's
+# markup. Pages' default is four hours, long enough for a visitor to keep an old
+# module after a deploy; max-age=0 + must-revalidate asks every time and gets a
+# 304 when nothing changed, so the cost is one conditional request.
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Logos are content-stable: a new lock-up would be a new file.
+/assets/*
+  Cache-Control: public, max-age=86400, must-revalidate
