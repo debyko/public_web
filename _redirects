@@ -1,0 +1,5 @@
+# Cloudflare Pages publishes the whole repository. Working documents are not part of the site.
+/README.md        /  302
+/plans/*          /  302
+/og/README.md     /  302
+/og/*.svg         /  302
