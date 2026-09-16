@@ -51,9 +51,12 @@
 --dk-danger-bg:var(--dk-ink-900);
 --dk-danger-fg:var(--dk-paper-050);
 --dk-danger-rule:var(--dk-magenta-500);
-/* rank: the one exception to ink and magenta — green marks BEST, red marks WORST; never direction, never P&L */
---dk-rank-best:#1F9D5B;
---dk-rank-worst:#D23B3B;
+/* rank: carried by the word and the chip, never by traffic-light hue — BEST is the accent, WORST a neutral outline.
+   Text contrast on every light surface (white to paper-150, tint included) stays at or above 4.5:1. */
+--dk-rank-best:var(--dk-magenta-600);
+--dk-rank-best-bg:rgba(184,18,159,.06);
+--dk-rank-worst:var(--dk-ink-600);
+--dk-rank-worst-line:var(--dk-ink-400);
 }
 [data-theme="dark"]{
 --dk-surface-page:var(--dk-night-950);
@@ -78,6 +81,10 @@
 --dk-accent-tint:rgba(238,47,114,.12);
 --dk-accent-tint-strong:rgba(238,47,114,.22);
 --dk-focus-ring:rgba(238,47,114,.55);
+--dk-rank-best:var(--dk-magenta-400);
+--dk-rank-best-bg:transparent;
+--dk-rank-worst:var(--dk-night-fg-300);
+--dk-rank-worst-line:var(--dk-night-fg-400);
 --dk-hatch:rgba(237,239,243,.14);
 --dk-scrim:rgba(2,3,6,.66);
 --dk-fresh-live:var(--dk-magenta-400);

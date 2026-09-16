@@ -132,8 +132,8 @@ a.btn, a.btn:hover { opacity: 1; }
 /* BEST / WORST. The slot is always there and always 41px (WORST is 40.4px), so a mark appearing or leaving moves no column. */
 .rank-slot { display: inline-block; width: 41px; margin-left: 4px; text-align: left; vertical-align: middle; }
 .rank { display: inline-block; font: 600 9px/1 var(--dk-font-mono); letter-spacing: .12em; padding: 2px 3px; border-radius: 2px; border: 1px solid currentColor; }
-.rank--best { color: var(--dk-rank-best); background: color-mix(in srgb, var(--dk-rank-best) 10%, transparent); }
-.rank--worst { color: var(--dk-rank-worst); background: color-mix(in srgb, var(--dk-rank-worst) 10%, transparent); }
+.rank--best { color: var(--dk-rank-best); background: var(--dk-rank-best-bg); }
+.rank--worst { color: var(--dk-rank-worst); border-color: var(--dk-rank-worst-line); background: transparent; }
 
 /* ── Form controls (DS Input / Select / SegmentedControl) ───────────────── */
 .field { display: flex; flex-direction: column; gap: 6px; }
