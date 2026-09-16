@@ -85,7 +85,7 @@ API: `https://cryptosmithx.blynai.eu/v1`, public, read-only, no key, any origin.
 | `/exchanges` | 18 enabled segments: **15 perp, 3 spot** (Binance, Bybit, OKX spot) |
 | `/instruments?exchange=` | listings per venue: symbol, base/quote, contract multiplier, price step, funding interval |
 | `/snapshot?exchange=&symbols=&include=quote,depth,instrument` | latest row per listing: bid/ask/sizes, mark, index, funding, OI, depth 10/25/50 bps, three clocks |
-| `/candles` | trade bars on all venues; **mark bars on 6 of 15 perp venues, index bars on 7** |
+| `/candles` | trade bars on every venue except GMX (index bars only); **mark bars on 6 of 15 perp venues, index bars on 7** — `/coverage` `datasets` says which, per venue |
 | `/tickers/history`, `/funding`, `/open-interest`, `/depth` | raw history, **max 48 h per request**; OI history exists on **1–2 venues**; funding over the last hour is usually empty (settlements are hourly or 8-hourly) |
 | `/as-of?exchange=&symbol=&at=` | the stored state at an instant, ~0.2 s |
 | `/coverage` | per venue: datasets, instruments collected / trading / listed, since; `totals`: 18 venues, 724 collected, 8,911 trading, 9,833 listed, since 2026-09-05 |
