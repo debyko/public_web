@@ -201,7 +201,7 @@
 
       <section id="comparison">
         <h2><span class="article__n">07</span>When a comparison is valid <a class="anchor" href="#comparison" aria-label="Link to this section">#</a></h2>
-        <p>BEST and WORST are computed for four columns only: bid, where a higher value is better; ask, where a lower value is better; spread, where a narrower value is better, compared rounded to 0.01 basis points; and depth, taken as the bid side plus the ask side, where more is better.</p>
+        <p>BEST and WORST are computed for four columns only: bid, where a higher value is better; ask, where a lower value is better; spread, where a narrower value is better, compared as computed rather than as printed; and depth, taken as the bid side plus the ask side, where more is better.</p>
         <p>Mark, index, funding and open interest are never ranked. Intervals, contract multipliers and index compositions differ by venue, so the figures are not like for like.</p>
         <p>A row enters a ranking only if three things hold: the venue runs an order book and is not an oracle-vault market; its quote currency is USD, USDT, USDC or USDT0, which are treated as one currency; and the value is LIVE.</p>
         <p>If fewer than two values pass those tests, or if every value that passes them is equal, no BEST or WORST is shown. A figure left out of a ranking says why in its provenance.</p>
@@ -250,6 +250,7 @@
         <ul class="ruled ruled--dated">
           <li><span class="date">2026-09-16</span><span>First publication of this page.</span></li>
           <li><span class="date">2026-09-16</span><span>NOT COLLECTED added: depth on a venue whose book this service does not collect is no longer shown as MISSING, and no longer sets the row status.</span></li>
+          <li><span class="date">2026-09-17</span><span>Spread is ranked on its computed value, no longer rounded to 0.01 bps first — rounding had given BEST to every venue one tick wide. The comparison table is grouped by quote currency.</span></li>
         </ul>
         <p>Each later change to a rule is added here with its date, so a figure can be read against the rules in force when it was shown.</p>
       </section>

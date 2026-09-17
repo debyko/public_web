@@ -370,7 +370,7 @@ a.credit__brand:hover { opacity: .65; }
 /* ── Live market: slice, full comparison, arena ─────────────────────────── */
 .lm-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 22px; padding: 14px; border-bottom: 1px solid var(--dk-border-hairline); background: var(--dk-surface-head); }
 .lm-controls label.field { min-width: 180px; }
-.lm-controls .field__box select { width: auto; }
+.lm-controls .field__box select { width: auto; flex: 1 1 auto; min-width: 0; }
 .lm-source { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .lm-banner { padding: 10px 14px; border-bottom: 1px solid var(--dk-border-hairline); font: 400 13px/1.5 var(--dk-font-text); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
 .lm-chart-area { display: grid; grid-template-columns: minmax(0, 1fr) 232px; border-bottom: 1px solid var(--dk-border-hairline); }
@@ -396,6 +396,8 @@ a.credit__brand:hover { opacity: .65; }
 .lm-table th { background: var(--dk-surface-head); padding: 6px; text-align: right; font: 600 10px/1 var(--dk-font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dk-text-faint); border-bottom: 1px solid var(--dk-border-strong); white-space: nowrap; }
 .lm-table th.l { text-align: left; }
 .lm-table .group { padding: 6px 10px; text-align: left; letter-spacing: .18em; color: var(--dk-text-accent); background: var(--dk-surface-subtle); border-bottom: 1px solid var(--dk-border-hairline); border-left: 1px solid var(--dk-border-hairline); }
+.lm-table tr.quote-row th { padding: 0; text-align: left; background: var(--dk-surface-subtle); border-top: 1px solid var(--dk-border-strong); border-bottom: 1px solid var(--dk-border-hairline); }
+.lm-table tr.quote-row th span { position: sticky; left: 0; display: inline-block; padding: 5px 10px; font: 600 10px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-accent); }
 .lm-table .group--age { color: #FFFFFF; background: var(--dk-accent); }
 .lm-table .sticky { position: sticky; left: 0; z-index: 2; border-right: 1px solid var(--dk-border-hairline); }
 .lm-table td { padding: 0; border-bottom: 1px solid var(--dk-border-hairline); text-align: right; }

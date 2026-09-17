@@ -115,13 +115,38 @@ function alignDecimals(rows) {
   }
 }
 
+// ── Quote groups ────────────────────────────────────────────────────────────────────────────
+
+/** The order quote currencies are listed in: the common ones first, the rest alphabetically. */
+const QUOTE_ORDER = ['USDT', 'USDC', 'USD'];
+const quoteRank = q => (QUOTE_ORDER.indexOf(q) >= 0 ? QUOTE_ORDER.indexOf(q) : QUOTE_ORDER.length);
+
+/** Rows grouped by quote currency, venues alphabetical inside a group — so a column's BEST and WORST
+ *  can be read against the currency each venue actually quotes in. Ranking itself still treats every
+ *  USD-denominated quote as one currency (see rank()). */
+function groupByQuote(rows) {
+  const sorted = rows.slice().sort((a, b) =>
+    quoteRank(a.r.quote) - quoteRank(b.r.quote)
+    || String(a.r.quote).localeCompare(String(b.r.quote))
+    || a.r.venue.localeCompare(b.r.venue));
+  const groups = [];
+  for (const x of sorted) {
+    const q = x.r.quote || '—';
+    if (!groups.length || groups[groups.length - 1].quote !== q) groups.push({ quote: q, rows: [] });
+    groups[groups.length - 1].rows.push(x);
+  }
+  return groups;
+}
+
 // ── BEST / WORST ────────────────────────────────────────────────────────────────────────────
 
 /** The columns where "better" has one meaning: a higher bid, a lower ask, a narrower spread, more depth. */
 const RANKED = [
   { key: 'bid', value: x => x.r.bid, better: 'max' },
   { key: 'ask', value: x => x.r.ask, better: 'min' },
-  { key: 'spread', value: x => (typeof x.spreadVal === 'number' ? Math.round(x.spreadVal * 100) / 100 : null), better: 'min' },
+  // Compared as computed, not as printed: two venues one tick apart at 0.013 bps both print 0.01, and
+  // rounding first handed BEST to every one of them.
+  { key: 'spread', value: x => (typeof x.spreadVal === 'number' ? x.spreadVal : null), better: 'min' },
   { key: 'depth', value: x => (typeof x.r.db === 'number' && typeof x.r.da === 'number' ? x.r.db + x.r.da : null), better: 'max' }
 ];
 /** USD, USDT and USDC (and USDT0) are compared as one currency; any other quote is not ranked. */
@@ -499,15 +524,15 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
         <tr>${groups.map(([label, span], i) => `<th colspan="${span}" class="group${i === 7 ? ' group--age' : ''}">${label}</th>`).join('')}</tr>
         <tr><th class="l sticky">Venue · status</th><th>Bid / Ask</th><th>Spread</th><th>Mark / Index</th><th>Funding</th><th>Open interest</th><th>Depth ±25 bps</th><th>Venue / received</th><th>Age · T / OI / D</th></tr>
       </thead>
-      <tbody>${rows.map(({ r, c }) => `<tr>
+      <tbody>${groupByQuote(rows).map(g => `<tr class="quote-row"><th colspan="9"><span>Quoted in ${esc(g.quote)} · ${g.rows.length} venue${g.rows.length === 1 ? '' : 's'}</span></th></tr>` + g.rows.map(({ r, c }) => `<tr>
         <td class="venue">${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="fresh fresh--small row-status ${kindClass(c.status.kind)}" data-prov="${c.status.prov}">${kindWord(c.status.kind)}</button></td>
         ${pair(c, 'bid', 'ask', true)}${td(c.spread, figure(c.spread, 'spread', true))}${pair(c, 'mark', 'index', false)}
         ${td(c.fund, figure(c.fund, 'fund'))}${td(c.oi, figure(c.oi, 'oi'))}${td(c.depth, figure({ ...c.depth, unit: '' }, 'depth', true))}
         <td><button class="fig fig--stack" data-prov="${c.received.prov}"><span class="${c.venueTime.kind === 'MISSING' ? 'faint' : 'muted'}">${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}</span><span>${esc(c.received.text)}</span></button></td>
         <td><div class="fig-chips">${smallChip(c.ageT, 'T')}${smallChip(c.ageO, 'OI')}${smallChip(c.ageD, 'D')}</div></td>
-      </tr>`).join('')}</tbody>
+      </tr>`).join('')).join('')}</tbody>
     </table></div>
-    <div class="panel__foot"><span>Perpetual venues only · table scrolls sideways · venue column stays</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    <div class="panel__foot"><span>Perpetual venues only · grouped by quote currency · USD, USDT, USDC and USDT0 ranked as one · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
 
     const published = rows.filter(x => x.c.fund.kind !== 'MISSING' && x.c.fund.kind !== 'UNSUPPORTED');
     const positive = published.filter(x => x.r.fund > 0).length;
