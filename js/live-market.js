@@ -9,7 +9,8 @@ const STROKES = [
   { stroke: '#DE1A8C', dash: '' }, { stroke: '#05070C', dash: '' }, { stroke: '#5A6172', dash: '' }, { stroke: '#8A8E98', dash: '' },
   { stroke: '#05070C', dash: '4 3' }, { stroke: '#5A6172', dash: '4 3' }, { stroke: '#8A8E98', dash: '4 3' }
 ];
-const kindClass = kind => 'st-' + kind.toLowerCase().replace(/_/g, '-');
+/** The status-layer chip class for a state: NOT_COLLECTED → ar-chip--notcollected. */
+const kindClass = kind => 'ar-chip ar-chip--' + kind.toLowerCase().replace(/_/g, '');
 /** The word a chip prints: NOT_COLLECTED reads as two words. */
 const kindWord = kind => kind.replace(/_/g, ' ');
 /** States that describe what exists, not how fresh it is — they never set a row's status. */
@@ -142,12 +143,12 @@ function groupByQuote(rows) {
 
 /** The columns where "better" has one meaning: a higher bid, a lower ask, a narrower spread, more depth. */
 const RANKED = [
-  { key: 'bid', value: x => x.r.bid, better: 'max' },
-  { key: 'ask', value: x => x.r.ask, better: 'min' },
+  { key: 'bid', word: 'bid', value: x => x.r.bid, better: 'max' },
+  { key: 'ask', word: 'ask', value: x => x.r.ask, better: 'min' },
   // Compared as computed, not as printed: two venues one tick apart at 0.013 bps both print 0.01, and
   // rounding first handed BEST to every one of them.
-  { key: 'spread', value: x => (typeof x.spreadVal === 'number' ? x.spreadVal : null), better: 'min' },
-  { key: 'depth', value: x => (typeof x.r.db === 'number' && typeof x.r.da === 'number' ? x.r.db + x.r.da : null), better: 'max' }
+  { key: 'spread', word: 'spread', value: x => (typeof x.spreadVal === 'number' ? x.spreadVal : null), better: 'min' },
+  { key: 'depth', word: 'depth', value: x => (typeof x.r.db === 'number' && typeof x.r.da === 'number' ? x.r.db + x.r.da : null), better: 'max' }
 ];
 /** USD, USDT and USDC (and USDT0) are compared as one currency; any other quote is not ranked. */
 const USD_LIKE = /^USD/;
@@ -166,19 +167,35 @@ function rank(rows) {
     const values = eligible.map(col.value);
     const hi = Math.max(...values), lo = Math.min(...values);
     const bestValue = col.better === 'max' ? hi : lo, worstValue = col.better === 'max' ? lo : hi;
+    // Every venue holding the best (or worst) value carries the mark; the count and the tooltip say
+    // who shares it. A tie of everything is not a ranking, so hi === lo shows nothing at all.
+    const holders = { best: eligible.filter(x => col.value(x) === bestValue), worst: eligible.filter(x => col.value(x) === worstValue) };
     for (const x of rows) {
       const cell = x.c[col.key], reason = why(x);
       if (reason) { cell.lines.push({ k: 'Rank', v: 'not ranked · ' + reason }); continue; }
       if (eligible.length < 2 || hi === lo) { cell.lines.push({ k: 'Rank', v: 'not ranked · fewer than two different live values to compare' }); continue; }
       const v = col.value(x);
       cell.rank = v === bestValue ? 'best' : v === worstValue ? 'worst' : null;
-      cell.lines.push({ k: 'Rank', v: (cell.rank ? cell.rank.toUpperCase() + ' · ' : '') + 'among ' + eligible.length + ' live order-book venues · USD, USDT and USDC compared as one' });
+      let shared = '';
+      if (cell.rank && holders[cell.rank].length > 1) {
+        const others = holders[cell.rank].filter(o => o !== x).map(o => o.r.venue);
+        cell.tie = holders[cell.rank].length;
+        cell.tip = (cell.rank === 'best' ? 'Best ' : 'Worst ') + col.word + ' shared with ' + listWords(others) + ' at ' + cell.text.trim() + (cell.unit ? ' ' + cell.unit : '');
+        shared = ' · shared with ' + listWords(others);
+      }
+      cell.lines.push({ k: 'Rank', v: (cell.rank ? cell.rank.toUpperCase() + shared + ' · ' : '') + 'among ' + eligible.length + ' live order-book venues · USD, USDT and USDC compared as one' });
     }
   }
 }
 
-/** The mark always takes the same room, present or not, so a mark coming or going moves nothing. */
-const rankSlot = x => `<span class="rank-slot">${x.rank ? `<span class="rank rank--${x.rank}">${x.rank === 'best' ? 'BEST' : 'WORST'}</span>` : ''}</span>`;
+/** "OKX", "OKX and BYBIT-PERP", "OKX, BYBIT-PERP and GATE-PERP". */
+const listWords = names => (names.length < 2 ? names.join('') : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]);
+
+/** The mark always takes the same room, present or not, so a mark coming or going moves nothing
+ *  (a tie's count is the one exception: BEST ×2 is wider than the 56px slot). */
+const rankSlot = x => `<span class="ar-rank-slot">${x.rank
+  ? `<span class="ar-chip ar-chip--${x.tie && x.rank === 'best' ? 'tie' : x.rank}"${x.tip ? ` data-tip="${esc(x.tip)}"` : ''}>${x.rank === 'best' ? 'Best' : 'Worst'}${x.tie ? `<span class="ar-chip__x">×${x.tie}</span>` : ''}</span>`
+  : ''}</span>`;
 
 // ── Cell markup ─────────────────────────────────────────────────────────────────────────────
 
@@ -189,9 +206,15 @@ const pair = (c, top, bottom, ranked) => `<td class="${c[top].hatch ? 'dk-hatch'
 const UNIT_WIDTH = { bid: 'u5', ask: 'u5', mark: 'u5', index: 'u5', spread: 'u3', fund: 'u7', oi: 'u9' };
 const figure = (x, col, ranked = false) => `<button class="fig ${x.state}" data-prov="${x.prov}">${esc(x.text)}<span class="fig__unit ${UNIT_WIDTH[col] || ''}">${esc(x.unit)}</span>${ranked ? rankSlot(x) : ''}</button>`;
 const td = (x, inner) => `<td class="${x.hatch ? 'dk-hatch' : ''}">${inner}</td>`;
-const freshChip = (x, value) => `<span class="fresh ${kindClass(x.kind)}"><span class="fresh__value">${esc(value)}</span>${kindWord(x.kind)}</span>`;
+const freshChip = (x, value) => `<span class="${kindClass(x.kind)}"><span class="ar-chip__val">${esc(value)}</span>${kindWord(x.kind)}</span>`;
 const chipCell = x => `<button class="fig fig--chip" data-prov="${x.prov}">${freshChip(x, x.text)}</button>`;
-const smallChip = (x, lbl) => `<button class="fresh fresh--small ${kindClass(x.kind)}" data-prov="${x.prov}"><span class="fresh__lbl">${lbl}</span><span class="fresh__value">${esc(x.text)}</span>${kindWord(x.kind)}</button>`;
+/** Age chips carry label and value only; the state is told by the chip's form (and named in the title). */
+const smallChip = (x, lbl) => `<button class="${kindClass(x.kind)}" data-prov="${x.prov}" title="${kindWord(x.kind)}"><span class="ar-chip__lbl">${lbl}</span><span class="ar-chip__val">${esc(x.text)}</span></button>`;
+
+/** Venues with a square mark in assets/venues (see SOURCES.md there). Lockups with no separable
+ *  symbol — Bybit, Coinbase, dYdX, OKX, Synthetix — and Nado, which has no asset, get the name only. */
+const VENUE_MARKS = new Set(['aster', 'avantis', 'binance', 'bitget', 'deribit', 'gate', 'gmx', 'hyperliquid', 'kraken', 'mexc', 'weex']);
+const venueMark = r => (VENUE_MARKS.has(r.exchange) ? `<img class="venue__mark" src="/assets/venues/mark-${r.exchange}.svg" alt="" width="18" height="18" loading="lazy">` : '');
 
 // ── Source line shared by every block ───────────────────────────────────────────────────────
 
@@ -261,6 +284,46 @@ function wireProvenance(root, getRegistry) {
   });
 }
 
+// ── Tie tooltip ─────────────────────────────────────────────────────────────────────────────
+
+// One fixed element for the whole page: a tooltip inside the table's own scroll box would be clipped
+// by it. The tables re-render every second, so the tip is re-resolved from the pointer after each
+// render rather than trusting the element it was opened on.
+let tipEl = null, tipAnchorText = null;
+const pointer = { x: -1, y: -1 };
+function showTip(anchor) {
+  const text = anchor.dataset.tip;
+  if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'ar-tip'; tipEl.setAttribute('role', 'tooltip'); document.body.append(tipEl); }
+  if (tipAnchorText !== text) { tipEl.textContent = text; tipAnchorText = text; }
+  tipEl.hidden = false;
+  const a = anchor.getBoundingClientRect(), w = 236;
+  const left = Math.max(8, Math.min(a.right - w, window.innerWidth - w - 8));
+  const below = a.bottom + 6 + tipEl.offsetHeight < window.innerHeight;
+  tipEl.style.left = left + 'px';
+  tipEl.style.top = (below ? a.bottom + 6 : a.top - 6 - tipEl.offsetHeight) + 'px';
+}
+function hideTip() { if (tipEl) tipEl.hidden = true; tipAnchorText = null; }
+function refreshTip() {
+  if (!tipEl || tipEl.hidden) return;
+  const under = document.elementFromPoint(pointer.x, pointer.y);
+  const anchor = under && under.closest('[data-tip]');
+  if (anchor) showTip(anchor); else hideTip();
+}
+function wireTips(root) {
+  root.addEventListener('pointermove', e => {
+    pointer.x = e.clientX; pointer.y = e.clientY;
+    const anchor = e.target.closest('[data-tip]');
+    if (anchor) showTip(anchor); else hideTip();
+  });
+  root.addEventListener('pointerleave', hideTip);
+  root.addEventListener('focusin', e => {
+    const anchor = e.target.closest('[data-tip]') || (e.target.querySelector && e.target.querySelector('[data-tip]'));
+    if (anchor) showTip(anchor); else hideTip();
+  });
+  root.addEventListener('focusout', hideTip);
+  window.addEventListener('scroll', hideTip, { passive: true, capture: true });
+}
+
 // ── Hero slice ──────────────────────────────────────────────────────────────────────────────
 
 export function mountSlice(root, store, onFullComparison) {
@@ -277,6 +340,7 @@ export function mountSlice(root, store, onFullComparison) {
   const $ = s => root.querySelector(`[data-slot="${s}"]`);
   $('more').addEventListener('click', onFullComparison);
   wireProvenance(root, () => registry);
+  wireTips(root);
 
   const render = () => {
     const S = store.state, src = source(store, S);
@@ -292,6 +356,7 @@ export function mountSlice(root, store, onFullComparison) {
       <tbody>${rows.map(({ r, c }) => `<tr><td class="venue-cell">${esc(r.venue)}<small>${esc(r.sym)}</small></td>` +
         pair(c, 'bid', 'ask', true) + td(c.spread, figure(c.spread, 'spread', true)) + td(c.fund, figure(c.fund, 'fund')) + td(c.ageT, chipCell(c.ageT)) + '</tr>').join('')}</tbody>
     </table></div>`;
+    refreshTip();
   };
   store.subscribe(render, ['market', 'snapshot', 'tick']);
   render();
@@ -308,6 +373,7 @@ export function mountArena(root, store) {
     </div>`;
   const $ = s => root.querySelector(`[data-slot="${s}"]`);
   wireProvenance(root, () => registry);
+  wireTips(root);
   let sparks = { key: null, list: null };
 
   const loadSparks = async () => {
@@ -345,9 +411,10 @@ export function mountArena(root, store) {
           `<td class="td-num ${c.spread.hatch ? 'dk-hatch' : ''}">${esc(c.spread.text)}<span class="unit u3">${esc(c.spread.unit)}</span>${rankSlot(c.spread)}</td>` +
           `<td class="r">${spark}</td>` +
           `<td class="td-num ${c.fund.hatch ? 'dk-hatch' : ''}">${esc(c.fund.text)}<span class="unit u7">${esc(c.fund.unit)}</span></td>` +
-          `<td class="age">${esc(c.ageT.text)} <span class="faint">/</span> <span class="fg-${NOT_FRESHNESS.has(c.ageD.kind) ? 'missing' : c.ageD.kind.toLowerCase()}">${esc(c.ageD.text)}</span></td></tr>`;
+          `<td class="age">${esc(c.ageT.text)} <span class="faint">/</span> <span class="${kindClass(c.ageD.kind)}" title="${kindWord(c.ageD.kind)}"><span class="ar-chip__val">${esc(c.ageD.text)}</span></span></td></tr>`;
       }).join('')}</tbody>
     </table></div>`;
+    refreshTip();
   };
   store.subscribe(() => { render(); loadSparks(); }, ['market', 'snapshot']);
   store.subscribe(render, ['tick']);
@@ -356,14 +423,54 @@ export function mountArena(root, store) {
 
 // ── Full comparison ─────────────────────────────────────────────────────────────────────────
 
+/** Column groups of the full table. Identity and Age are locked on: without them a figure has no
+ *  source and no clock. `cols` is how many body columns the group spans; the Columns control counts
+ *  the seven columns between the two locked groups. */
+const COLUMN_GROUPS = [
+  { key: 'identity', name: 'Identity', head: 'Identity', note: 'locked', locked: true, cols: 1 },
+  { key: 'quote', name: 'Quote', head: 'Quote · ticker call', note: 'bid, ask, spread', cols: 2 },
+  { key: 'reference', name: 'Reference', head: 'Reference', note: 'mark, index', cols: 1 },
+  { key: 'funding', name: 'Funding', head: 'Funding', note: 'rate and interval', cols: 1 },
+  { key: 'oi', name: 'OI', head: 'OI · own call', note: 'own call', cols: 1 },
+  { key: 'depth', name: 'Depth', head: 'Depth · own call', note: '±25 bps', cols: 1 },
+  { key: 'time', name: 'Time', head: 'Time · ticker', note: 'venue, received', cols: 1 },
+  { key: 'age', name: 'Age', head: 'Age per call', note: 'locked', locked: true, cols: 1 }
+];
+const TOGGLEABLE = COLUMN_GROUPS.filter(g => !g.locked);
+const TOGGLE_COLUMNS = TOGGLEABLE.reduce((n, g) => n + g.cols, 0);
+
+/** Sortable columns. Missing, unsupported and uncollected values always sink to the bottom of their
+ *  group, whichever way the column is sorted. Open interest sorts on its quote notional: the printed
+ *  figure is in base units on some venues and contracts on others. */
+const SORTS = {
+  bid: { word: 'bid', value: x => x.r.bid },
+  ask: { word: 'ask', value: x => x.r.ask },
+  spread: { word: 'spread', value: x => x.spreadVal },
+  fund: { word: 'funding', value: x => x.r.fund },
+  oi: { word: 'open interest (quote notional)', value: x => x.r.oiNotional },
+  depth: { word: 'depth', value: x => (typeof x.r.db === 'number' && typeof x.r.da === 'number' ? x.r.db + x.r.da : null) }
+};
+const sortRows = (list, sort) => {
+  if (!sort) return list;
+  const f = SORTS[sort.key].value, sign = sort.dir === 'asc' ? 1 : -1;
+  const num = x => { const v = f(x); return typeof v === 'number' && isFinite(v) ? v : null; };
+  return list.slice().sort((a, b) => {
+    const va = num(a), vb = num(b);
+    if (va == null || vb == null) return (va == null) - (vb == null) || a.r.venue.localeCompare(b.r.venue);
+    return (va - vb) * sign || a.r.venue.localeCompare(b.r.venue);
+  });
+};
+
 /**
- * @param {{ syncUrl?: boolean }} opts syncUrl: read asset/metric/range from the page's own query
- *   string on mount (falling back to the same defaults as always for anything missing or not a
- *   real METRICS/RANGES key), and write the resolved state back with history.replaceState on every
- *   change — what Arena needs for a shareable view. Off by default, so the homepage's #live-full
- *   mount behaves exactly as it always has and never touches the homepage's own URL.
+ * @param {{ syncUrl?: boolean, arena?: boolean }} opts
+ *   syncUrl: read asset/metric/range (and, with arena, hidden groups and sort) from the page's own
+ *   query string on mount, falling back to the defaults for anything missing or unknown, and write
+ *   the resolved state back with history.replaceState on every change — a shareable view. Off by
+ *   default, so the homepage's #live-full mount never touches the homepage's own URL.
+ *   arena: the Arena page layout — table above a half-height chart, and the table's own head with
+ *   the Columns control and sortable headers. The homepage mount keeps the plain table.
  */
-export function mountFull(root, store, { syncUrl = false } = {}) {
+export function mountFull(root, store, { syncUrl = false, arena = false } = {}) {
   let registry = null;
   const params = syncUrl ? new URLSearchParams(location.search) : null;
   let initialMetric = (params && METRIC_SLUGS[params.get('metric')]) || 'Trade price';
@@ -371,33 +478,119 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
   // Same rule the metric selector's own change handler applies: a non-candle metric cannot show a
   // candles-only range, so an incompatible pair from the query string is corrected the same way.
   if (METRICS[initialMetric].kind !== 'candles' && RANGES[initialRange].candlesOnly) initialRange = '24 h';
-  const ui = { metric: initialMetric, range: initialRange, hidden: {} };
+  const hiddenFromUrl = new Set(((params && arena && params.get('hide')) || '').split(',').filter(k => TOGGLEABLE.some(g => g.key === k)));
+  const sortMatch = params && arena && /^(bid|ask|spread|fund|oi|depth)-(asc|desc)$/.exec(params.get('sort') || '');
+  const ui = {
+    metric: initialMetric, range: initialRange, hidden: {},
+    hiddenGroups: hiddenFromUrl,
+    sort: sortMatch ? { key: sortMatch[1], dir: sortMatch[2] } : null,
+    colsOpen: false
+  };
   const writeUrl = () => {
     if (!syncUrl) return;
     const p = new URLSearchParams(location.search);
     p.set('asset', store.state.asset);
     p.set('metric', METRIC_TO_SLUG[ui.metric] || ui.metric);
     p.set('range', RANGE_TO_SLUG[ui.range] || ui.range);
+    if (arena) {
+      const hide = TOGGLEABLE.filter(g => ui.hiddenGroups.has(g.key)).map(g => g.key).join(',');
+      if (hide) p.set('hide', hide); else p.delete('hide');
+      if (ui.sort) p.set('sort', ui.sort.key + '-' + ui.sort.dir); else p.delete('sort');
+    }
     history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash);
   };
-  root.innerHTML = `
+  const controlsHtml = `
     <div class="lm-controls">
       <label class="field"><span class="field__label">Instrument</span><span class="field__box field__box--select"><select data-slot="asset"></select>${icon('chevron-down', 14)}</span></label>
       <label class="field"><span class="field__label">Metric</span><span class="field__box field__box--select"><select data-slot="metric">${Object.keys(METRICS).map(m => `<option>${m}</option>`).join('')}</select>${icon('chevron-down', 14)}</span></label>
       <div class="field"><span class="field__label">Range</span><div class="segmented" data-slot="range">${Object.keys(RANGES).map(r => `<button type="button" data-range="${r}">${r}</button>`).join('')}</div></div>
       <div class="spacer"></div>
       <div class="lm-source"><span class="source-tag" data-slot="tag"></span><span class="meta-xs" style="font-size:11px;text-align:right" data-slot="line"></span></div>
-    </div>
+    </div>`;
+  const chartHtml = `
     <div class="lm-chart-area">
       <div class="lm-chart" data-slot="chart"></div>
       <div class="lm-legend"><div class="label" style="margin-bottom:6px">Venues · toggle</div><div class="stack gap-6" data-slot="legend"></div>
         <div class="meta" style="margin-top:auto;padding-top:10px">Unsupported: the venue publishes no such field. It is not drawn as a flat line.</div></div>
-    </div>
-    <div data-slot="table"></div>
-    <details class="lm-log" data-slot="log-wrap" hidden><summary data-slot="log-title"></summary><div class="lm-log__grid" data-slot="log"></div></details>
-    <div data-slot="observation"></div>`;
+    </div>`;
+  // The table head is built once and only its text is updated: the Columns popover must survive the
+  // table's once-a-second re-render.
+  const tableHeadHtml = arena ? `
+    <div class="panel__head lm-table-head">
+      <span class="label label--accent" data-slot="th-title"></span>
+      <div class="row gap-10">
+        <span class="meta-xs" data-slot="th-sort"></span>
+        <div class="ar-cols" data-slot="cols">
+          <button type="button" class="btn btn--sm" data-slot="cols-btn" aria-haspopup="true" aria-expanded="false">${icon('columns', 14)}<span data-slot="cols-count"></span></button>
+          <div class="ar-pop" data-slot="cols-pop" hidden>
+            ${COLUMN_GROUPS.map(g => `<button type="button" class="ar-pop__row" data-group="${g.key}" role="menuitemcheckbox"${g.locked ? ' aria-disabled="true"' : ''}><span class="ar-pop__box"></span><span>${g.name}</span><span class="ar-pop__note">${g.note}</span></button>`).join('')}
+            <div class="ar-pop__foot"><span>Identity and Age always shown</span><button type="button" data-slot="cols-reset">Reset</button></div>
+          </div>
+        </div>
+      </div>
+    </div>` : '';
+  const tableHtml = `${tableHeadHtml}<div data-slot="table"></div>`;
+  const logHtml = `<details class="lm-log" data-slot="log-wrap" hidden><summary data-slot="log-title"></summary><div class="lm-log__grid" data-slot="log"></div></details>`;
+  const obsHtml = `<div data-slot="observation"></div>`;
+  root.classList.toggle('lm-compact', arena);
+  root.innerHTML = arena
+    ? controlsHtml + tableHtml + obsHtml + chartHtml + logHtml
+    : controlsHtml + chartHtml + tableHtml + logHtml + obsHtml;
   const $ = s => root.querySelector(`[data-slot="${s}"]`);
   wireProvenance(root, () => registry);
+  wireTips(root);
+
+  if (arena) {
+    const pop = $('cols-pop'), btn = $('cols-btn');
+    const setOpen = open => {
+      ui.colsOpen = open; pop.hidden = !open; btn.setAttribute('aria-expanded', String(open));
+      // Right-aligned to the trigger; on a narrow screen the trigger may wrap left, so keep the popover on screen.
+      pop.style.transform = '';
+      if (open) { const r = pop.getBoundingClientRect(); if (r.left < 8) pop.style.transform = `translateX(${8 - r.left}px)`; }
+    };
+    btn.addEventListener('click', () => setOpen(!ui.colsOpen));
+    pop.addEventListener('click', e => {
+      const row = e.target.closest('[data-group]');
+      if (!row || row.getAttribute('aria-disabled') === 'true') return;
+      const k = row.dataset.group;
+      if (ui.hiddenGroups.has(k)) ui.hiddenGroups.delete(k); else ui.hiddenGroups.add(k);
+      // Hiding the column a sort rests on clears the sort: rows ordered by something not on screen mislead.
+      if (ui.sort && !visibleSortKeys().has(ui.sort.key)) ui.sort = null;
+      writeUrl(); renderTableHead(); renderTable();
+    });
+    $('cols-reset').addEventListener('click', () => { ui.hiddenGroups.clear(); writeUrl(); renderTableHead(); renderTable(); });
+    document.addEventListener('click', e => { if (ui.colsOpen && !$('cols').contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', e => { if (ui.colsOpen && e.key === 'Escape') { setOpen(false); btn.focus(); } });
+    $('table').addEventListener('click', e => {
+      const b = e.target.closest('[data-sort]');
+      if (!b) return;
+      const k = b.dataset.sort, cur = ui.sort && ui.sort.key === k ? ui.sort.dir : null;
+      // ascending → descending → cleared
+      ui.sort = cur === null ? { key: k, dir: 'asc' } : cur === 'asc' ? { key: k, dir: 'desc' } : null;
+      writeUrl(); renderTableHead(); renderTable();
+      const again = $('table').querySelector(`[data-sort="${k}"]`);
+      if (again) again.focus();
+    });
+  }
+  const shown = key => !ui.hiddenGroups.has(key);
+  const visibleSortKeys = () => new Set([...(shown('quote') ? ['bid', 'ask', 'spread'] : []), ...(shown('funding') ? ['fund'] : []), ...(shown('oi') ? ['oi'] : []), ...(shown('depth') ? ['depth'] : [])]);
+
+  function renderTableHead() {
+    if (!arena) return;
+    const S = store.state;
+    $('th-title').textContent = S.asset + ' · perpetual' + (S.live ? ' · ' + utcTime(S.live.at) : '');
+    $('th-sort').textContent = ui.sort ? 'Sorted by ' + SORTS[ui.sort.key].word + ', ' + (ui.sort.dir === 'asc' ? 'ascending' : 'descending') + ', inside each quote group' : 'Venues A–Z inside each quote group';
+    const shownCols = TOGGLEABLE.filter(g => shown(g.key)).reduce((n, g) => n + g.cols, 0);
+    $('cols-count').textContent = 'Columns · ' + shownCols + ' of ' + TOGGLE_COLUMNS;
+    $('cols-btn').classList.toggle('btn--active', shownCols < TOGGLE_COLUMNS);
+    root.querySelectorAll('[data-group]').forEach(row => {
+      const on = shown(row.dataset.group);
+      row.setAttribute('aria-checked', String(on));
+      const box = row.querySelector('.ar-pop__box');
+      box.className = 'ar-pop__box' + (on ? ' ar-pop__box--on' : '');
+      box.textContent = on ? '✕' : '';
+    });
+  }
 
   $('asset').addEventListener('change', e => store.setAsset(e.target.value));
   $('metric').addEventListener('change', e => {
@@ -511,6 +704,7 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
 
   function renderTable() {
     const S = store.state, src = source(store, S);
+    renderTableHead();
     if (!src.targets) {
       $('table').innerHTML = `<div style="padding:14px">${blockFor(src, false)}</div>`;
       $('observation').innerHTML = '';
@@ -518,21 +712,48 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
     }
     registry = createRegistry();
     const rows = buildRows(src.targets, S.now, registry);
-    const groups = [['Identity', 1], ['Quote · ticker call', 2], ['Reference', 1], ['Funding', 1], ['OI · own call', 1], ['Depth · own call', 1], ['Time · ticker', 1], ['Age per call', 1]];
+    const groups = COLUMN_GROUPS.filter(g => shown(g.key));
+    const span = groups.reduce((n, g) => n + g.cols, 0);
+    const sort = arena ? ui.sort : null;
+    const head = (key, label) => {
+      if (!arena) return label;
+      const dir = sort && sort.key === key ? sort.dir : null;
+      return `<button type="button" class="ar-sort" data-sort="${key}" aria-sort="${dir ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}" title="Sort by ${SORTS[key].word}">${label}<span class="ar-sort__ind" aria-hidden="true">${dir === 'desc' ? '▼' : '▲'}</span></button>`;
+    };
+    const thSort = keys => (sort && keys.includes(sort.key) ? ` aria-sort="${sort.dir === 'asc' ? 'ascending' : 'descending'}"` : '');
+    const heads = {
+      identity: '<th class="l sticky">Venue · status</th>',
+      quote: `<th${thSort(['bid', 'ask'])}>${head('bid', 'Bid')} / ${head('ask', 'Ask')}</th><th${thSort(['spread'])}>${head('spread', 'Spread')}</th>`,
+      reference: '<th>Mark / Index</th>',
+      funding: `<th${thSort(['fund'])}>${head('fund', 'Funding')}</th>`,
+      oi: `<th${thSort(['oi'])}>${head('oi', 'Open interest')}</th>`,
+      depth: `<th${thSort(['depth'])}>${head('depth', 'Depth ±25 bps')}</th>`,
+      time: '<th>Venue / received</th>',
+      age: '<th>Age · T / OI / D</th>'
+    };
+    const cells = ({ r, c }) => ({
+      identity: `<td class="venue"><span class="venue__id">${venueMark(r)}<span>${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="${kindClass(c.status.kind)} row-status" data-prov="${c.status.prov}">${kindWord(c.status.kind)}</button></span></span></td>`,
+      quote: pair(c, 'bid', 'ask', true) + td(c.spread, figure(c.spread, 'spread', true)),
+      reference: pair(c, 'mark', 'index', false),
+      funding: td(c.fund, figure(c.fund, 'fund')),
+      oi: td(c.oi, figure(c.oi, 'oi')),
+      depth: td(c.depth, figure({ ...c.depth, unit: '' }, 'depth', true)),
+      time: `<td><button class="fig fig--stack" data-prov="${c.received.prov}"><span class="${c.venueTime.kind === 'MISSING' ? 'faint' : 'muted'}">${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}</span><span>${esc(c.received.text)}</span></button></td>`,
+      age: `<td><div class="fig-chips">${smallChip(c.ageT, 'T')}${smallChip(c.ageO, 'OI')}${smallChip(c.ageD, 'D')}</div></td>`
+    });
+    const hiddenNames = TOGGLEABLE.filter(g => !shown(g.key)).map(g => g.name.toUpperCase());
     $('table').innerHTML = `<div class="scroll-x" style="position:relative"><table class="lm-table">
       <thead>
-        <tr>${groups.map(([label, span], i) => `<th colspan="${span}" class="group${i === 7 ? ' group--age' : ''}">${label}</th>`).join('')}</tr>
-        <tr><th class="l sticky">Venue · status</th><th>Bid / Ask</th><th>Spread</th><th>Mark / Index</th><th>Funding</th><th>Open interest</th><th>Depth ±25 bps</th><th>Venue / received</th><th>Age · T / OI / D</th></tr>
+        <tr>${groups.map(g => `<th colspan="${g.cols}" class="group${g.key === 'age' ? ' group--age' : ''}">${g.head}</th>`).join('')}</tr>
+        <tr>${groups.map(g => heads[g.key]).join('')}</tr>
       </thead>
-      <tbody>${groupByQuote(rows).map(g => `<tr class="quote-row"><th colspan="9"><span>Quoted in ${esc(g.quote)} · ${g.rows.length} venue${g.rows.length === 1 ? '' : 's'}</span></th></tr>` + g.rows.map(({ r, c }) => `<tr>
-        <td class="venue">${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="fresh fresh--small row-status ${kindClass(c.status.kind)}" data-prov="${c.status.prov}">${kindWord(c.status.kind)}</button></td>
-        ${pair(c, 'bid', 'ask', true)}${td(c.spread, figure(c.spread, 'spread', true))}${pair(c, 'mark', 'index', false)}
-        ${td(c.fund, figure(c.fund, 'fund'))}${td(c.oi, figure(c.oi, 'oi'))}${td(c.depth, figure({ ...c.depth, unit: '' }, 'depth', true))}
-        <td><button class="fig fig--stack" data-prov="${c.received.prov}"><span class="${c.venueTime.kind === 'MISSING' ? 'faint' : 'muted'}">${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}</span><span>${esc(c.received.text)}</span></button></td>
-        <td><div class="fig-chips">${smallChip(c.ageT, 'T')}${smallChip(c.ageO, 'OI')}${smallChip(c.ageD, 'D')}</div></td>
-      </tr>`).join('')).join('')}</tbody>
+      <tbody>${groupByQuote(rows).map(g => `<tr class="quote-row"><th colspan="${span}"><span>Quoted in ${esc(g.quote)} · ${g.rows.length} venue${g.rows.length === 1 ? '' : 's'}</span></th></tr>` + sortRows(g.rows, sort).map(x => {
+        const cx = cells(x);
+        return `<tr>${groups.map(gr => cx[gr.key]).join('')}</tr>`;
+      }).join('')).join('')}</tbody>
     </table></div>
-    <div class="panel__foot"><span>Perpetual venues only · grouped by quote currency · USD, USDT, USDC and USDT0 ranked as one · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    <div class="panel__foot">${hiddenNames.length ? `<span>${esc(hiddenNames.join(', '))} HIDDEN</span>` : ''}<span>Perpetual venues only · grouped by quote currency · USD, USDT, USDC and USDT0 ranked as one · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    refreshTip();
 
     const published = rows.filter(x => x.c.fund.kind !== 'MISSING' && x.c.fund.kind !== 'UNSUPPORTED');
     const positive = published.filter(x => x.r.fund > 0).length;
@@ -555,7 +776,7 @@ export function mountFull(root, store, { syncUrl = false } = {}) {
     const last = S.log.filter(l => l.path.startsWith('/snapshot') && l.status === 200).pop();
     $('log-title').textContent = 'Request log' + (last ? ' · ' + last.ms + ' ms · ' + last.kb + ' KB' : '');
     $('log').innerHTML = entries.map(l => `<span class="path">${esc(l.path.length > 70 ? l.path.slice(0, 70) + '…' : l.path)}</span>` +
-      `<span class="${l.status === 200 ? 'muted' : 'fg-stale'}">${l.status ? 'HTTP ' + l.status : esc(l.error)}</span><span class="faint">${l.ms} ms</span><span class="faint">${l.kb ? l.kb + ' KB' : ''}</span>`).join('');
+      `<span class="${l.status === 200 ? 'muted' : 'is-alert'}">${l.status ? 'HTTP ' + l.status : esc(l.error)}</span><span class="faint">${l.ms} ms</span><span class="faint">${l.kb ? l.kb + ' KB' : ''}</span>`).join('');
   }
 
   store.subscribe((S, kind) => {

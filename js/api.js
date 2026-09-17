@@ -189,6 +189,7 @@ export function normalise(t, now) {
 
   return {
     venue: String(t.code || '').toUpperCase(),
+    exchange: seg.exchangeCode || '',
     sym: r.symbol || inst.symbol || '—',
     model: oracle ? 'oracle_vault' : 'orderbook',
     base: r.baseAsset || inst.baseAsset || '',

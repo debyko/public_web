@@ -156,17 +156,17 @@ function renderStatus(S) {
   $('#status-overall').hidden = false;
   const overall = H.overall || 'unknown';
   $('#status-overall-word').textContent = overall;
-  $('#status-overall-word').className = 'fresh ' + (overall === 'ok' ? 'st-live' : 'st-delayed');
+  $('#status-overall-word').className = 'ar-chip ' + (overall === 'ok' ? 'ar-chip--live' : 'ar-chip--delayed');
   $('#status-tag').textContent = sourceTimeText(S.health, store.env);
   $('#status-rows').innerHTML = H.rows.map(r => {
     const kind = !r.fails ? 'live' : r.fails >= 5 ? 'stale' : 'delayed';
     return `<tr>
       <td class="td-venue">${esc(r.code)}</td>
-      <td><span class="fresh st-${kind}">${r.fails ? 'degraded' : 'Collecting'}</span><span class="meta-xs status-note">${esc(r.note)}</span></td>
+      <td><span class="ar-chip ar-chip--${kind}">${r.fails ? 'degraded' : 'Collecting'}</span><span class="meta-xs status-note">${esc(r.note)}</span></td>
       <td class="td-mono r">${r.lastSuccessAt ? utcTime(r.lastSuccessAt).slice(0, 8) + ' · ' + age(r.lastSuccessAge) : '—'}</td>
-      <td class="td-num ${r.fails ? 'fg-stale' : ''}">${fmt(r.fails, 0)}</td>
+      <td class="td-num ${r.fails ? 'is-alert' : ''}">${fmt(r.fails, 0)}</td>
       <td class="td-mono r muted wrap-cell">${r.lastError ? esc((r.lastErrorAge != null ? age(r.lastErrorAge) + ' · ' : '') + r.lastError) : '—'}</td>
-      <td class="td-num ${r.stale ? 'fg-stale' : ''}">${fmt(r.stale, 0)}</td>
+      <td class="td-num ${r.stale ? 'is-alert' : ''}">${fmt(r.stale, 0)}</td>
       <td class="td-mono r">${r.lastSuccessAt ? utcTime(r.lastSuccessAt) : '—'}</td>
     </tr>`;
   }).join('');

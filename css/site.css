@@ -107,33 +107,92 @@ a.btn, a.btn:hover { opacity: 1; }
 .status-chip--sm { height: 17px; padding: 0 5px; font-size: 9px; }
 .status-chip--accent { border-color: var(--dk-accent); background: var(--dk-accent-tint); color: var(--dk-text-accent); }
 
-/* Freshness chips: LIVE / DELAYED / STALE / MISSING / UNSUPPORTED */
-.fresh { display: inline-flex; align-items: center; gap: 7px; height: 20px; padding: 0 7px; border-radius: 2px; border: 1px solid; font: 600 10px/1 var(--dk-font-mono); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
-.fresh__value { font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 12px; }
-.fresh--small { gap: 5px; height: 16px; padding: 0 5px; font-size: 9px; letter-spacing: .1em; }
-.fresh--small .fresh__value { font-size: 11px; }
-.fresh__lbl { font-weight: 400; letter-spacing: 0; color: var(--dk-text-faint); }
-.st-live { color: #1F6B3F; border-color: rgba(31,107,63,.45); background: rgba(31,107,63,.08); }
-.st-delayed { color: #8A5A00; border-color: rgba(138,90,0,.45); background: rgba(138,90,0,.08); }
-.st-stale { color: #9B2C3A; border-color: rgba(155,44,58,.45); background: rgba(155,44,58,.08); }
-.st-missing, .st-unsupported, .st-not-collected { color: var(--dk-text-muted); border-color: var(--dk-border-strong); background: transparent; }
-.fg-live { color: #1F6B3F; } .fg-delayed { color: #8A5A00; } .fg-stale { color: #9B2C3A; } .fg-missing { color: var(--dk-text-muted); }
-
 /* Source tag: where the figures on a panel came from */
 .source-tag { font: 600 9px/1 var(--dk-font-mono); letter-spacing: .14em; text-transform: uppercase; border: 1px solid currentColor; padding: 4px 6px; white-space: nowrap; }
-.source-tag--live { color: #1F6B3F; }
-.source-tag--saved { color: #8A5A00; }
-.source-tag--none { color: #05070C; }
+.source-tag--live { color: var(--dk-text-primary); }
+.source-tag--saved { color: var(--dk-text-muted); border-style: dashed; }
+.source-tag--none { color: var(--dk-text-faint); border-style: dotted; }
+/* A count that needs attention (failures, stale instruments, a failed request): weight, not hue. */
+.is-alert { color: var(--dk-text-primary); font-weight: 600; }
 
 .tag-box { font: 600 10px/1 var(--dk-font-mono); letter-spacing: .14em; text-transform: uppercase; color: #05070C; border: 1px solid #05070C; padding: 4px 6px; }
 .dataset-chip { font: 500 9px/1 var(--dk-font-mono); letter-spacing: .1em; text-transform: uppercase; padding: 3px 5px; border-radius: 2px; border: 1px solid var(--dk-border-hairline); color: var(--dk-text-faint); background: transparent; }
 .dataset-chip--on { color: var(--dk-text-primary); border-color: var(--dk-border-strong); background: var(--dk-surface-subtle); }
 .dataset-chip--more { color: var(--dk-text-muted); border-color: transparent; }
-/* BEST / WORST. The slot is always there and always 41px (WORST is 40.4px), so a mark appearing or leaving moves no column. */
-.rank-slot { display: inline-block; width: 41px; margin-left: 4px; text-align: left; vertical-align: middle; }
-.rank { display: inline-block; font: 600 9px/1 var(--dk-font-mono); letter-spacing: .12em; padding: 2px 3px; border-radius: 2px; border: 1px solid currentColor; }
-.rank--best { color: var(--dk-rank-best); background: var(--dk-rank-best-bg); }
-.rank--worst { color: var(--dk-rank-worst); border-color: var(--dk-rank-worst-line); background: transparent; }
+/* ── Status layer: rank and state, told by form (designer spec "Arena Status Layer", 2026-09-17) ──
+   Green and red are gone from the tables: fill, border weight, border style and a line through the
+   word carry the difference, so every state survives greyscale and colour-vision deficiency.
+   --dk-rank-best / --dk-rank-worst have no consumer any more; the tokens stay defined. */
+.ar-chip{display:inline-flex;align-items:center;gap:6px;height:20px;padding:0 7px;margin:0;
+  border:1px solid transparent;border-radius:2px;background:transparent;
+  font:600 11px/1 var(--dk-font-mono);letter-spacing:.14em;text-transform:uppercase;
+  white-space:nowrap;color:var(--dk-text-muted);vertical-align:middle}
+button.ar-chip{cursor:help}
+.ar-chip__dot{flex:none;width:4px;height:4px;border-radius:50%;background:currentColor}
+.ar-chip__lbl{opacity:.6;letter-spacing:.1em}
+.ar-chip__val{font-weight:400;letter-spacing:.04em;text-transform:none}
+/* LIVE: no border, a 4px dot (drawn here, so no markup has to remember it) — the quietest mark. */
+.ar-chip--live{padding-left:0;border-color:transparent;color:var(--dk-text-muted)}
+.ar-chip--live::before{content:"";flex:none;width:4px;height:4px;border-radius:50%;background:currentColor}
+.ar-chip--delayed{border-color:var(--dk-border-strong);color:var(--dk-text-primary);
+  background:linear-gradient(90deg,var(--dk-paper-200) 0 50%,transparent 50%)}
+.ar-chip--stale{border-color:var(--dk-ink-900);background:var(--dk-ink-900);
+  color:var(--dk-text-invert);text-decoration:line-through;text-decoration-thickness:1px}
+.ar-chip--unsupported{border-color:var(--dk-border-hairline);color:var(--dk-text-muted);
+  background-image:repeating-linear-gradient(45deg,var(--dk-hatch) 0 1px,transparent 1px 5px)}
+.ar-chip--notcollected{border-style:dotted;border-color:var(--dk-border-strong);
+  color:var(--dk-text-faint)}
+/* MISSING is not in the spec's eight: this snapshot carried no value. Solid hairline, faint label —
+   between NOT COLLECTED's dotted line and WORST's muted outline. */
+.ar-chip--missing{border-color:var(--dk-border-hairline);color:var(--dk-text-faint)}
+.ar-chip--best{border-color:var(--dk-accent);background:var(--dk-accent);color:#FFF}
+.ar-chip--worst{border-color:var(--dk-text-muted);color:var(--dk-text-muted)}
+.ar-chip--tie{border-color:var(--dk-accent);background:var(--dk-accent);color:#FFF}
+.ar-chip--tie .ar-chip__x,.ar-chip--worst .ar-chip__x{opacity:.72;font-weight:400;letter-spacing:.02em}
+.ar-chip[data-tip]{cursor:help}
+.ar-rank-slot{display:inline-flex;min-width:56px;justify-content:flex-start;margin-left:8px;vertical-align:middle}
+/* Sortable head: the indicator sits in a reserved slot, so the tracking never shifts */
+.ar-sort{background:none;border:0;padding:0;font:inherit;color:inherit;letter-spacing:inherit;
+  text-transform:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.ar-sort__ind{flex:none;width:9px;text-align:center;font-size:9px;line-height:1;opacity:0;
+  transition:opacity var(--dk-dur-fast) var(--dk-ease-standard)}
+.ar-sort:hover .ar-sort__ind,.ar-sort:focus-visible .ar-sort__ind{opacity:.4}
+.ar-sort[aria-sort="ascending"] .ar-sort__ind,.ar-sort[aria-sort="descending"] .ar-sort__ind{
+  opacity:1;color:var(--dk-text-accent)}
+.ar-sort[aria-sort="ascending"],.ar-sort[aria-sort="descending"]{color:var(--dk-text-primary)}
+/* Column control */
+.ar-cols{position:relative;display:inline-flex}
+.ar-pop{position:absolute;top:calc(100% + 6px);right:0;z-index:5;min-width:236px;
+  background:var(--dk-surface-panel);border:1px solid var(--dk-border-hairline);
+  box-shadow:var(--dk-shadow-popover,0 8px 24px rgba(5,7,12,.12))}
+.ar-pop__row{display:flex;align-items:center;gap:10px;padding:7px 12px;
+  font:400 12px/1 var(--dk-font-mono);letter-spacing:.06em;color:var(--dk-text-primary);
+  border-bottom:1px solid var(--dk-border-hairline)}
+button.ar-pop__row{width:100%;margin:0;background:none;border-width:0 0 1px;text-align:left;cursor:pointer}
+button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
+.ar-pop__row[aria-disabled="true"]{color:var(--dk-text-muted);cursor:default}
+.ar-pop__box{flex:none;width:12px;height:12px;border:1px solid var(--dk-border-strong);
+  display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#FFF}
+.ar-pop__box--on{background:var(--dk-accent);border-color:var(--dk-accent)}
+.ar-pop__row[aria-disabled="true"] .ar-pop__box--on{background:var(--dk-text-faint);border-color:var(--dk-text-faint)}
+.ar-pop__note{margin-left:auto;font-size:10px;color:var(--dk-text-faint)}
+.ar-pop__foot{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;
+  font:600 10px/1 var(--dk-font-mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dk-text-muted)}
+.ar-pop__foot button{background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--dk-text-accent);cursor:pointer}
+.ar-tip{position:fixed;z-index:50;width:236px;padding:9px 11px;pointer-events:none;
+  background:var(--dk-ink-900);color:var(--dk-text-invert);
+  font:400 11px/1.5 var(--dk-font-mono);letter-spacing:.03em;text-transform:none;
+  white-space:normal;text-align:left;
+  box-shadow:var(--dk-shadow-popover,0 8px 24px rgba(5,7,12,.12))}
+.btn--active{border-color:var(--dk-accent)}
+.lm-table-head{flex-wrap:wrap;gap:10px}
+.venue__id{display:flex;align-items:center;gap:9px}
+.venue__mark{flex:none;width:18px;height:18px;object-fit:contain;filter:grayscale(1);opacity:.55}
+/* Sparkline — DESIGNED, NOT WIRED (spec section 4, next task): 72 × 20 beside bid/ask, one 1px
+   stroke #33383F (never the accent), no axis, no label, no fill; a gap in the data breaks the line;
+   a venue with no history gets empty space, never a flat line; range follows the table's control
+   (1 h or 24 h). */
 
 /* ── Form controls (DS Input / Select / SegmentedControl) ───────────────── */
 .field { display: flex; flex-direction: column; gap: 6px; }
@@ -209,6 +268,7 @@ a.btn, a.btn:hover { opacity: 1; }
 .fig--stack { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 5px 6px; font-size: 11px; }
 .fig-chips { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 4px 6px; }
 .fig-chips button { margin: 0; cursor: help; }
+.fig-chips .ar-chip { font-size: 10px; }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
 .site-header { position: sticky; top: 0; z-index: 30; background: #F7F7F8; border-bottom: 1px solid var(--dk-border-hairline); }
@@ -379,6 +439,9 @@ a.credit__brand:hover { opacity: .65; }
 .lm-chart__plot { position: relative; }
 .lm-chart__plot svg { width: 100%; height: 240px; }
 .lm-chart__plot .grid { stroke: #E6E6E9; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.lm-compact .lm-chart__plot svg, .lm-compact .lm-chart__ylabels { height: 120px; }
+/* The legend sits beside the half-height chart and scrolls inside the row the chart sets. */
+.lm-compact .lm-legend { height: 0; min-height: 100%; overflow-y: auto; box-sizing: border-box; }
 .lm-chart__plot path { fill: none; stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .lm-chart__ylabels { position: absolute; right: 0; top: 0; display: flex; flex-direction: column; justify-content: space-between; height: 240px; pointer-events: none; }
 .lm-chart__ylabels span { font: 400 10px/1 var(--dk-font-mono); color: var(--dk-text-faint); background: var(--dk-surface-panel); padding: 1px 3px; align-self: flex-end; }
@@ -471,6 +534,7 @@ a.credit__brand:hover { opacity: .65; }
   .split, .workstation, .agent-console, .site-footer__cols, .lm-chart-area { grid-template-columns: minmax(0, 1fr) !important; }
   .workstation > .cell--left, .agent-console__side { border-right: 0; }
   .lm-legend { border-left: 0; border-top: 1px solid var(--dk-border-hairline); }
+  .lm-compact .lm-legend { height: auto; min-height: 0; max-height: 240px; }
   .h1 { font-size: 32px; }
   .section { padding: 56px 0; }
   .offer, .pricing-row { grid-template-columns: minmax(0, 1fr) auto; }

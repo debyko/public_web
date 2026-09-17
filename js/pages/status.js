@@ -37,7 +37,7 @@ function renderOverall(S) {
   const failing = collectors.filter(c => (c.consecutiveFailures || 0) > 0).length;
 
   const overall = String(S.health.data.status || '').toLowerCase() || 'unknown';
-  overallEl.innerHTML = `<span class="fresh ${overall === 'ok' ? 'st-live' : 'st-delayed'}">${esc(overall)}</span>`;
+  overallEl.innerHTML = `<span class="ar-chip ${overall === 'ok' ? 'ar-chip--live' : 'ar-chip--delayed'}">${esc(overall)}</span>`;
 
   countsEl.innerHTML = `
     <div class="fact"><span class="fact__k">Venues reporting</span><span class="fact__v">${fmt(venues, 0)}</span></div>
@@ -84,20 +84,20 @@ function renderCollectors(S) {
     const open = expandedVenues.has(v.code);
     const venueRow = `<tr>
       <td><button class="row-toggle" type="button" aria-expanded="${open}" data-venue="${esc(v.code)}">${icon('chevron-down', 14)}${esc(v.code.toUpperCase())}</button></td>
-      <td><span class="fresh st-${kindOf(v.fails)}">${v.fails ? 'degraded' : 'Collecting'}</span></td>
+      <td><span class="ar-chip ar-chip--${kindOf(v.fails)}">${v.fails ? 'degraded' : 'Collecting'}</span></td>
       <td class="td-mono r">${lastSuccessAt ? age(lastSuccessAge) : '—'}</td>
-      <td class="td-num ${v.fails ? 'fg-stale' : ''}">${fmt(v.fails, 0)}</td>
+      <td class="td-num ${v.fails ? 'is-alert' : ''}">${fmt(v.fails, 0)}</td>
       <td class="td-mono">${worstError ? esc(errorText(worstError)) : '—'}</td>
-      <td class="td-num ${stale ? 'fg-stale' : ''}">${fmt(stale, 0)}</td>
+      <td class="td-num ${stale ? 'is-alert' : ''}">${fmt(stale, 0)}</td>
     </tr>`;
 
     const detailRows = v.cols.map(c => {
       const err = errorText(c);
       return `<tr class="is-detail" ${open ? '' : 'hidden'} data-venue="${esc(v.code)}">
         <td class="td-mono">${esc(c.collector)}</td>
-        <td><span class="fresh st-${kindOf(c.consecutiveFailures || 0)}">${c.consecutiveFailures ? 'degraded' : 'Collecting'}</span></td>
+        <td><span class="ar-chip ar-chip--${kindOf(c.consecutiveFailures || 0)}">${c.consecutiveFailures ? 'degraded' : 'Collecting'}</span></td>
         <td class="td-mono r">${c.lastSuccessAt ? age(collectorAge(c)) : '—'}</td>
-        <td class="td-num ${c.consecutiveFailures ? 'fg-stale' : ''}">${fmt(c.consecutiveFailures || 0, 0)}</td>
+        <td class="td-num ${c.consecutiveFailures ? 'is-alert' : ''}">${fmt(c.consecutiveFailures || 0, 0)}</td>
         <td class="td-mono">${err ? esc(err) : '—'}</td>
         <td class="td-num faint">—</td>
       </tr>`;

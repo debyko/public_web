@@ -7,7 +7,7 @@ import { mountFull } from '../live-market.js';
 const store = createStore();
 const params = new URLSearchParams(location.search);
 
-mountFull(document.getElementById('arena-live'), store, { syncUrl: true });
+mountFull(document.getElementById('arena-live'), store, { syncUrl: true, arena: true });
 
 // The note reads "Requesting" (set in the markup) until the same universe load mountFull's own
 // asset selector uses resolves — one /v1/exchanges call, not a second one of our own.

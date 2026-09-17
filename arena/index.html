@@ -25,13 +25,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="../css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="../css/site.css?v=1ce05787b7">
+  <link rel="stylesheet" href="../css/site.css?v=82052a6a96">
   <link rel="stylesheet" href="../css/pages.css?v=2268485041">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=05bdf0d6e1","/js/format.js":"/js/format.js?v=c25768a237","/js/home.js":"/js/home.js?v=043384e53d","/js/live-market.js":"/js/live-market.js?v=50e45ef7d0","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=838d5b3154","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=5d4b30aad4"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=3e2f1053ff","/js/format.js":"/js/format.js?v=b1a74297bb","/js/home.js":"/js/home.js?v=01910247d8","/js/live-market.js":"/js/live-market.js?v=9c3bc05e6a","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53"}}</script>
   <!-- importmap:end -->
   <script defer src="../js/nav.js?v=43d80b9eea"></script>
-  <script type="module" src="../js/pages/arena.js?v=838d5b3154"></script>
+  <script type="module" src="../js/pages/arena.js?v=38b1213083"></script>
 </head>
 <body>
 
@@ -128,7 +128,7 @@
     <div class="panel">
       <div class="panel__head">
         <span class="label label--accent">Live comparison · GET /v1/snapshot per venue</span>
-        <span class="meta-xs">Instrument · metric · range · venue toggles · source and last-response time</span>
+        <span class="meta-xs">Instrument · metric · range · columns · sort · venue toggles · source and last-response time</span>
       </div>
       <div id="arena-live">Requesting the latest snapshot</div>
       <div class="panel__foot"><span>Every figure opens its provenance: venue, instrument, clocks, age, and the formula where the value is derived</span><span>Table scrolls sideways inside the panel · the venue column stays</span></div>
@@ -149,14 +149,16 @@
     </div>
     <div class="stack gap-18">
       <div class="notes-3">
-        <div><span class="rank rank--best">BEST</span> <span class="rank rank--worst">WORST</span> rank four columns only: a higher bid, a lower ask, a narrower spread, and more depth taken as bid plus ask. Mark, index, funding and open interest are never ranked.</div>
-        <div>A row is compared only if the venue runs an order book, its quote currency is USD, USDT, USDC or USDT0, and the value is LIVE. With fewer than two such values, or when all of them are equal, no rank is shown.</div>
+        <div><span class="ar-chip ar-chip--best">Best</span> <span class="ar-chip ar-chip--worst">Worst</span> rank four columns only: a higher bid, a lower ask, a narrower spread, and more depth taken as bid plus ask. Mark, index, funding and open interest are never ranked.</div>
+        <div>A row is compared only if the venue runs an order book, its quote currency is USD, USDT, USDC or USDT0, and the value is LIVE. With fewer than two such values, or when all of them are equal, no rank is shown. Venues that share the best value each carry BEST ×n; hover the mark to see who with.</div>
         <div>A hatched cell means the venue publishes no such field — an oracle-vault market has no order book. A dash means this snapshot carried no value. A dimmed figure is stale.</div>
       </div>
       <ul class="ruled ruled--grid ruled--min-200">
         <li>Spread is compared as computed, before the two-decimal display</li>
         <li>USD, USDT, USDC and USDT0 count as one currency</li>
         <li>The rank slot is always reserved, so no column moves</li>
+        <li>Sorting reorders venues inside their quote group, never across groups</li>
+        <li>Rank and state are told by form, not colour: they read the same in greyscale</li>
         <li>Lines on the chart never bridge a gap</li>
       </ul>
     </div>
