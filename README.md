@@ -24,6 +24,14 @@ python3 -m http.server 8080
 
 Open http://localhost:8080/. The page reads the production API by default; add `?api=test` to read the test contour.
 
+## Before committing changes to css/ or js/
+
+```bash
+node tools/stamp-assets.mjs
+```
+
+Cloudflare serves `css/` and `js/` with a four-hour browser cache, so a changed file needs a new URL. The script appends `?v=<content hash>` to every stylesheet and script a page links, and rewrites the import map in each page so modules imported by other modules get the new URL too. Running it twice changes nothing.
+
 ## Data
 
 Every live figure comes from the public CryptoSmith X API (`https://cryptosmithx.blynai.eu/v1`, reference at `/scalar/v1`):
