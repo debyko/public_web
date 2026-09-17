@@ -58,7 +58,10 @@ function cell(reg, r, key, val, unit, group, opts = {}) {
   };
 }
 
-function buildRows(targets, now, reg) {
+/** @param {{ limit?: number, byQuote?: boolean }} opts limit: only the first n venues are kept, and
+ *  ranked among themselves — a preview's marks are about the rows it shows. byQuote: rank inside each
+ *  quote-currency group, as the grouped table shows them. */
+function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}) {
   const rows = targets.map(t => normalise(t, now)).filter(r => r.venue).map(r => {
     const mid = typeof r.bid === 'number' && typeof r.ask === 'number' ? (r.bid + r.ask) / 2 : null;
     const spreadVal = mid ? (r.ask - r.bid) / mid * 1e4 : r.bid === UNSUP ? UNSUP : null;
@@ -92,9 +95,13 @@ function buildRows(targets, now, reg) {
     c.status = { kind: worst, prov: reg.add({ title: 'Status', lines: [{ k: 'Venue', v: r.venue }, { k: 'Status', v: worst + ' · the worst of the three call groups in this row' }] }) };
     return { r, c, spreadVal };
   });
-  alignDecimals(rows);
-  rank(rows);
-  return rows;
+  const kept = rows.slice(0, limit);
+  alignDecimals(kept);
+  if (byQuote) groupByQuote(kept).forEach(g => rank(g.rows, g.quote));
+  else rank(kept.filter(x => USD_LIKE.test(x.r.quote)), null);
+  // Rows outside any ranking still say why.
+  for (const x of kept) for (const col of RANKED) if (!x.c[col.key].lines.some(l => l.k === 'Rank')) x.c[col.key].lines.push({ k: 'Rank', v: 'not ranked · quoted in ' + (x.r.quote || 'an unknown currency') + ', not USD, USDT or USDC' });
+  return kept;
 }
 
 /** 18,966,819 → 18.97M: depth is read as an order of magnitude; the exact figure is in the provenance. */
@@ -150,16 +157,22 @@ const RANKED = [
   { key: 'spread', word: 'spread', value: x => (typeof x.spreadVal === 'number' ? x.spreadVal : null), better: 'min' },
   { key: 'depth', word: 'depth', value: x => (typeof x.r.db === 'number' && typeof x.r.da === 'number' ? x.r.db + x.r.da : null), better: 'max' }
 ];
-/** USD, USDT and USDC (and USDT0) are compared as one currency; any other quote is not ranked. */
+/** The ungrouped previews compare USD, USDT and USDC (and USDT0) as one currency; the grouped table
+ *  ranks inside each quote group. */
 const USD_LIKE = /^USD/;
+/** A value is ranked while it is LIVE or DELAYED. Only STALE is left out: excluding DELAYED made the
+ *  marks jump between venues every few seconds as ticker ages crossed the first threshold. */
+const RANKABLE = new Set(['LIVE', 'DELAYED']);
 
-function rank(rows) {
+/** @param rows the venues compared with each other  @param quote their shared quote currency, or null
+ *  for the USD-like previews. Every group of two or more eligible venues with differing values gets
+ *  its own BEST and WORST. */
+function rank(rows, quote) {
   for (const col of RANKED) {
     const why = x => {
       const cellKind = x.c[col.key].kind;
       if (x.r.model !== 'orderbook') return 'oracle/vault market, not an order book';
-      if (!USD_LIKE.test(x.r.quote)) return 'quoted in ' + (x.r.quote || 'an unknown currency') + ', not USD, USDT or USDC';
-      if (cellKind !== 'LIVE') return 'value is ' + kindWord(cellKind).toLowerCase();
+      if (!RANKABLE.has(cellKind)) return 'value is ' + kindWord(cellKind).toLowerCase();
       if (typeof col.value(x) !== 'number') return 'no value in this snapshot';
       return null;
     };
@@ -169,11 +182,12 @@ function rank(rows) {
     const bestValue = col.better === 'max' ? hi : lo, worstValue = col.better === 'max' ? lo : hi;
     // Every venue holding the best (or worst) value carries the mark; the count and the tooltip say
     // who shares it. A tie of everything is not a ranking, so hi === lo shows nothing at all.
+    const scope = quote ? 'quoted in ' + quote : 'in this preview · USD, USDT and USDC compared as one';
     const holders = { best: eligible.filter(x => col.value(x) === bestValue), worst: eligible.filter(x => col.value(x) === worstValue) };
     for (const x of rows) {
       const cell = x.c[col.key], reason = why(x);
       if (reason) { cell.lines.push({ k: 'Rank', v: 'not ranked · ' + reason }); continue; }
-      if (eligible.length < 2 || hi === lo) { cell.lines.push({ k: 'Rank', v: 'not ranked · fewer than two different live values to compare' }); continue; }
+      if (eligible.length < 2 || hi === lo) { cell.lines.push({ k: 'Rank', v: 'not ranked · fewer than two different values to compare ' + scope }); continue; }
       const v = col.value(x);
       cell.rank = v === bestValue ? 'best' : v === worstValue ? 'worst' : null;
       let shared = '';
@@ -183,7 +197,7 @@ function rank(rows) {
         cell.tip = (cell.rank === 'best' ? 'Best ' : 'Worst ') + col.word + ' shared with ' + listWords(others) + ' at ' + cell.text.trim() + (cell.unit ? ' ' + cell.unit : '');
         shared = ' · shared with ' + listWords(others);
       }
-      cell.lines.push({ k: 'Rank', v: (cell.rank ? cell.rank.toUpperCase() + shared + ' · ' : '') + 'among ' + eligible.length + ' live order-book venues · USD, USDT and USDC compared as one' });
+      cell.lines.push({ k: 'Rank', v: (cell.rank ? cell.rank.toUpperCase() + shared + ' · ' : '') + 'among ' + eligible.length + ' order-book venues ' + scope });
     }
   }
 }
@@ -214,7 +228,22 @@ const smallChip = (x, lbl) => `<button class="${kindClass(x.kind)}" data-prov="$
 /** Venues with a square mark in assets/venues (see SOURCES.md there). Lockups with no separable
  *  symbol — Bybit, Coinbase, dYdX, OKX, Synthetix — and Nado, which has no asset, get the name only. */
 const VENUE_MARKS = new Set(['aster', 'avantis', 'binance', 'bitget', 'deribit', 'gate', 'gmx', 'hyperliquid', 'kraken', 'mexc', 'weex']);
-const venueMark = r => (VENUE_MARKS.has(r.exchange) ? `<img class="venue__mark" src="/assets/venues/mark-${r.exchange}.svg" alt="" width="18" height="18" loading="lazy">` : '');
+// The table re-renders every second; an <img> recreated each time flickers while it reloads. Each mark
+// is fetched once and inlined as SVG, which paints with the row. Until it arrives the slot is empty
+// (same 18px, so nothing moves) and the next render fills it.
+const markSvg = new Map();
+function venueMark(r) {
+  const code = r.exchange;
+  if (!VENUE_MARKS.has(code)) return '';
+  if (!markSvg.has(code)) {
+    markSvg.set(code, '');
+    fetch('/assets/venues/mark-' + code + '.svg')
+      .then(res => (res.ok ? res.text() : ''))
+      .then(svg => markSvg.set(code, svg.replace('<svg', '<svg class="venue__mark" aria-hidden="true" focusable="false"')))
+      .catch(() => {});
+  }
+  return markSvg.get(code) || '<span class="venue__mark"></span>';
+}
 
 // ── Source line shared by every block ───────────────────────────────────────────────────────
 
@@ -350,7 +379,7 @@ export function mountSlice(root, store, onFullComparison) {
     $('line').textContent = src.line;
     if (!src.targets) { $('body').innerHTML = `<div style="padding:14px">${blockFor(src, true)}</div>`; return; }
     registry = createRegistry();
-    const rows = buildRows(src.targets, S.now, registry).slice(0, 5);
+    const rows = buildRows(src.targets, S.now, registry, { limit: 5 });
     $('body').innerHTML = `<div class="scroll-x"><table class="slice-table lm-table">
       <thead><tr><th class="l">Venue · instrument</th><th>Bid / Ask</th><th>Spread</th><th>Funding · interval</th><th>Age · status</th></tr></thead>
       <tbody>${rows.map(({ r, c }) => `<tr><td class="venue-cell">${esc(r.venue)}<small>${esc(r.sym)}</small></td>` +
@@ -399,11 +428,11 @@ export function mountArena(root, store) {
     $('tag').className = 'source-tag ' + src.tagClass;
     if (!src.targets) { $('body').innerHTML = `<div style="padding:14px">${blockFor(src, true)}</div>`; return; }
     registry = createRegistry();
-    const rows = buildRows(src.targets, S.now, registry);
+    const rows = buildRows(src.targets, S.now, registry, { limit: 6 });
     const byVenue = new Map((sparks.list || []).map(s => [s.venue, s]));
     $('body').innerHTML = `<div class="scroll-x"><table class="tbl arena-table min-640">
       <thead><tr><th>Venue</th><th class="r">Mark</th><th class="r">Spread</th><th class="r">24 h</th><th class="r">Funding</th><th class="r">Age · P / D</th></tr></thead>
-      <tbody>${rows.slice(0, 6).map(({ r, c }) => {
+      <tbody>${rows.map(({ r, c }) => {
         const s = byVenue.get(r.venue);
         const spark = !sparks.list ? '<span class="spark-note">requesting</span>' : !s ? '' : s.failed ? '<span class="spark-note">no answer</span>' : s.points.length > 1 ? sparkline(s.points.slice(-24)) : '<span class="spark-note">no bars</span>';
         return `<tr><td class="venue-cell">${esc(r.venue)}<small>${esc(r.sym)}</small></td>` +
@@ -711,7 +740,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       return;
     }
     registry = createRegistry();
-    const rows = buildRows(src.targets, S.now, registry);
+    const rows = buildRows(src.targets, S.now, registry, { byQuote: true });
     const groups = COLUMN_GROUPS.filter(g => shown(g.key));
     const span = groups.reduce((n, g) => n + g.cols, 0);
     const sort = arena ? ui.sort : null;
@@ -752,7 +781,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
         return `<tr>${groups.map(gr => cx[gr.key]).join('')}</tr>`;
       }).join('')).join('')}</tbody>
     </table></div>
-    <div class="panel__foot">${hiddenNames.length ? `<span>${esc(hiddenNames.join(', '))} HIDDEN</span>` : ''}<span>Perpetual venues only · grouped by quote currency · USD, USDT, USDC and USDT0 ranked as one · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    <div class="panel__foot">${hiddenNames.length ? `<span>${esc(hiddenNames.join(', '))} HIDDEN</span>` : ''}<span>Perpetual venues only · grouped by quote currency · BEST and WORST inside each quote group · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
     refreshTip();
 
     const published = rows.filter(x => x.c.fund.kind !== 'MISSING' && x.c.fund.kind !== 'UNSUPPORTED');

@@ -25,9 +25,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=82052a6a96">
+  <link rel="stylesheet" href="css/site.css?v=d11e2a3596">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=3e2f1053ff","/js/format.js":"/js/format.js?v=b1a74297bb","/js/home.js":"/js/home.js?v=01910247d8","/js/live-market.js":"/js/live-market.js?v=9c3bc05e6a","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=3e2f1053ff","/js/format.js":"/js/format.js?v=b1a74297bb","/js/home.js":"/js/home.js?v=01910247d8","/js/live-market.js":"/js/live-market.js?v=fe1ac06334","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53"}}</script>
   <!-- importmap:end -->
   <script type="module" src="js/home.js?v=01910247d8"></script>
 </head>
@@ -189,7 +189,7 @@
     <div class="stack gap-14">
       <div id="live-arena" style="min-width:0"></div>
       <div class="notes-3">
-        <div><span class="ar-chip ar-chip--best">Best</span> <span class="ar-chip ar-chip--worst">Worst</span> rank live order-book figures only; USD, USDT and USDC are compared as one currency.</div>
+        <div><span class="ar-chip ar-chip--best">Best</span> <span class="ar-chip ar-chip--worst">Worst</span> rank the order-book figures shown here that are not stale; USD, USDT and USDC are compared as one currency.</div>
         <div>Hatched cells: the venue publishes no such field. An oracle-vault market has no book, so no spread.</div>
         <div>Two ages per row here — price and depth arrive by separate calls.</div>
       </div>
@@ -540,7 +540,7 @@
       <div><span class="method-grid__n">04</span><span class="method-grid__t">Age and status</span><span class="method-grid__b">Age is now minus received. LIVE, DELAYED and STALE are computed per call against that call's expected cadence, set by the collector.</span></div>
       <div><span class="method-grid__n">05</span><span class="method-grid__t">Gaps vs not collected yet</span><span class="method-grid__b">A gap is a period inside collection with no observation. Not collected yet is a period before collection began. They look different and are named differently.</span></div>
       <div><span class="method-grid__n">06</span><span class="method-grid__t">Derived values</span><span class="method-grid__b">Spread = (ask − bid) / mid × 10,000. OI notional = OI × mark. Depth bands within 10 / 25 / 50 bps of a stated reference. Each shows its inputs.</span></div>
-      <div><span class="method-grid__n">07</span><span class="method-grid__t">When a comparison is valid</span><span class="method-grid__b">BEST and WORST rank bid, ask, spread and depth among venues whose value is present, live and from an order book, with USD, USDT and USDC treated as one currency. A figure left out says why in its provenance.</span></div>
+      <div><span class="method-grid__n">07</span><span class="method-grid__t">When a comparison is valid</span><span class="method-grid__b">BEST and WORST rank bid, ask, spread and depth among venues whose value is present, not stale and from an order book, inside each quote-currency group. A figure left out says why in its provenance.</span></div>
       <div><span class="method-grid__n">08</span><span class="method-grid__t">What the platform cannot know</span><span class="method-grid__b">Anything a venue does not publish, anything between two observations, and anything before collection started.</span></div>
       <div><span class="method-grid__n">09</span><span class="method-grid__t">Venue-reported vs derived</span><span class="method-grid__b">Bid, ask, mark, index, funding and open interest are venue-reported. Spread, notional and depth bands are derived and say so.</span></div>
     </div>

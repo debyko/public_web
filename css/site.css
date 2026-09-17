@@ -188,7 +188,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .btn--active{border-color:var(--dk-accent)}
 .lm-table-head{flex-wrap:wrap;gap:10px}
 .venue__id{display:flex;align-items:center;gap:9px}
-.venue__mark{flex:none;width:18px;height:18px;object-fit:contain;filter:grayscale(1);opacity:.55}
+.venue__mark{flex:none;display:block;width:18px;height:18px;filter:grayscale(1);opacity:.55}
 /* Sparkline — DESIGNED, NOT WIRED (spec section 4, next task): 72 × 20 beside bid/ask, one 1px
    stroke #33383F (never the accent), no axis, no label, no fill; a gap in the data breaks the line;
    a venue with no history gets empty space, never a flat line; range follows the table's control
