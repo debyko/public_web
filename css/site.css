@@ -151,6 +151,7 @@ button.ar-chip{cursor:help}
 .ar-chip--tie .ar-chip__x,.ar-chip--worst .ar-chip__x{opacity:.72;font-weight:400;letter-spacing:.02em}
 .ar-chip[data-tip]{cursor:help}
 .ar-rank-slot{display:inline-flex;min-width:56px;justify-content:flex-start;margin-left:8px;vertical-align:middle}
+.ar-rank-slot--side{min-width:92px}
 /* Sortable head: the indicator sits in a reserved slot, so the tracking never shifts */
 .ar-sort{background:none;border:0;padding:0;font:inherit;color:inherit;letter-spacing:inherit;
   text-transform:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}

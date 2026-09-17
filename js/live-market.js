@@ -160,9 +160,10 @@ const RANKED = [
 /** The ungrouped previews compare USD, USDT and USDC (and USDT0) as one currency; the grouped table
  *  ranks inside each quote group. */
 const USD_LIKE = /^USD/;
-/** A value is ranked while it is LIVE or DELAYED. Only STALE is left out: excluding DELAYED made the
- *  marks jump between venues every few seconds as ticker ages crossed the first threshold. */
-const RANKABLE = new Set(['LIVE', 'DELAYED']);
+/** Only LIVE values are ranked. DELAYED ones were tried and dropped: a quote 20 s old sits away from
+ *  the market and kept winning "best ask" precisely because it was old. The marks move between venues
+ *  as tickers cross the threshold — that is the honest reading. */
+const RANKABLE = new Set(['LIVE']);
 
 /** @param rows the venues compared with each other  @param quote their shared quote currency, or null
  *  for the USD-like previews. Every group of two or more eligible venues with differing values gets
@@ -207,8 +208,11 @@ const listWords = names => (names.length < 2 ? names.join('') : names.slice(0, -
 
 /** The mark always takes the same room, present or not, so a mark coming or going moves nothing
  *  (a tie's count is the one exception: BEST ×2 is wider than the 56px slot). */
-const rankSlot = x => `<span class="ar-rank-slot">${x.rank
-  ? `<span class="ar-chip ar-chip--${x.tie && x.rank === 'best' ? 'tie' : x.rank}"${x.tip ? ` data-tip="${esc(x.tip)}"` : ''}>${x.rank === 'best' ? 'Best' : 'Worst'}${x.tie ? `<span class="ar-chip__x">×${x.tie}</span>` : ''}</span>`
+// Bid and ask share one cell, so their marks name the side: "Best bid" over "Worst ask" reads as two
+// facts, "Best" over "Worst" read as a contradiction.
+const SIDE_WORD = { bid: ' bid', ask: ' ask' };
+const rankSlot = (x, col) => `<span class="ar-rank-slot${SIDE_WORD[col] ? ' ar-rank-slot--side' : ''}">${x.rank
+  ? `<span class="ar-chip ar-chip--${x.tie && x.rank === 'best' ? 'tie' : x.rank}"${x.tip ? ` data-tip="${esc(x.tip)}"` : ''}>${x.rank === 'best' ? 'Best' : 'Worst'}${SIDE_WORD[col] || ''}${x.tie ? `<span class="ar-chip__x">×${x.tie}</span>` : ''}</span>`
   : ''}</span>`;
 
 // ── Cell markup ─────────────────────────────────────────────────────────────────────────────
@@ -218,7 +222,7 @@ const pair = (c, top, bottom, ranked) => `<td class="${c[top].hatch ? 'dk-hatch'
 
 /** Units get a fixed width per column (USD, USDT, USDT0 …), so the digits line up instead of waving. */
 const UNIT_WIDTH = { bid: 'u5', ask: 'u5', mark: 'u5', index: 'u5', spread: 'u3', fund: 'u7', oi: 'u9' };
-const figure = (x, col, ranked = false) => `<button class="fig ${x.state}" data-prov="${x.prov}">${esc(x.text)}<span class="fig__unit ${UNIT_WIDTH[col] || ''}">${esc(x.unit)}</span>${ranked ? rankSlot(x) : ''}</button>`;
+const figure = (x, col, ranked = false) => `<button class="fig ${x.state}" data-prov="${x.prov}">${esc(x.text)}<span class="fig__unit ${UNIT_WIDTH[col] || ''}">${esc(x.unit)}</span>${ranked ? rankSlot(x, col) : ''}</button>`;
 const td = (x, inner) => `<td class="${x.hatch ? 'dk-hatch' : ''}">${inner}</td>`;
 const freshChip = (x, value) => `<span class="${kindClass(x.kind)}"><span class="ar-chip__val">${esc(value)}</span>${kindWord(x.kind)}</span>`;
 const chipCell = x => `<button class="fig fig--chip" data-prov="${x.prov}">${freshChip(x, x.text)}</button>`;
