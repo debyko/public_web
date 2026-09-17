@@ -1,6 +1,6 @@
 # debyko.com
 
-Static site. No build step, no framework, no runtime dependencies beyond two Google Fonts.
+Static site. No build step, no framework. At run time it loads two Google Fonts and nothing else from another origin; the one third-party library (Lightweight Charts, Apache 2.0) is self-hosted — see THIRD_PARTY_NOTICES.md.
 
 ## Layout
 
@@ -12,6 +12,8 @@ js/home.js            entry point: navigation, dialogs, health and coverage bloc
 js/live-market.js     live blocks: hero slice, full comparison with chart, Arena table
 js/api.js             data layer for the CryptoSmith X API, shared poller
 js/format.js          number, age and time formatting; icons; state blocks
+js/arena-chart.js     Arena history chart on Lightweight Charts
+js/vendor/            third-party code, self-hosted (see THIRD_PARTY_NOTICES.md)
 assets/               logo lock-ups (SVG)
 data/saved/           optional saved API responses, shown only when a live call fails
 ```

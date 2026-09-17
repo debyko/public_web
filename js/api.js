@@ -260,7 +260,7 @@ export async function loadSeries(base, targets, metric, range, log) {
       const bars = (r.data.series && (r.data.series[t.inst.symbol] || Object.values(r.data.series)[0])) || [];
       const warning = (r.data.warnings || [])[0];
       const points = bars
-        .map(b => ({ t: Date.parse(b.openTime), v: num(b.close) }))
+        .map(b => ({ t: Date.parse(b.openTime), v: num(b.close), o: num(b.open), h: num(b.high), l: num(b.low) }))
         .filter(p => !isNaN(p.t) && p.v != null && p.t >= now - rg.ms);
       return { venue, points, unsupported: !points.length && /publish/i.test(String(warning || '')), warning };
     }
@@ -450,15 +450,29 @@ export function createStore() {
     else set({ loading: false }, 'snapshot');
   };
 
-  store.loadSeries = async (metric, range) => {
+  /** quiet: a refresh of the series already on screen — no loading state, so the chart keeps
+   *  drawing and applies only what changed. */
+  store.loadSeries = async (metric, range, { quiet = false } = {}) => {
     const key = store.state.asset + '|' + metric + '|' + range;
     const plan = store.state.plan;
     if (!plan) return;
-    set({ series: { key, loading: true } }, 'series');
+    if (quiet && (!store.state.series || store.state.series.key !== key || store.state.series.loading)) return;
+    if (!quiet) set({ series: { key, loading: true } }, 'series');
     const log = [];
     const series = await loadSeries(base, plan, metric, range, log);
     if (!store.state.series || store.state.series.key !== key) return;
-    set({ series: { key, loading: false, list: series }, log: keepLog(log) }, 'series');
+    set({ series: { key, loading: false, list: series, refreshed: quiet }, log: keepLog(log) }, 'series');
+  };
+
+  /** Trade-price history for one venue, for the in-row sparkline. Not part of state: the table asks
+   *  for the rows it can see and caches the answers itself. */
+  store.loadVenueSeries = async (code, range) => {
+    const target = (store.state.plan || []).find(t => t.code === code);
+    if (!target) return null;
+    const log = [];
+    const [s] = await loadSeries(base, [target], 'Trade price', range, log);
+    store.state = { ...store.state, log: keepLog(log) };
+    return s;
   };
 
   /** initialAsset: what Arena's ?asset= asked for, unvalidated. Used only if the loaded universe

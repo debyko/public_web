@@ -3,6 +3,7 @@
 
 import { esc, fmt, age, utcTime, utcMinute, icon, stateBlock } from './format.js';
 import { UNSUP, NOTCOL, METRICS, RANGES, normalise, loadSeries } from './api.js';
+import { createArenaChart } from './arena-chart.js';
 
 const RANK = { LIVE: 0, DELAYED: 1, STALE: 2, MISSING: 3 };
 const STROKES = [
@@ -10,6 +11,28 @@ const STROKES = [
   { stroke: '#05070C', dash: '4 3' }, { stroke: '#5A6172', dash: '4 3' }, { stroke: '#8A8E98', dash: '4 3' }
 ];
 /** The status-layer chip class for a state: NOT_COLLECTED → ar-chip--notcollected. */
+/** The same seven line styles for the Arena chart, as theme tokens rather than hex, so the lines
+ *  follow a dark theme. Order matches STROKES. */
+const ARENA_STYLES = [
+  { color: 'accent', dash: false }, { color: 'ink', dash: false }, { color: 'muted', dash: false }, { color: 'faint', dash: false },
+  { color: 'ink', dash: true }, { color: 'muted', dash: true }, { color: 'faint', dash: true }
+];
+const STYLE_VAR = { accent: 'var(--dk-accent)', ink: 'var(--dk-text-primary)', muted: 'var(--dk-text-muted)', faint: 'var(--dk-text-faint)' };
+
+/** In-row sparkline: 72 × 20, one 1px neutral stroke, no axis, label or fill. x follows time, so a
+ *  gap is empty space, and a step over three times the usual one breaks the line. Fewer than two
+ *  points is an empty cell — never a flat line. */
+function sparkSvg(points) {
+  if (!points || points.length < 2) return '';
+  const t0 = points[0].t, t1 = points[points.length - 1].t, span = t1 - t0 || 1;
+  const vals = points.map(p => p.v), lo = Math.min(...vals), hi = Math.max(...vals), vs = hi - lo || 1;
+  const steps = points.slice(1).map((p, i) => p.t - points[i].t).sort((a, b) => a - b);
+  const usual = steps[Math.floor(steps.length / 2)] || Infinity;
+  const d = points.map((p, i) => ((i === 0 || p.t - points[i - 1].t > usual * 3) ? 'M' : 'L') +
+    ((p.t - t0) / span * 72).toFixed(1) + ' ' + (19.5 - (p.v - lo) / vs * 19).toFixed(1)).join(' ');
+  return `<svg class="ar-spark" width="72" height="20" viewBox="0 0 72 20" aria-hidden="true"><path d="${d}"/></svg>`;
+}
+
 const kindClass = kind => 'ar-chip ar-chip--' + kind.toLowerCase().replace(/_/g, '');
 /** The word a chip prints: NOT_COLLECTED reads as two words. */
 const kindWord = kind => kind.replace(/_/g, ' ');
@@ -461,7 +484,7 @@ export function mountArena(root, store) {
  *  the seven columns between the two locked groups. */
 const COLUMN_GROUPS = [
   { key: 'identity', name: 'Identity', head: 'Identity', note: 'locked', locked: true, cols: 1 },
-  { key: 'quote', name: 'Quote', head: 'Quote · ticker call', note: 'bid, ask, spread', cols: 2 },
+  { key: 'quote', name: 'Quote', head: 'Quote · ticker call', note: 'bid, ask, trace, spread', cols: 3 },
   { key: 'reference', name: 'Reference', head: 'Reference', note: 'mark, index', cols: 1 },
   { key: 'funding', name: 'Funding', head: 'Funding', note: 'rate and interval', cols: 1 },
   { key: 'oi', name: 'OI', head: 'OI · own call', note: 'own call', cols: 1 },
@@ -470,6 +493,8 @@ const COLUMN_GROUPS = [
   { key: 'age', name: 'Age', head: 'Age per call', note: 'locked', locked: true, cols: 1 }
 ];
 const TOGGLEABLE = COLUMN_GROUPS.filter(g => !g.locked);
+/** The homepage table has no sparkline column, so its Quote group spans two. */
+const colsOf = (g, arena) => (g.key === 'quote' && !arena ? 2 : g.cols);
 const TOGGLE_COLUMNS = TOGGLEABLE.reduce((n, g) => n + g.cols, 0);
 
 /** Sortable columns. Missing, unsupported and uncollected values always sink to the bottom of their
@@ -517,8 +542,12 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     metric: initialMetric, range: initialRange, hidden: {},
     hiddenGroups: hiddenFromUrl,
     sort: sortMatch ? { key: sortMatch[1], dir: sortMatch[2] } : null,
-    colsOpen: false
+    colsOpen: false,
+    view: arena && params && params.get('view') === 'candles' ? 'candles' : 'lines',
+    candleVenue: ((arena && params && params.get('venue')) || '').toUpperCase() || null
   };
+  // Candles exist for trade price only; the view choice is kept but applies when that metric is on.
+  const candlesActive = () => arena && ui.view === 'candles' && ui.metric === 'Trade price';
   const writeUrl = () => {
     if (!syncUrl) return;
     const p = new URLSearchParams(location.search);
@@ -529,6 +558,8 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       const hide = TOGGLEABLE.filter(g => ui.hiddenGroups.has(g.key)).map(g => g.key).join(',');
       if (hide) p.set('hide', hide); else p.delete('hide');
       if (ui.sort) p.set('sort', ui.sort.key + '-' + ui.sort.dir); else p.delete('sort');
+      if (candlesActive()) { p.set('view', 'candles'); if (ui.candleVenue) p.set('venue', ui.candleVenue.toLowerCase()); else p.delete('venue'); }
+      else { p.delete('view'); p.delete('venue'); }
     }
     history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash);
   };
@@ -536,6 +567,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     <div class="lm-controls">
       <label class="field"><span class="field__label">Instrument</span><span class="field__box field__box--select"><select data-slot="asset"></select>${icon('chevron-down', 14)}</span></label>
       <label class="field"><span class="field__label">Metric</span><span class="field__box field__box--select"><select data-slot="metric">${Object.keys(METRICS).map(m => `<option>${m}</option>`).join('')}</select>${icon('chevron-down', 14)}</span></label>
+      ${arena ? `<div class="field"><span class="field__label">View</span><div class="segmented" data-slot="view"><button type="button" data-view="lines">Lines</button><button type="button" data-view="candles">Candles</button></div></div>` : ''}
       <div class="field"><span class="field__label">Range</span><div class="segmented" data-slot="range">${Object.keys(RANGES).map(r => `<button type="button" data-range="${r}">${r}</button>`).join('')}</div></div>
       <div class="spacer"></div>
       <div class="lm-source"><span class="source-tag" data-slot="tag"></span><span class="meta-xs" style="font-size:11px;text-align:right" data-slot="line"></span></div>
@@ -543,7 +575,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
   const chartHtml = `
     <div class="lm-chart-area">
       <div class="lm-chart" data-slot="chart"></div>
-      <div class="lm-legend"><div class="label" style="margin-bottom:6px">Venues · toggle</div><div class="stack gap-6" data-slot="legend"></div>
+      <div class="lm-legend"><div class="label" style="margin-bottom:6px" data-slot="legend-title">Venues · toggle</div><div class="stack gap-6" data-slot="legend"></div>
         <div class="meta" style="margin-top:auto;padding-top:10px">Unsupported: the venue publishes no such field. It is not drawn as a flat line.</div></div>
     </div>`;
   // The table head is built once and only its text is updated: the Columns popover must survive the
@@ -613,7 +645,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     const S = store.state;
     $('th-title').textContent = S.asset + ' · perpetual' + (S.live ? ' · ' + utcTime(S.live.at) : '');
     $('th-sort').textContent = ui.sort ? 'Sorted by ' + SORTS[ui.sort.key].word + ', ' + (ui.sort.dir === 'asc' ? 'ascending' : 'descending') + ', inside each quote group' : 'Venues A–Z inside each quote group';
-    const shownCols = TOGGLEABLE.filter(g => shown(g.key)).reduce((n, g) => n + g.cols, 0);
+    const shownCols = TOGGLEABLE.filter(g => shown(g.key)).reduce((n, g) => n + colsOf(g, arena), 0);
     $('cols-count').textContent = 'Columns · ' + shownCols + ' of ' + TOGGLE_COLUMNS;
     $('cols-btn').classList.toggle('btn--active', shownCols < TOGGLE_COLUMNS);
     root.querySelectorAll('[data-group]').forEach(row => {
@@ -640,9 +672,20 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
   $('legend').addEventListener('click', e => {
     const b = e.target.closest('[data-venue]');
     if (!b || b.disabled) return;
+    if (candlesActive()) { ui.candleVenue = b.dataset.venue; writeUrl(); renderChart(); return; }
     ui.hidden[b.dataset.venue] = !ui.hidden[b.dataset.venue];
     renderChart();
   });
+  if (arena) {
+    $('view').addEventListener('click', e => {
+      const b = e.target.closest('[data-view]');
+      if (!b || b.disabled) return;
+      ui.view = b.dataset.view;
+      writeUrl(); renderControls(); renderChart();
+    });
+    // The history on screen is re-read once a minute and applied with series.update().
+    setInterval(() => { if (!document.hidden && store.state.plan) store.loadSeries(ui.metric, ui.range, { quiet: true }); }, 60000);
+  }
 
   const seriesKey = () => store.state.asset + '|' + ui.metric + '|' + ui.range;
   function requestSeries() {
@@ -663,6 +706,11 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     if ($('asset').dataset.html !== optionsHtml && idle($('asset'))) { $('asset').innerHTML = optionsHtml; $('asset').dataset.html = optionsHtml; }
     if ($('metric').value !== ui.metric && idle($('metric'))) $('metric').value = ui.metric;
     const candles = METRICS[ui.metric].kind === 'candles';
+    if (arena) root.querySelectorAll('[data-view]').forEach(b => {
+      b.setAttribute('aria-pressed', String(b.dataset.view === (candlesActive() ? 'candles' : 'lines')));
+      b.disabled = b.dataset.view === 'candles' && ui.metric !== 'Trade price';
+      b.title = b.disabled ? 'Candles are drawn for trade price' : '';
+    });
     root.querySelectorAll('[data-range]').forEach(b => {
       b.setAttribute('aria-pressed', String(b.dataset.range === ui.range));
       b.disabled = !candles && !!RANGES[b.dataset.range].candlesOnly;
@@ -673,7 +721,61 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     $('line').textContent = src.line;
   }
 
+  let lw = null;
+  function renderArenaChart() {
+    const S = store.state, src = source(store, S), m = METRICS[ui.metric];
+    const quote = (S.live && S.live.targets.find(t => t.row) || {}).row?.quoteAsset;
+    const unit = m.unit === 'quote' ? 'quote currency' : m.unit;
+    const ser = S.series && S.series.key === seriesKey() ? S.series : null;
+    const dropChart = () => { if (lw) { lw.destroy(); lw = null; } };
+
+    if (!S.plan || !ser || ser.loading) {
+      dropChart();
+      const block = !S.plan ? blockFor(src, false)
+        : stateBlock('loading', 'Requesting ' + ui.metric.toLowerCase() + ' history per venue', (m.kind === 'candles' ? 'GET /candles' : 'GET ' + m.path) + ' · one call per venue.');
+      $('chart').innerHTML = block;
+      $('legend').innerHTML = '<div class="meta">Venues are listed from the response. None yet.</div>';
+      return;
+    }
+
+    const list = ser.list;
+    const drawable = list.filter(s => !s.unsupported && !s.notCollected && s.points.length);
+    const candles = candlesActive();
+    if (candles && !drawable.some(s => s.venue === ui.candleVenue)) { ui.candleVenue = drawable.length ? drawable[0].venue : null; writeUrl(); }
+    const styles = new Map(list.map((s, i) => [s.venue, ARENA_STYLES[i % ARENA_STYLES.length]]));
+
+    $('legend-title').textContent = candles ? 'Venues · candles for' : 'Venues · toggle';
+    $('legend').innerHTML = list.map(s => {
+      const off = s.unsupported || s.notCollected || !s.points.length;
+      const tag = s.unsupported ? 'Unsupported' : s.notCollected ? 'Not collected' : s.failed ? 'No answer' : !s.points.length ? 'No data' : '';
+      const st = styles.get(s.venue);
+      const pressed = candles ? s.venue === ui.candleVenue : !off && !ui.hidden[s.venue];
+      return `<button class="lm-legend__item" data-venue="${esc(s.venue)}" aria-pressed="${pressed}"${off ? ' disabled' : ''}>` +
+        `<span class="lm-legend__box"></span><svg width="18" height="8" style="flex:none;color:${STYLE_VAR[st.color]}"><line x1="0" y1="4" x2="18" y2="4" stroke="currentColor" stroke-dasharray="${st.dash ? '4 3' : ''}" stroke-width="2"/></svg>` +
+        `<span class="lm-legend__venue">${esc(s.venue)}</span>${tag ? `<span class="unsup-tag">${tag}</span>` : ''}</button>`;
+    }).join('');
+
+    if (!drawable.length) {
+      dropChart();
+      $('chart').innerHTML = stateBlock('unmeasured', 'No venue returned ' + ui.metric.toLowerCase() + ' in this range', 'The chart is absent rather than flat.');
+      return;
+    }
+    if (!lw) {
+      $('chart').innerHTML = `
+        <div class="lm-chart__head"><span class="label" data-slot="chart-label"></span>
+          <span class="meta-xs" style="font-size:11px">Lines never bridge a gap · x axis UTC<span data-slot="chart-note"></span></span></div>
+        <div class="lm-lw" data-slot="lw"></div>`;
+      lw = createArenaChart($('lw'));
+    }
+    $('chart-label').textContent = ui.metric + ' · ' + unit + (quote && m.unit !== 'bps' && !m.unit.startsWith('%') ? ' (' + quote + ' where quoted)' : '') +
+      (candles && ui.candleVenue ? ' · candles: ' + ui.candleVenue + ', other venues dimmed' : '');
+    $('chart-note').textContent = list.some(s => s.truncated) ? ' · some venues capped at 5,000 rows' : '';
+    lw.update({ key: seriesKey(), list, view: candles ? 'candles' : 'lines', candleVenue: ui.candleVenue, hidden: ui.hidden, styles, decimals: m.decimals })
+      .catch(err => console.warn('[arena chart]', err));
+  }
+
   function renderChart() {
+    if (arena) { renderArenaChart(); return; }
     const S = store.state, src = source(store, S), m = METRICS[ui.metric];
     const quote = (S.live && S.live.targets.find(t => t.row) || {}).row?.quoteAsset;
     const unit = m.unit === 'quote' ? 'quote currency' : m.unit;
@@ -735,6 +837,34 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       <div class="lm-chart__x">${xs.map(x => `<span>${x}</span>`).join('')}</div>`;
   }
 
+  // Sparklines: trade price over the table's range (7 d and 30 d fall back to 24 h). When the chart
+  // already holds that exact history it is reused; otherwise each venue is fetched once, and only when
+  // its row scrolls into view. Answers are kept for five minutes.
+  const sparkCache = new Map();
+  const sparkRange = () => (RANGES[ui.range].candlesOnly ? '24 h' : ui.range);
+  const chartSeriesFor = range => {
+    const ser = store.state.series;
+    return ser && !ser.loading && ser.key === store.state.asset + '|Trade price|' + range ? ser : null;
+  };
+  const sparkKey = code => store.state.asset + '|' + sparkRange() + '|' + code;
+  function requestSpark(code) {
+    const range = sparkRange(), key = sparkKey(code), hit = sparkCache.get(key);
+    if (chartSeriesFor(range) || (hit && (hit.loading || Date.now() - hit.at < 300e3))) return;
+    sparkCache.set(key, { loading: true, points: hit ? hit.points : null });
+    store.loadVenueSeries(code, range)
+      .then(sv => sparkCache.set(key, { at: Date.now(), points: sv && !sv.failed ? sv.points : [] }))
+      .catch(() => sparkCache.set(key, { at: Date.now(), points: [] }));
+  }
+  const sparkPoints = venue => {
+    const ser = chartSeriesFor(sparkRange());
+    if (ser) { const s = ser.list.find(x => x.venue === venue); return s ? s.points : []; }
+    const hit = sparkCache.get(sparkKey(venue.toLowerCase()));
+    return hit ? hit.points : null;
+  };
+  const sparkObserver = arena && 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) requestSpark(en.target.dataset.spark); }), { rootMargin: '120px' })
+    : null;
+
   function renderTable() {
     const S = store.state, src = source(store, S);
     renderTableHead();
@@ -746,7 +876,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     registry = createRegistry();
     const rows = buildRows(src.targets, S.now, registry, { byQuote: true });
     const groups = COLUMN_GROUPS.filter(g => shown(g.key));
-    const span = groups.reduce((n, g) => n + g.cols, 0);
+    const span = groups.reduce((n, g) => n + colsOf(g, arena), 0);
     const sort = arena ? ui.sort : null;
     const head = (key, label) => {
       if (!arena) return label;
@@ -756,7 +886,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     const thSort = keys => (sort && keys.includes(sort.key) ? ` aria-sort="${sort.dir === 'asc' ? 'ascending' : 'descending'}"` : '');
     const heads = {
       identity: '<th class="l sticky">Venue · status</th>',
-      quote: `<th${thSort(['bid', 'ask'])}>${head('bid', 'Bid')} / ${head('ask', 'Ask')}</th><th${thSort(['spread'])}>${head('spread', 'Spread')}</th>`,
+      quote: `<th${thSort(['bid', 'ask'])}>${head('bid', 'Bid')} / ${head('ask', 'Ask')}</th>${arena ? `<th class="l">${sparkRange()}</th>` : ''}<th${thSort(['spread'])}>${head('spread', 'Spread')}</th>`,
       reference: '<th>Mark / Index</th>',
       funding: `<th${thSort(['fund'])}>${head('fund', 'Funding')}</th>`,
       oi: `<th${thSort(['oi'])}>${head('oi', 'Open interest')}</th>`,
@@ -766,7 +896,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     };
     const cells = ({ r, c }) => ({
       identity: `<td class="venue"><span class="venue__id">${venueMark(r)}<span>${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="${kindClass(c.status.kind)} row-status" data-prov="${c.status.prov}">${kindWord(c.status.kind)}</button></span></span></td>`,
-      quote: pair(c, 'bid', 'ask', true) + td(c.spread, figure(c.spread, 'spread', true)),
+      quote: pair(c, 'bid', 'ask', true) + (arena ? `<td class="spark-cell" data-spark="${esc(r.venue.toLowerCase())}">${sparkSvg(sparkPoints(r.venue))}</td>` : '') + td(c.spread, figure(c.spread, 'spread', true)),
       reference: pair(c, 'mark', 'index', false),
       funding: td(c.fund, figure(c.fund, 'fund')),
       oi: td(c.oi, figure(c.oi, 'oi')),
@@ -777,7 +907,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     const hiddenNames = TOGGLEABLE.filter(g => !shown(g.key)).map(g => g.name.toUpperCase());
     $('table').innerHTML = `<div class="scroll-x" style="position:relative"><table class="lm-table">
       <thead>
-        <tr>${groups.map(g => `<th colspan="${g.cols}" class="group${g.key === 'age' ? ' group--age' : ''}">${g.head}</th>`).join('')}</tr>
+        <tr>${groups.map(g => `<th colspan="${colsOf(g, arena)}" class="group${g.key === 'age' ? ' group--age' : ''}">${g.head}</th>`).join('')}</tr>
         <tr>${groups.map(g => heads[g.key]).join('')}</tr>
       </thead>
       <tbody>${groupByQuote(rows).map(g => `<tr class="quote-row"><th colspan="${span}"><span>Quoted in ${esc(g.quote)} · ${g.rows.length} venue${g.rows.length === 1 ? '' : 's'}</span></th></tr>` + sortRows(g.rows, sort).map(x => {
@@ -787,6 +917,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     </table></div>
     <div class="panel__foot">${hiddenNames.length ? `<span>${esc(hiddenNames.join(', '))} HIDDEN</span>` : ''}<span>Perpetual venues only · grouped by quote currency · BEST and WORST inside each quote group · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
     refreshTip();
+    if (sparkObserver) { sparkObserver.disconnect(); $('table').querySelectorAll('[data-spark]').forEach(el => sparkObserver.observe(el)); }
 
     const published = rows.filter(x => x.c.fund.kind !== 'MISSING' && x.c.fund.kind !== 'UNSUPPORTED');
     const positive = published.filter(x => x.r.fund > 0).length;

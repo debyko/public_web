@@ -25,10 +25,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="../../css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="../../css/site.css?v=a6e3482932">
+  <link rel="stylesheet" href="../../css/site.css?v=cf163dee06">
   <link rel="stylesheet" href="../../css/pages.css?v=2268485041">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=3e2f1053ff","/js/format.js":"/js/format.js?v=b1a74297bb","/js/home.js":"/js/home.js?v=01910247d8","/js/live-market.js":"/js/live-market.js?v=1342305c56","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=09b410f495","/js/arena-chart.js":"/js/arena-chart.js?v=98e400f090","/js/format.js":"/js/format.js?v=b1a74297bb","/js/home.js":"/js/home.js?v=01910247d8","/js/live-market.js":"/js/live-market.js?v=861636aed4","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
   <script defer src="../../js/nav.js?v=43d80b9eea"></script>
   <script type="module" src="../../js/pages/methodology.js?v=f4b739825e"></script>
@@ -254,6 +254,7 @@
         <ul class="ruled ruled--dated">
           <li><span class="date">2026-09-16</span><span>First publication of this page.</span></li>
           <li><span class="date">2026-09-16</span><span>NOT COLLECTED added: depth on a venue whose book this service does not collect is no longer shown as MISSING, and no longer sets the row status.</span></li>
+          <li><span class="date">2026-09-17</span><span>The Arena chart is drawn with TradingView Lightweight Charts: a crosshair reads the value per venue at any time, trade price can be shown as candles for one venue, and zoom and pan are off — the range control sets the window. Gaps still break the lines. Each table row carries a trace of its trade price over the same range.</span></li>
           <li><span class="date">2026-09-17</span><span>BEST and WORST are ranked inside each quote-currency group, still LIVE values only; bid and ask marks name their side (BEST BID, WORST ASK). Before, one pair per column covered every group and moved between venues whenever a ticker crossed the LIVE threshold.</span></li>
           <li><span class="date">2026-09-17</span><span>Rank and state marks no longer use green, amber and red: fill, border and a line through the word carry them. Tied values are all marked, as BEST ×n or WORST ×n. On Arena the comparison table comes before the chart, its columns can be hidden by group, and six columns sort inside each quote group; all of it is kept in the page address.</span></li>
           <li><span class="date">2026-09-17</span><span>Spread is ranked on its computed value, no longer rounded to 0.01 bps first — rounding had given BEST to every venue one tick wide. The comparison table is grouped by quote currency.</span></li>

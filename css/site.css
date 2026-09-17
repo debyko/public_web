@@ -135,8 +135,8 @@ button.ar-chip{cursor:help}
 .ar-chip--live{padding-left:0;border-color:transparent;color:var(--dk-text-muted)}
 .ar-chip--live::before{content:"";flex:none;width:4px;height:4px;border-radius:50%;background:currentColor}
 .ar-chip--delayed{border-color:var(--dk-border-strong);color:var(--dk-text-primary);
-  background:linear-gradient(90deg,var(--dk-paper-200) 0 50%,transparent 50%)}
-.ar-chip--stale{border-color:var(--dk-ink-900);background:var(--dk-ink-900);
+  background:linear-gradient(90deg,var(--dk-border-hairline) 0 50%,transparent 50%)}
+.ar-chip--stale{border-color:var(--dk-surface-invert);background:var(--dk-surface-invert);
   color:var(--dk-text-invert);text-decoration:line-through;text-decoration-thickness:1px}
 .ar-chip--unsupported{border-color:var(--dk-border-hairline);color:var(--dk-text-muted);
   background-image:repeating-linear-gradient(45deg,var(--dk-hatch) 0 1px,transparent 1px 5px)}
@@ -182,7 +182,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
   color:var(--dk-text-muted)}
 .ar-pop__foot button{background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--dk-text-accent);cursor:pointer}
 .ar-tip{position:fixed;z-index:50;width:236px;padding:9px 11px;pointer-events:none;
-  background:var(--dk-ink-900);color:var(--dk-text-invert);
+  background:var(--dk-surface-invert);color:var(--dk-text-invert);
   font:400 11px/1.5 var(--dk-font-mono);letter-spacing:.03em;text-transform:none;
   white-space:normal;text-align:left;
   box-shadow:var(--dk-shadow-popover,0 8px 24px rgba(5,7,12,.12))}
@@ -190,10 +190,23 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .lm-table-head{flex-wrap:wrap;gap:10px}
 .venue__id{display:flex;align-items:center;gap:9px}
 .venue__mark{flex:none;display:block;width:18px;height:18px;filter:grayscale(1);opacity:.55}
-/* Sparkline — DESIGNED, NOT WIRED (spec section 4, next task): 72 × 20 beside bid/ask, one 1px
-   stroke #33383F (never the accent), no axis, no label, no fill; a gap in the data breaks the line;
-   a venue with no history gets empty space, never a flat line; range follows the table's control
-   (1 h or 24 h). */
+/* Several marks are near-black; on the dark theme every mark becomes a flat light silhouette. */
+[data-theme="dark"] .venue__mark{filter:grayscale(1) brightness(0) invert(1);opacity:.45}
+/* In-row sparkline (spec section 4): 72 × 20 beside bid/ask, one 1px neutral stroke (never the
+   accent), no axis, label or fill; gaps break the line; no history is an empty cell. */
+.spark-cell{padding:0 8px;width:72px;vertical-align:middle}
+.ar-spark{display:block}
+.ar-spark path{fill:none;stroke:#33383F;stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+[data-theme="dark"] .ar-spark path{stroke:var(--dk-text-muted)}
+/* Arena history chart (Lightweight Charts) and its crosshair tooltip */
+.lm-lw{position:relative;height:150px}
+.lm-tip{position:fixed;z-index:50;min-width:190px;max-width:300px;padding:8px 10px;pointer-events:none;
+  background:var(--dk-surface-invert);color:var(--dk-text-invert);
+  font:400 11px/1.45 var(--dk-font-mono);letter-spacing:.02em;font-variant-numeric:tabular-nums;
+  box-shadow:var(--dk-shadow-popover,0 8px 24px rgba(5,7,12,.12))}
+.lm-tip__t{margin-bottom:5px;opacity:.72}
+.lm-tip__grid{display:grid;grid-template-columns:auto auto;gap:1px 14px}
+.lm-tip__v{text-align:right}
 
 /* ── Form controls (DS Input / Select / SegmentedControl) ───────────────── */
 .field { display: flex; flex-direction: column; gap: 6px; }
