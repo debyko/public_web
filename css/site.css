@@ -123,9 +123,9 @@ a.btn, a.btn:hover { opacity: 1; }
    Green and red are gone from the tables: fill, border weight, border style and a line through the
    word carry the difference, so every state survives greyscale and colour-vision deficiency.
    --dk-rank-best / --dk-rank-worst have no consumer any more; the tokens stay defined. */
-.ar-chip{display:inline-flex;align-items:center;gap:6px;height:20px;padding:0 7px;margin:0;
+.ar-chip{display:inline-flex;align-items:center;gap:6px;height:14px;padding:0 4px;margin:0;
   border:1px solid transparent;border-radius:2px;background:transparent;
-  font:600 11px/1 var(--dk-font-mono);letter-spacing:.14em;text-transform:uppercase;
+  font:600 9px/1 var(--dk-font-mono);letter-spacing:.14em;text-transform:uppercase;
   white-space:nowrap;color:var(--dk-text-muted);vertical-align:middle}
 button.ar-chip{cursor:help}
 .ar-chip__dot{flex:none;width:4px;height:4px;border-radius:50%;background:currentColor}
@@ -148,10 +148,13 @@ button.ar-chip{cursor:help}
 .ar-chip--best{border-color:var(--dk-accent);background:var(--dk-accent);color:#FFF}
 .ar-chip--worst{border-color:var(--dk-text-muted);color:var(--dk-text-muted)}
 .ar-chip--tie{border-color:var(--dk-accent);background:var(--dk-accent);color:#FFF}
-.ar-chip--tie .ar-chip__x,.ar-chip--worst .ar-chip__x{opacity:.72;font-weight:400;letter-spacing:.02em}
+.ar-chip__x{margin-left:3px;font-size:9px;letter-spacing:.04em;opacity:.72;font-weight:400}
 .ar-chip[data-tip]{cursor:help}
-.ar-rank-slot{display:inline-flex;min-width:56px;justify-content:flex-start;margin-left:8px;vertical-align:middle}
-.ar-rank-slot--side{min-width:92px}
+/* The reserved slot. FIXED width, never min-width: a floor lets BEST ×2 grow the slot on tie rows
+   only, and those rows' digits then leave the column. 58px is the widest chip the table renders;
+   overflow stays visible so a wider one shows rather than silently shifting the column. */
+.ar-rank-slot{display:inline-flex;width:58px;min-width:58px;max-width:58px;flex:none;
+  justify-content:flex-start;margin-left:8px;overflow:visible;vertical-align:middle}
 /* Sortable head: the indicator sits in a reserved slot, so the tracking never shifts */
 .ar-sort{background:none;border:0;padding:0;font:inherit;color:inherit;letter-spacing:inherit;
   text-transform:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
@@ -189,7 +192,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .btn--active{border-color:var(--dk-accent)}
 .lm-table-head{flex-wrap:wrap;gap:10px}
 .venue__id{display:flex;align-items:center;gap:9px}
-.venue__mark{flex:none;display:block;width:18px;height:18px;filter:grayscale(1);opacity:.55}
+.venue__mark{flex:none;display:block;width:18px;height:18px;filter:grayscale(1);opacity:.78}
 /* Several marks are near-black; on the dark theme every mark becomes a flat light silhouette. */
 [data-theme="dark"] .venue__mark{filter:grayscale(1) brightness(0) invert(1);opacity:.45}
 /* In-row sparkline (spec section 4): 72 × 20 beside bid/ask, one 1px neutral stroke (never the
@@ -207,6 +210,67 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .lm-tip__t{margin-bottom:5px;opacity:.72}
 .lm-tip__grid{display:grid;grid-template-columns:auto auto;gap:1px 14px}
 .lm-tip__v{text-align:right}
+
+/* ── Arena table geometry (designer handoff "Arena Handoff", iteration 4, 2026-09-17) ──────────
+   Scoped to .lm-table--arena: the homepage keeps the stacked pairs and its auto layout until its
+   own pass. Fixed layout plus a <colgroup> rebuilt from the visible groups is what holds the
+   columns still across a response; .lm-table carries NO min-width, because under table-layout:fixed
+   a pinned floor is distributed over whatever <col>s exist and re-inflates the table the moment a
+   group is hidden. */
+.lm-table--arena{table-layout:fixed;width:100%;min-width:0}
+.lm-table--arena col.c-venue{width:198px}
+.lm-table--arena col.c-quote{width:296px}
+.lm-table--arena col.c-spark{width:88px}
+.lm-table--arena col.c-spread{width:139px}
+.lm-table--arena col.c-ref{width:178px}
+.lm-table--arena col.c-fund{width:112px}
+.lm-table--arena col.c-oi{width:178px}
+.lm-table--arena col.c-depth{width:177px}
+.lm-table--arena col.c-time{width:110px}
+.lm-table--arena col.c-age{width:188px}
+/* Two head tiers, each one line of a data row's height; heads wrap inside their column, never spill. */
+.lm-table--arena thead th{padding:5px 8px;white-space:normal;vertical-align:bottom}
+.lm-table--arena td,.lm-table--arena tbody th{padding:5px 8px}
+.lm-table--arena tr.quote-row th{padding:4px 8px}
+.lm-table--arena td.venue{padding:5px 8px;height:auto}
+/* Paired columns — two equal tracks shared by the cells AND their head, so bid and ask sit on one
+   axis whatever decimals a venue publishes. The grid must sit on .pair__grid, never on the th:
+   display:grid replaces the table-cell box and the head stops stretching to the row. */
+.lm-table--arena .fig-pair{display:grid;grid-template-columns:1fr 1fr;align-items:baseline;gap:0}
+.lm-table--arena .fig-pair>.fig{justify-content:flex-end;min-width:0;padding-right:12px}
+.lm-table--arena .fig-pair>.fig+.fig{padding-left:12px;padding-right:0;
+  border-left:1px solid var(--dk-border-hairline)}
+.lm-table--arena .fig-pair .fig__unit{display:none}
+.lm-table--arena thead th.pair{display:table-cell;vertical-align:bottom}
+.lm-table--arena thead th.pair .pair__grid{display:grid;grid-template-columns:1fr 1fr;align-items:end;gap:0}
+.lm-table--arena thead th.pair .pair__grid>span{display:block;text-align:right;padding-right:12px;min-width:0}
+.lm-table--arena thead th.pair .pair__grid>span+span{padding-left:12px;padding-right:0}
+/* Ages — three equal tracks. minmax(0,1fr), not 1fr: 1fr is minmax(auto,1fr) and floors each track
+   at its own chip, so the three drift row by row and overflow. */
+.lm-table--arena .fig-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:0}
+.lm-table--arena .fig-chips .ar-chip{padding:0 3px;justify-content:flex-end}
+/* Identity cell — name and state on line one, the venue's own symbol on line two. */
+/* The handoff aligns the mark to flex-start; against a two-line cell that reads as pinned to the
+   top edge, so it is centred on the name-plus-symbol block instead. */
+.lm-table td.venue .venue__id{display:flex;align-items:center;gap:7px}
+.lm-table td.venue .venue__id>span{display:grid;gap:1px;min-width:0}
+/* Centre, not baseline: LIVE has no border and DELAYED and STALE do, and a bordered inline-flex box
+   carries a different baseline — under align-items:baseline the venue name jumped up and down as a
+   row changed state. */
+.lm-table td.venue .venue__id>span>:first-child{display:flex;align-items:center;gap:7px;min-height:16px}
+.lm-table--arena td.venue small{display:block;margin:0;font:400 9px/1.3 var(--dk-font-mono);
+  letter-spacing:.1em;color:var(--dk-text-muted);white-space:nowrap}
+.lm-table td.venue .row-status{margin:0}
+.venue__mark--letter{flex:none;display:flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border:1px solid var(--dk-border-hairline);
+  font:600 9px/1 var(--dk-font-mono);color:var(--dk-text-faint);letter-spacing:0}
+/* Scroll hint at the clipped edge: the panel ground fading in from its own colour at zero alpha,
+   never a shadow — a transparent stop of another hue leaves a grey cast on premultiplying engines. */
+.scroll-x{position:relative}
+.scroll-x__hint{position:absolute;top:0;right:0;bottom:0;width:24px;pointer-events:none;z-index:3;
+  background:linear-gradient(90deg,rgba(255,255,255,0) 0%,var(--dk-surface-panel) 100%);
+  opacity:0;transition:opacity 90ms cubic-bezier(.2,0,.38,1)}
+.scroll-x[data-clipped="true"] .scroll-x__hint{opacity:1}
 
 /* ── Form controls (DS Input / Select / SegmentedControl) ───────────────── */
 .field { display: flex; flex-direction: column; gap: 6px; }
@@ -282,7 +346,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .fig--stack { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 5px 6px; font-size: 11px; }
 .fig-chips { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 4px 6px; }
 .fig-chips button { margin: 0; cursor: help; }
-.fig-chips .ar-chip { font-size: 10px; }
+.fig-chips .ar-chip { font-size: 9px; }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
 .site-header { position: sticky; top: 0; z-index: 30; background: #F7F7F8; border-bottom: 1px solid var(--dk-border-hairline); }

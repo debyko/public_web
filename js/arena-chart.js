@@ -144,6 +144,13 @@ export function createArenaChart(el) {
       kineticScroll: { mouse: false, touch: false }
     });
     themeSig = JSON.stringify(c);
+    // Attribution twice over, by design: the library's own logo (bottom left) satisfies its licence,
+    // and this line (bottom right) rides inside the canvas so it survives a screenshot.
+    lib.createTextWatermark(chart.panes()[0], {
+      horzAlign: 'right',
+      vertAlign: 'bottom',
+      lines: [{ text: 'DEBYKO · debyko.com · UTC', color: c.faint, fontSize: 10, fontFamily: c.mono }]
+    });
     chart.subscribeCrosshairMove(onCrosshair);
     el.addEventListener('mouseleave', hideTip);
     return true;
@@ -195,7 +202,7 @@ export function createArenaChart(el) {
         }
         const api = chart.addSeries(lib.LineSeries, {
           ...colorOf(s), lineWidth: 1, priceLineVisible: false, lastValueVisible: false,
-          crosshairMarkerVisible: !isCandles, crosshairMarkerRadius: 3
+          crosshairMarkerVisible: false
         });
         const d = withGaps(s.points, lineItem);
         api.setData(d.data);

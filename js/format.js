@@ -14,6 +14,13 @@ export const age = s => s == null ? '—'
   : s < 3600 ? Math.floor(s / 60) + ' m' + (s % 60 ? ' ' + (s % 60) + ' s' : '')
   : Math.floor(s / 3600) + ' h ' + Math.floor((s % 3600) / 60) + ' m';
 
+/** The same age in one unit, for the three chips that share a 188px column: "12 s", "4 m", "2 h".
+ *  The exact age stays in the chip's provenance — this is the glanceable form, not a rounder truth. */
+export const ageShort = s => s == null ? '—'
+  : s < 60 ? s + ' s'
+  : s < 3600 ? Math.floor(s / 60) + ' m'
+  : Math.floor(s / 3600) + ' h';
+
 export const utcTime = iso => iso ? new Date(iso).toISOString().slice(11, 19) + ' UTC' : '—';
 export const utcMinute = iso => iso ? new Date(iso).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : '—';
 export const utcMillis = iso => iso ? new Date(iso).toISOString().slice(11, 23) : null;

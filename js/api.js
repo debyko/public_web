@@ -200,6 +200,7 @@ export function normalise(t, now) {
     pred: r.fundingRatePredicted == null ? null : Number(r.fundingRatePredicted) * 100,
     fint: num(inst.fundingIntervalHours),
     // Price decimals follow the venue's own price step (0.1 → 1, 1 → 0); a venue that publishes no step gets 2.
+    step: num(inst.priceStep),
     pdec: inst.priceStep ? Math.min(8, Math.max(0, Math.ceil(-Math.log10(Number(inst.priceStep)) - 1e-9))) : 2,
     oi: num(r.openInterest), oiNotional: num(r.openInterestNotional), mult: num(inst.contractMultiplier),
     db: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthBid25Bps), da: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthAsk25Bps), depthRef: num(r.depthRef),

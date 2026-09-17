@@ -1,7 +1,7 @@
 // The live market blocks: hero slice, full comparison (chart + table) and the Arena table.
 // Every figure is a button that opens its provenance: venue, instrument, clocks, age, method.
 
-import { esc, fmt, age, utcTime, utcMinute, icon, stateBlock } from './format.js';
+import { esc, fmt, age, ageShort, utcTime, utcMinute, icon, stateBlock } from './format.js';
 import { UNSUP, NOTCOL, METRICS, RANGES, normalise, loadSeries } from './api.js';
 import { createArenaChart } from './arena-chart.js';
 
@@ -69,13 +69,17 @@ function cell(reg, r, key, val, unit, group, opts = {}) {
     { k: 'Status', v: kindWord(kind) + (NOT_FRESHNESS.has(kind) ? '' : ' · provisional threshold for this call group') }
   ];
   if (opts.formula) lines.push({ k: 'Derived', v: opts.formula });
+  // Every price in the table is printed to the same decimals; this says what the venue's own step is,
+  // so a padded zero is never read as a tick the venue quotes.
+  if (opts.price) lines.push({ k: 'Venue price step', v: r.step != null ? String(r.step) : 'not published · printed to 2 decimals' });
   if (kind === 'MISSING') lines.push({ k: 'Note', v: 'This snapshot carries no value for the field. Shown as empty, not as zero.' });
   if (kind === 'NOT_COLLECTED') lines.push({ k: 'Note', v: 'This service does not collect the order book on this venue — GET /v1/coverage lists no depth dataset for it. Not a freshness problem, and not a statement that the venue has no book.' });
   if (kind === 'UNSUPPORTED') lines.push({ k: 'Note', v: r.model === 'oracle_vault' ? 'Oracle/vault market: no order book, so bid, ask, spread and depth are not published.' : 'The venue publishes no such field.' });
   const prov = reg.add({ title: key, lines });
   return {
     kind, prov, lines, hatch: kind === 'UNSUPPORTED',
-    text: opts.chip ? (NOT_FRESHNESS.has(kind) ? '—' : age(ag)) : empty ? '—' : (typeof val === 'number' ? fmt(val, opts.decimals ?? 8) : val),
+    // A chip prints the short age; the row's own provenance carries the exact one.
+    text: opts.chip ? (NOT_FRESHNESS.has(kind) ? '—' : ageShort(ag)) : empty ? '—' : (typeof val === 'number' ? fmt(val, opts.decimals ?? 8) : val),
     unit: empty ? '' : unit,
     state: kind === 'STALE' ? 'is-stale' : empty ? 'is-empty' : ''
   };
@@ -85,7 +89,13 @@ function cell(reg, r, key, val, unit, group, opts = {}) {
  *  ranked among themselves — a preview's marks are about the rows it shows. byQuote: rank inside each
  *  quote-currency group, as the grouped table shows them. */
 function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}) {
-  const rows = targets.map(t => normalise(t, now)).filter(r => r.venue).map(r => {
+  const normalised = targets.map(t => normalise(t, now)).filter(r => r.venue);
+  // One decimal count for every price in the table — the finest step any venue in it publishes, so
+  // bid, ask, mark and index read as one scale down the whole column. A venue with a coarser step is
+  // padded with zeros: the zeros are not a claim about its tick, and its own step is in the
+  // provenance of every figure.
+  const priceDecimals = Math.max(2, ...normalised.map(r => r.pdec || 0));
+  const rows = normalised.map(r => {
     const mid = typeof r.bid === 'number' && typeof r.ask === 'number' ? (r.bid + r.ask) / 2 : null;
     const spreadVal = mid ? (r.ask - r.bid) / mid * 1e4 : r.bid === UNSUP ? UNSUP : null;
     const quote = r.quote || '';
@@ -95,11 +105,11 @@ function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}
     if (fund.unit) fund.unit = '% / ' + (r.fint != null ? r.fint + ' h' : '— h');
 
     const c = {
-      bid: cell(reg, r, 'Bid', r.bid, quote, 't', { decimals: r.pdec }),
-      ask: cell(reg, r, 'Ask', r.ask, quote, 't', { decimals: r.pdec }),
+      bid: cell(reg, r, 'Bid', r.bid, quote, 't', { decimals: priceDecimals, price: true }),
+      ask: cell(reg, r, 'Ask', r.ask, quote, 't', { decimals: priceDecimals, price: true }),
       spread: cell(reg, r, 'Spread', spreadVal, 'bps', 't', { decimals: 2, formula: typeof spreadVal === 'number' ? 'spread = (ask − bid) / mid × 10,000 · inputs: bid ' + fmt(r.bid, 2) + ', ask ' + fmt(r.ask, 2) : null }),
-      mark: cell(reg, r, 'Mark', r.mark, quote, 't', { decimals: r.pdec }),
-      index: cell(reg, r, 'Index', r.index, quote, 't', { decimals: r.pdec }),
+      mark: cell(reg, r, 'Mark', r.mark, quote, 't', { decimals: priceDecimals, price: true }),
+      index: cell(reg, r, 'Index', r.index, quote, 't', { decimals: priceDecimals, price: true }),
       fund,
       oi: cell(reg, r, 'Open interest', r.oi, oiInBase ? r.base : 'contracts', 'o', {
         decimals: oiInBase ? 3 : 0,
@@ -119,7 +129,6 @@ function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}
     return { r, c, spreadVal };
   });
   const kept = rows.slice(0, limit);
-  alignDecimals(kept);
   if (byQuote) groupByQuote(kept).forEach(g => rank(g.rows, g.quote));
   else rank(kept.filter(x => USD_LIKE.test(x.r.quote)), null);
   // Rows outside any ranking still say why.
@@ -129,22 +138,6 @@ function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}
 
 /** 18,966,819 → 18.97M: depth is read as an order of magnitude; the exact figure is in the provenance. */
 const compact = n => (Math.abs(n) >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : Math.abs(n) >= 1e3 ? (n / 1e3).toFixed(2) + 'K' : fmt(n, 0));
-
-/** Venues quote with different steps (79,283.2 beside 79,283). Short fractions are padded with blanks the
- *  width of a digit — the figures are monospaced — so the decimal points stand in one column. No zeros
- *  are added: a zero would claim a precision the venue did not publish. */
-function alignDecimals(rows) {
-  const FIG = '\u2007';
-  for (const key of ['bid', 'ask', 'mark', 'index']) {
-    const decimalsOf = text => (/\.(\d+)$/.exec(text) || [, ''])[1].length;
-    const numeric = rows.map(x => x.c[key]).filter(c => c.state !== 'is-empty' && /\d/.test(c.text));
-    const widest = Math.max(0, ...numeric.map(c => decimalsOf(c.text)));
-    for (const c of numeric) {
-      const d = decimalsOf(c.text);
-      c.text += FIG.repeat(widest - d + (d === 0 && widest > 0 ? 1 : 0));
-    }
-  }
-}
 
 // ── Quote groups ────────────────────────────────────────────────────────────────────────────
 
@@ -231,11 +224,10 @@ const listWords = names => (names.length < 2 ? names.join('') : names.slice(0, -
 
 /** The mark always takes the same room, present or not, so a mark coming or going moves nothing
  *  (a tie's count is the one exception: BEST ×2 is wider than the 56px slot). */
-// Bid and ask share one cell, so their marks name the side: "Best bid" over "Worst ask" reads as two
-// facts, "Best" over "Worst" read as a contradiction.
-const SIDE_WORD = { bid: ' bid', ask: ' ask' };
-const rankSlot = (x, col) => `<span class="ar-rank-slot${SIDE_WORD[col] ? ' ar-rank-slot--side' : ''}">${x.rank
-  ? `<span class="ar-chip ar-chip--${x.tie && x.rank === 'best' ? 'tie' : x.rank}"${x.tip ? ` data-tip="${esc(x.tip)}"` : ''}>${x.rank === 'best' ? 'Best' : 'Worst'}${SIDE_WORD[col] || ''}${x.tie ? `<span class="ar-chip__x">×${x.tie}</span>` : ''}</span>`
+// The slot is emitted on every rankable figure, filled or empty: that is what keeps the digits in
+// one column. Bid and ask are their own columns in the pair grid, so the chip needs no side word.
+const rankSlot = x => `<span class="ar-rank-slot">${x.rank
+  ? `<span class="ar-chip ar-chip--${x.tie && x.rank === 'best' ? 'tie' : x.rank}"${x.tip ? ` data-tip="${esc(x.tip)}"` : ''}>${x.rank === 'best' ? 'Best' : 'Worst'}${x.tie ? `<span class="ar-chip__x">×${x.tie}</span>` : ''}</span>`
   : ''}</span>`;
 
 // ── Cell markup ─────────────────────────────────────────────────────────────────────────────
@@ -245,7 +237,7 @@ const pair = (c, top, bottom, ranked) => `<td class="${c[top].hatch ? 'dk-hatch'
 
 /** Units get a fixed width per column (USD, USDT, USDT0 …), so the digits line up instead of waving. */
 const UNIT_WIDTH = { bid: 'u5', ask: 'u5', mark: 'u5', index: 'u5', spread: 'u3', fund: 'u7', oi: 'u9' };
-const figure = (x, col, ranked = false) => `<button class="fig ${x.state}" data-prov="${x.prov}">${esc(x.text)}<span class="fig__unit ${UNIT_WIDTH[col] || ''}">${esc(x.unit)}</span>${ranked ? rankSlot(x, col) : ''}</button>`;
+const figure = (x, col, ranked = false) => `<button class="fig ${x.state}" data-prov="${x.prov}">${esc(x.text)}<span class="fig__unit ${UNIT_WIDTH[col] || ''}">${esc(x.unit)}</span>${ranked ? rankSlot(x) : ''}</button>`;
 const td = (x, inner) => `<td class="${x.hatch ? 'dk-hatch' : ''}">${inner}</td>`;
 const freshChip = (x, value) => `<span class="${kindClass(x.kind)}"><span class="ar-chip__val">${esc(value)}</span>${kindWord(x.kind)}</span>`;
 const chipCell = x => `<button class="fig fig--chip" data-prov="${x.prov}">${freshChip(x, x.text)}</button>`;
@@ -271,6 +263,8 @@ function venueMark(r) {
   }
   return markSvg.get(code) || '<span class="venue__mark"></span>';
 }
+/** A venue with no mark keeps the slot with its initial, so the names still start on one axis. */
+const venueSlot = r => venueMark(r) || `<span class="venue__mark venue__mark--letter" aria-hidden="true">${esc(r.venue.slice(0, 1))}</span>`;
 
 // ── Source line shared by every block ───────────────────────────────────────────────────────
 
@@ -482,20 +476,25 @@ export function mountArena(root, store) {
 /** Column groups of the full table. Identity and Age are locked on: without them a figure has no
  *  source and no clock. `cols` is how many body columns the group spans; the Columns control counts
  *  the seven columns between the two locked groups. */
+/** The eight column groups, with the <col> classes that carry their widths (handoff 1.9) and the
+ *  two that open off: Reference and Time are the only groups never ranked and never sorted, and each
+ *  restates something the reader already has, which is what brings the table to 1,376 px so AGE is
+ *  visible at 1,440 px without scrolling. */
 const COLUMN_GROUPS = [
-  { key: 'identity', name: 'Identity', head: 'Identity', note: 'locked', locked: true, cols: 1 },
-  { key: 'quote', name: 'Quote', head: 'Quote · ticker call', note: 'bid, ask, trace, spread', cols: 3 },
-  { key: 'reference', name: 'Reference', head: 'Reference', note: 'mark, index', cols: 1 },
-  { key: 'funding', name: 'Funding', head: 'Funding', note: 'rate and interval', cols: 1 },
-  { key: 'oi', name: 'OI', head: 'OI · own call', note: 'own call', cols: 1 },
-  { key: 'depth', name: 'Depth', head: 'Depth · own call', note: '±25 bps', cols: 1 },
-  { key: 'time', name: 'Time', head: 'Time · ticker', note: 'venue, received', cols: 1 },
-  { key: 'age', name: 'Age', head: 'Age per call', note: 'locked', locked: true, cols: 1 }
+  { key: 'identity', name: 'Identity', head: 'Identity', note: 'locked', locked: true, cols: ['c-venue'] },
+  { key: 'quote', slug: 'quote', name: 'Quote', head: 'Quote · ticker', note: 'bid, ask, trace, spread', cols: ['c-quote', 'c-spark', 'c-spread'] },
+  { key: 'reference', slug: 'ref', name: 'Reference', head: 'Reference', note: 'mark, index', cols: ['c-ref'], offByDefault: true },
+  { key: 'funding', slug: 'funding', name: 'Funding', head: 'Funding', note: 'rate and interval', cols: ['c-fund'] },
+  { key: 'oi', slug: 'oi', name: 'Open interest', head: 'Open interest', note: 'own call', cols: ['c-oi'] },
+  { key: 'depth', slug: 'depth', name: 'Depth', head: 'Depth', note: '±25 bps', cols: ['c-depth'] },
+  { key: 'time', slug: 'time', name: 'Time', head: 'Time', note: 'received', cols: ['c-time'], offByDefault: true },
+  { key: 'age', name: 'Age', head: 'Age', note: 'locked', locked: true, cols: ['c-age'] }
 ];
 const TOGGLEABLE = COLUMN_GROUPS.filter(g => !g.locked);
+const BY_SLUG = new Map(TOGGLEABLE.map(g => [g.slug, g.key]));
+const DEFAULT_OFF = new Set(TOGGLEABLE.filter(g => g.offByDefault).map(g => g.key));
 /** The homepage table has no sparkline column, so its Quote group spans two. */
-const colsOf = (g, arena) => (g.key === 'quote' && !arena ? 2 : g.cols);
-const TOGGLE_COLUMNS = TOGGLEABLE.reduce((n, g) => n + g.cols, 0);
+const colsOf = (g, arena) => (arena ? g.cols.length : g.cols.filter(c => c !== 'c-spark').length);
 
 /** Sortable columns. Missing, unsupported and uncollected values always sink to the bottom of their
  *  group, whichever way the column is sorted. Open interest sorts on its quote notional: the printed
@@ -536,7 +535,12 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
   // Same rule the metric selector's own change handler applies: a non-candle metric cannot show a
   // candles-only range, so an incompatible pair from the query string is corrected the same way.
   if (METRICS[initialMetric].kind !== 'candles' && RANGES[initialRange].candlesOnly) initialRange = '24 h';
-  const hiddenFromUrl = new Set(((params && arena && params.get('hide')) || '').split(',').filter(k => TOGGLEABLE.some(g => g.key === k)));
+  // ?cols= holds the groups whose state differs from the default, as short slugs (cols=ref,time
+  // turns the two default-off groups on). Absent means the default, so a plain link opens 6 of 8.
+  const flipped = new Set(((params && arena && params.get('cols')) || '').split(',').map(x => BY_SLUG.get(x)).filter(Boolean));
+  // Arena opens at 6 of 8; the homepage table has no Columns control and keeps every group, so the
+  // default-off pair applies there only.
+  const hiddenFromUrl = new Set(arena ? TOGGLEABLE.filter(g => DEFAULT_OFF.has(g.key) !== flipped.has(g.key)).map(g => g.key) : []);
   const sortMatch = params && arena && /^(bid|ask|spread|fund|oi|depth)-(asc|desc)$/.exec(params.get('sort') || '');
   const ui = {
     metric: initialMetric, range: initialRange, hidden: {},
@@ -555,46 +559,53 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
     p.set('metric', METRIC_TO_SLUG[ui.metric] || ui.metric);
     p.set('range', RANGE_TO_SLUG[ui.range] || ui.range);
     if (arena) {
-      const hide = TOGGLEABLE.filter(g => ui.hiddenGroups.has(g.key)).map(g => g.key).join(',');
-      if (hide) p.set('hide', hide); else p.delete('hide');
+      const cols = TOGGLEABLE.filter(g => ui.hiddenGroups.has(g.key) !== DEFAULT_OFF.has(g.key)).map(g => g.slug).join(',');
+      if (cols) p.set('cols', cols); else p.delete('cols');
       if (ui.sort) p.set('sort', ui.sort.key + '-' + ui.sort.dir); else p.delete('sort');
       if (candlesActive()) { p.set('view', 'candles'); if (ui.candleVenue) p.set('venue', ui.candleVenue.toLowerCase()); else p.delete('venue'); }
       else { p.delete('view'); p.delete('venue'); }
     }
     history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash);
   };
-  const controlsHtml = `
+  // Controls, top to bottom (handoff 3): one controls row over the table — instrument on the left,
+  // then how the rows are ordered, the Columns popover and the source; the chart keeps its own row
+  // below the table. The instrument band that used to read "BTC · PERPETUAL · 17:11:48" is gone: the
+  // select names the instrument and the LIVE tag carries the time.
+  const colsControlHtml = arena ? `
+    <div class="ar-cols" data-slot="cols">
+      <button type="button" class="btn btn--sm" data-slot="cols-btn" aria-haspopup="true" aria-expanded="false">${icon('columns', 14)}<span data-slot="cols-count"></span></button>
+      <div class="ar-pop" data-slot="cols-pop" hidden>
+        ${COLUMN_GROUPS.map(g => `<button type="button" class="ar-pop__row" data-group="${g.key}" role="menuitemcheckbox"${g.locked ? ' aria-disabled="true"' : ''}><span class="ar-pop__box"></span><span>${g.name}</span><span class="ar-pop__note">${g.note}</span></button>`).join('')}
+        <div class="ar-pop__foot"><span>Identity and Age always shown</span><button type="button" data-slot="cols-reset">Reset</button></div>
+      </div>
+    </div>` : '';
+  const metricField = `<label class="field"><span class="field__label">Metric</span><span class="field__box field__box--select"><select data-slot="metric">${Object.keys(METRICS).map(m => `<option>${m}</option>`).join('')}</select>${icon('chevron-down', 14)}</span></label>`;
+  const viewField = arena ? `<div class="field"><span class="field__label">View</span><div class="segmented" data-slot="view"><button type="button" data-view="lines">Lines</button><button type="button" data-view="candles">Candles</button></div></div>` : '';
+  const rangeField = `<div class="field"><span class="field__label">Range</span><div class="segmented" data-slot="range">${Object.keys(RANGES).map(r => `<button type="button" data-range="${r}">${r}</button>`).join('')}</div></div>`;
+  const sourceHtml = `<div class="lm-source"><span class="source-tag" data-slot="tag"></span><span class="meta-xs" style="font-size:11px;text-align:right" data-slot="line"></span></div>`;
+  const controlsHtml = arena ? `
     <div class="lm-controls">
       <label class="field"><span class="field__label">Instrument</span><span class="field__box field__box--select"><select data-slot="asset"></select>${icon('chevron-down', 14)}</span></label>
-      <label class="field"><span class="field__label">Metric</span><span class="field__box field__box--select"><select data-slot="metric">${Object.keys(METRICS).map(m => `<option>${m}</option>`).join('')}</select>${icon('chevron-down', 14)}</span></label>
-      ${arena ? `<div class="field"><span class="field__label">View</span><div class="segmented" data-slot="view"><button type="button" data-view="lines">Lines</button><button type="button" data-view="candles">Candles</button></div></div>` : ''}
-      <div class="field"><span class="field__label">Range</span><div class="segmented" data-slot="range">${Object.keys(RANGES).map(r => `<button type="button" data-range="${r}">${r}</button>`).join('')}</div></div>
       <div class="spacer"></div>
-      <div class="lm-source"><span class="source-tag" data-slot="tag"></span><span class="meta-xs" style="font-size:11px;text-align:right" data-slot="line"></span></div>
+      <span class="meta-xs" data-slot="th-sort"></span>
+      ${colsControlHtml}
+      ${sourceHtml}
+    </div>` : `
+    <div class="lm-controls">
+      <label class="field"><span class="field__label">Instrument</span><span class="field__box field__box--select"><select data-slot="asset"></select>${icon('chevron-down', 14)}</span></label>
+      ${metricField}
+      ${rangeField}
+      <div class="spacer"></div>
+      ${sourceHtml}
     </div>`;
   const chartHtml = `
+    ${arena ? `<div class="lm-controls lm-controls--chart">${metricField}${viewField}${rangeField}<div class="spacer"></div></div>` : ''}
     <div class="lm-chart-area">
       <div class="lm-chart" data-slot="chart"></div>
       <div class="lm-legend"><div class="label" style="margin-bottom:6px" data-slot="legend-title">Venues · toggle</div><div class="stack gap-6" data-slot="legend"></div>
         <div class="meta" style="margin-top:auto;padding-top:10px">Unsupported: the venue publishes no such field. It is not drawn as a flat line.</div></div>
     </div>`;
-  // The table head is built once and only its text is updated: the Columns popover must survive the
-  // table's once-a-second re-render.
-  const tableHeadHtml = arena ? `
-    <div class="panel__head lm-table-head">
-      <span class="label label--accent" data-slot="th-title"></span>
-      <div class="row gap-10">
-        <span class="meta-xs" data-slot="th-sort"></span>
-        <div class="ar-cols" data-slot="cols">
-          <button type="button" class="btn btn--sm" data-slot="cols-btn" aria-haspopup="true" aria-expanded="false">${icon('columns', 14)}<span data-slot="cols-count"></span></button>
-          <div class="ar-pop" data-slot="cols-pop" hidden>
-            ${COLUMN_GROUPS.map(g => `<button type="button" class="ar-pop__row" data-group="${g.key}" role="menuitemcheckbox"${g.locked ? ' aria-disabled="true"' : ''}><span class="ar-pop__box"></span><span>${g.name}</span><span class="ar-pop__note">${g.note}</span></button>`).join('')}
-            <div class="ar-pop__foot"><span>Identity and Age always shown</span><button type="button" data-slot="cols-reset">Reset</button></div>
-          </div>
-        </div>
-      </div>
-    </div>` : '';
-  const tableHtml = `${tableHeadHtml}<div data-slot="table"></div>`;
+  const tableHtml = `<div data-slot="table"></div>`;
   const logHtml = `<details class="lm-log" data-slot="log-wrap" hidden><summary data-slot="log-title"></summary><div class="lm-log__grid" data-slot="log"></div></details>`;
   const obsHtml = `<div data-slot="observation"></div>`;
   root.classList.toggle('lm-compact', arena);
@@ -623,7 +634,11 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       if (ui.sort && !visibleSortKeys().has(ui.sort.key)) ui.sort = null;
       writeUrl(); renderTableHead(); renderTable();
     });
-    $('cols-reset').addEventListener('click', () => { ui.hiddenGroups.clear(); writeUrl(); renderTableHead(); renderTable(); });
+    $('cols-reset').addEventListener('click', () => {
+      ui.hiddenGroups = new Set(DEFAULT_OFF);
+      if (ui.sort && !visibleSortKeys().has(ui.sort.key)) ui.sort = null;
+      writeUrl(); renderTableHead(); renderTable();
+    });
     document.addEventListener('click', e => { if (ui.colsOpen && !$('cols').contains(e.target)) setOpen(false); });
     document.addEventListener('keydown', e => { if (ui.colsOpen && e.key === 'Escape') { setOpen(false); btn.focus(); } });
     $('table').addEventListener('click', e => {
@@ -642,12 +657,10 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
 
   function renderTableHead() {
     if (!arena) return;
-    const S = store.state;
-    $('th-title').textContent = S.asset + ' · perpetual' + (S.live ? ' · ' + utcTime(S.live.at) : '');
     $('th-sort').textContent = ui.sort ? 'Sorted by ' + SORTS[ui.sort.key].word + ', ' + (ui.sort.dir === 'asc' ? 'ascending' : 'descending') + ', inside each quote group' : 'Venues A–Z inside each quote group';
-    const shownCols = TOGGLEABLE.filter(g => shown(g.key)).reduce((n, g) => n + colsOf(g, arena), 0);
-    $('cols-count').textContent = 'Columns · ' + shownCols + ' of ' + TOGGLE_COLUMNS;
-    $('cols-btn').classList.toggle('btn--active', shownCols < TOGGLE_COLUMNS);
+    const shownGroups = COLUMN_GROUPS.filter(g => shown(g.key)).length;
+    $('cols-count').textContent = 'Columns · ' + shownGroups + ' of ' + COLUMN_GROUPS.length;
+    $('cols-btn').classList.toggle('btn--active', TOGGLEABLE.some(g => ui.hiddenGroups.has(g.key) !== DEFAULT_OFF.has(g.key)));
     root.querySelectorAll('[data-group]').forEach(row => {
       const on = shown(row.dataset.group);
       row.setAttribute('aria-checked', String(on));
@@ -837,6 +850,15 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       <div class="lm-chart__x">${xs.map(x => `<span>${x}</span>`).join('')}</div>`;
   }
 
+  // The right-edge hint is on while the scroller has more table to the right of it — AGE, the one
+  // column the product is about, is the first to fall off.
+  function updateClipped() {
+    const el = arena && $('scroller');
+    if (!el) return;
+    el.dataset.clipped = String(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }
+  if (arena) window.addEventListener('resize', updateClipped);
+
   // Sparklines: trade price over the table's range (7 d and 30 d fall back to 24 h). When the chart
   // already holds that exact history it is reused; otherwise each venue is fetched once, and only when
   // its row scrolls into view. Answers are kept for five minutes.
@@ -884,28 +906,44 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       return `<button type="button" class="ar-sort" data-sort="${key}" aria-sort="${dir ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}" title="Sort by ${SORTS[key].word}">${label}<span class="ar-sort__ind" aria-hidden="true">${dir === 'desc' ? '▼' : '▲'}</span></button>`;
     };
     const thSort = keys => (sort && keys.includes(sort.key) ? ` aria-sort="${sort.dir === 'asc' ? 'ascending' : 'descending'}"` : '');
+    // A paired head carries the same two tracks as its cells, on .pair__grid rather than on the th:
+    // display:grid on a th replaces the table-cell box and the head stops stretching to the row.
+    const pairHead = (cls, a, b) => `<th class="pair"${cls}><div class="pair__grid"><span>${a}</span><span>${b}</span></div></th>`;
     const heads = {
       identity: '<th class="l sticky">Venue · status</th>',
-      quote: `<th${thSort(['bid', 'ask'])}>${head('bid', 'Bid')} / ${head('ask', 'Ask')}</th>${arena ? `<th class="l">${sparkRange()}</th>` : ''}<th${thSort(['spread'])}>${head('spread', 'Spread')}</th>`,
-      reference: '<th>Mark / Index</th>',
+      quote: pairHead(thSort(['bid', 'ask']), head('bid', 'Bid'), head('ask', 'Ask'))
+        + (arena ? `<th class="l">${sparkRange()}</th>` : '')
+        + `<th${thSort(['spread'])}>${head('spread', 'Spread')}</th>`,
+      reference: arena ? pairHead('', 'Mark', 'Index') : '<th>Mark / Index</th>',
       funding: `<th${thSort(['fund'])}>${head('fund', 'Funding')}</th>`,
       oi: `<th${thSort(['oi'])}>${head('oi', 'Open interest')}</th>`,
       depth: `<th${thSort(['depth'])}>${head('depth', 'Depth ±25 bps')}</th>`,
-      time: '<th>Venue / received</th>',
+      time: arena ? '<th>Received</th>' : '<th>Venue / received</th>',
       age: '<th>Age · T / OI / D</th>'
     };
     const cells = ({ r, c }) => ({
-      identity: `<td class="venue"><span class="venue__id">${venueMark(r)}<span>${esc(r.venue)}<small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small><button class="${kindClass(c.status.kind)} row-status" data-prov="${c.status.prov}">${kindWord(c.status.kind)}</button></span></span></td>`,
-      quote: pair(c, 'bid', 'ask', true) + (arena ? `<td class="spark-cell" data-spark="${esc(r.venue.toLowerCase())}">${sparkSvg(sparkPoints(r.venue))}</td>` : '') + td(c.spread, figure(c.spread, 'spread', true)),
+      identity: `<td class="venue"><span class="venue__id">${venueSlot(r)}<span><span>${esc(r.venue)}<button class="${kindClass(c.status.kind)} row-status" data-prov="${c.status.prov}" title="${kindWord(c.status.kind)}">${kindWord(c.status.kind)}</button></span><small>${esc(r.sym)}${r.model === 'oracle_vault' ? ' · vault' : ''}</small></span></span></td>`,
+      quote: pair(c, 'bid', 'ask', true)
+        + (arena ? `<td class="spark-cell" data-spark="${esc(r.venue.toLowerCase())}">${sparkSvg(sparkPoints(r.venue))}</td>` : '')
+        + td(c.spread, figure(c.spread, 'spread', true)),
       reference: pair(c, 'mark', 'index', false),
       funding: td(c.fund, figure(c.fund, 'fund')),
       oi: td(c.oi, figure(c.oi, 'oi')),
       depth: td(c.depth, figure({ ...c.depth, unit: '' }, 'depth', true)),
-      time: `<td><button class="fig fig--stack" data-prov="${c.received.prov}"><span class="${c.venueTime.kind === 'MISSING' ? 'faint' : 'muted'}">${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}</span><span>${esc(c.received.text)}</span></button></td>`,
+      // One line: the venue's own clock is in the provenance, and the received clock is what a reader
+      // compares against the age chips.
+      time: arena
+        ? `<td><button class="fig" data-prov="${c.received.prov}" title="Venue clock: ${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}">${esc(c.received.text)}</button></td>`
+        : `<td><button class="fig fig--stack" data-prov="${c.received.prov}"><span class="${c.venueTime.kind === 'MISSING' ? 'faint' : 'muted'}">${esc(c.venueTime.kind === 'MISSING' ? 'venue sends none' : c.venueTime.text)}</span><span>${esc(c.received.text)}</span></button></td>`,
       age: `<td><div class="fig-chips">${smallChip(c.ageT, 'T')}${smallChip(c.ageO, 'OI')}${smallChip(c.ageD, 'D')}</div></td>`
     });
     const hiddenNames = TOGGLEABLE.filter(g => !shown(g.key)).map(g => g.name.toUpperCase());
-    $('table').innerHTML = `<div class="scroll-x" style="position:relative"><table class="lm-table">
+    // The scroll position is restored after the once-a-second re-render, or a reader who scrolled to
+    // AGE would be snapped back to the venue column every second.
+    const scrolledTo = $('table').querySelector('.scroll-x');
+    const keepScroll = scrolledTo ? scrolledTo.scrollLeft : 0;
+    $('table').innerHTML = `<div class="scroll-x" data-slot="scroller">${arena ? '<div class="scroll-x__hint" aria-hidden="true"></div>' : ''}<table class="lm-table${arena ? ' lm-table--arena' : ''}">
+      ${arena ? `<colgroup>${groups.flatMap(g => g.cols).map(c => `<col class="${c}">`).join('')}</colgroup>` : ''}
       <thead>
         <tr>${groups.map(g => `<th colspan="${colsOf(g, arena)}" class="group${g.key === 'age' ? ' group--age' : ''}">${g.head}</th>`).join('')}</tr>
         <tr>${groups.map(g => heads[g.key]).join('')}</tr>
@@ -915,7 +953,13 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
         return `<tr>${groups.map(gr => cx[gr.key]).join('')}</tr>`;
       }).join('')).join('')}</tbody>
     </table></div>
-    <div class="panel__foot">${hiddenNames.length ? `<span>${esc(hiddenNames.join(', '))} HIDDEN</span>` : ''}<span>Perpetual venues only · grouped by quote currency · BEST and WORST inside each quote group · table scrolls sideways</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    <div class="panel__foot">${hiddenNames.length ? `<span>${esc(hiddenNames.join(', '))} HIDDEN</span>` : ''}<span>Perpetual venues only · grouped by quote currency · BEST and WORST inside each quote group · open interest and depth are their own calls</span><span>— missing this snapshot · hatched: not published by the venue · dimmed: stale</span></div>`;
+    const scroller = $('scroller');
+    if (scroller) {
+      scroller.scrollLeft = keepScroll;
+      scroller.onscroll = updateClipped;
+      updateClipped();
+    }
     refreshTip();
     if (sparkObserver) { sparkObserver.disconnect(); $('table').querySelectorAll('[data-spark]').forEach(el => sparkObserver.observe(el)); }
 
