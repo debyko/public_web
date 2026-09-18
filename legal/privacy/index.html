@@ -121,7 +121,7 @@
       <section id="collected">
         <h2><span class="article__n">02</span>What is collected <a class="anchor" href="#collected" aria-label="Link to this section">#</a></h2>
         <p><b>Just by visiting: nothing.</b> The site sets no cookies, stores nothing in your browser, and runs no analytics or tracking scripts.</p>
-        <p><b>When you send a form:</b> the Contact sales and Join the waitlist forms send what you type — your email address, and for a sales request the organisation, the engagement and the venues, instruments and period; for the waitlist the product you are interested in — to a function on this site, which passes it on by email to hello@debyko.com through Mailjet. The notification also carries your IP address and country, so that abuse can be recognised; they are not stored anywhere else. To limit abuse the function counts requests per IP address for ten minutes, in memory, and writes the count nowhere.</p>
+        <p><b>When you send a form:</b> the Contact sales and Join the waitlist forms send what you type — your email address, and for a sales request the organisation, the engagement and the venues, instruments and period; for the waitlist the product you are interested in — to a function on this site, which passes it on by email to hello@debyko.com through Mailjet. The notification also carries your IP address and country, so that abuse can be recognised; they are not stored anywhere else. To limit abuse the function counts requests per IP address in Cloudflare’s key-value store; each count expires by itself after ten minutes.</p>
         <p><b>When you write to us directly:</b> the Subscribe buttons, and the address shown if a form cannot send, open your own email app. What you send is your email address, your name if your email app includes it, and what you write.</p>
         <p><b>At the providers the pages use:</b> the technical data of each request your browser makes — IP address, time, requested address and browser details — as described in section 04.</p>
       </section>
@@ -150,7 +150,7 @@
         <ul class="ruled">
           <li>A waitlist address: until the one message is sent when the product opens, then deleted.</li>
           <li>A sales request and the correspondence that follows: for as long as the conversation or the engagement lasts, and afterwards only as long as the law requires records to be kept.</li>
-          <li>Your IP address in the form’s request count: ten minutes, in memory only.</li>
+          <li>Your IP address in the form’s request count: ten minutes, in Cloudflare’s key-value store, then it expires.</li>
           <li>Request data at Cloudflare and Google, and delivery records at Mailjet: for the periods those providers set.</li>
         </ul>
       </section>
@@ -162,7 +162,7 @@
         <h2><span class="article__n">—</span>Changes to this page <a class="anchor" href="#updates" aria-label="Link to this section">#</a></h2>
         <ul class="ruled ruled--dated">
           <li><span class="date">2026-09-18</span><span>First publication of this page.</span></li>
-          <li><span class="date">2026-09-18</span><span>The Contact sales and waitlist forms send through a function on this site and Mailjet instead of opening your email app; Mailjet added as a processor, with the IP address and country the notification carries.</span></li>
+          <li><span class="date">2026-09-18</span><span>The Contact sales and waitlist forms send through a function on this site and Mailjet instead of opening your email app; Mailjet added as a processor, with the IP address and country the notification carries. The request count per IP address is kept in Cloudflare’s key-value store for ten minutes.</span></li>
         </ul>
         <p>Each later change is added here with its date.</p>
       </section>

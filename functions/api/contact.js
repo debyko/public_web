@@ -4,9 +4,10 @@
 // Credentials come from the Pages project's environment only (MAILJET_API_KEY, MAILJET_SECRET_KEY);
 // nothing secret lives in this file or anywhere in the repository.
 //
-// Rate limit: 5 requests per 10 minutes per client IP. The store is a KV namespace when one is bound
-// as CONTACT_RL; without it, a Map in this isolate's memory. The in-memory store is per isolate and
-// per data centre, so it is a brake, not a guarantee — bind KV to make it exact.
+// Rate limit: 5 requests per 10 minutes per client IP, in the KV namespace bound as CONTACT_RL
+// (debyko-contact-rl, production). Each entry carries a 10-minute TTL. Without the binding (preview
+// deployments) the fallback is a Map in this isolate's memory — per isolate and per data centre, a
+// brake rather than a guarantee.
 
 const TO = 'hello@debyko.com';
 const FROM = { Email: 'noreply@debyko.com', Name: 'DEBYKO site' };
