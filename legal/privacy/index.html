@@ -25,10 +25,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="../../css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="../../css/site.css?v=c28b843f9b">
+  <link rel="stylesheet" href="../../css/site.css?v=7672a537e7">
   <link rel="stylesheet" href="../../css/pages.css?v=2268485041">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=fbd4252b7d","/js/arena-chart.js":"/js/arena-chart.js?v=21e324017d","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=c3d239c15b","/js/live-market.js":"/js/live-market.js?v=ba0a742dae","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=9ca766a23e","/js/arena-chart.js":"/js/arena-chart.js?v=21e324017d","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=08bd9c7ad2","/js/live-market.js":"/js/live-market.js?v=ba0a742dae","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
   <script defer src="../../js/nav.js?v=43d80b9eea"></script>
 </head>
@@ -104,7 +104,7 @@
     <div class="split split--7-5 split--end">
       <div class="stack gap-18">
         <h1 class="h1">What this site collects, and what it does not.</h1>
-        <p class="lead">No cookies, no analytics, no tracking scripts. Personal data reaches us only when you write to us. This page names every party that sees a request from your browser, and changes only by a dated entry in the list at the end.</p>
+        <p class="lead">No cookies, no analytics, no tracking scripts. Personal data reaches us only when you send a form or write to us. This page names every party that sees a request from your browser, and changes only by a dated entry in the list at the end.</p>
       </div>
       <p class="prose">Requests about your data, including deletion: <a href="mailto:hello@debyko.com">hello@debyko.com</a>.</p>
     </div>
@@ -120,8 +120,9 @@
       </section>
       <section id="collected">
         <h2><span class="article__n">02</span>What is collected <a class="anchor" href="#collected" aria-label="Link to this section">#</a></h2>
-        <p><b>Through the site itself: nothing.</b> The site sets no cookies, stores nothing in your browser, and runs no analytics or tracking scripts. The Contact sales, Join the waitlist and Subscribe buttons do not submit to our servers: they open your own email app with a message to hello@debyko.com, filled in from the form, and the message leaves only when you press Send.</p>
-        <p><b>When you write to us:</b> your email address, your name if your email app includes it, and what you write — for a sales request the organisation, the engagement and the venues, instruments and period; for the waitlist the product you are interested in.</p>
+        <p><b>Just by visiting: nothing.</b> The site sets no cookies, stores nothing in your browser, and runs no analytics or tracking scripts.</p>
+        <p><b>When you send a form:</b> the Contact sales and Join the waitlist forms send what you type — your email address, and for a sales request the organisation, the engagement and the venues, instruments and period; for the waitlist the product you are interested in — to a function on this site, which passes it on by email to hello@debyko.com through Mailjet. The notification also carries your IP address and country, so that abuse can be recognised; they are not stored anywhere else. To limit abuse the function counts requests per IP address for ten minutes, in memory, and writes the count nowhere.</p>
+        <p><b>When you write to us directly:</b> the Subscribe buttons, and the address shown if a form cannot send, open your own email app. What you send is your email address, your name if your email app includes it, and what you write.</p>
         <p><b>At the providers the pages use:</b> the technical data of each request your browser makes — IP address, time, requested address and browser details — as described in section 04.</p>
       </section>
       <section id="why">
@@ -136,10 +137,11 @@
       <section id="processors">
         <h2><span class="article__n">04</span>Who else sees a request <a class="anchor" href="#processors" aria-label="Link to this section">#</a></h2>
         <ul class="ruled">
-          <li><b>Cloudflare, Inc.</b> hosts debyko.com (Cloudflare Pages) and sits in front of the market-data API. It processes the technical data of every request, and receives network-error reports from browsers that support them, under its own retention rules.</li>
+          <li><b>Cloudflare, Inc.</b> hosts debyko.com (Cloudflare Pages), runs the function that sends the forms, and sits in front of the market-data API. It processes the technical data of every request, and receives network-error reports from browsers that support them, under its own retention rules.</li>
           <li><b>Google</b> serves the two typefaces the pages use (Google Fonts). When your browser fetches them it sends Google its IP address and browser details.</li>
           <li><b>The market-data API</b> at cryptosmithx.blynai.eu, operated by MB „Blynai“, answers the pages’ requests for figures. It keeps no access log of visitors. If a request fails with a server error, a technical error report without your IP address is sent to Sentry (Functional Software, Inc., EU region).</li>
-          <li><b>Apple</b> hosts the hello@debyko.com mailbox (iCloud Mail); messages you send us are stored there.</li>
+          <li><b>Mailjet</b> (Sinch, EU) delivers the Contact sales and waitlist forms to hello@debyko.com: the form’s content, your email address as the reply-to, and your IP address and country. If a delivery fails, Mailjet’s error message is written to the function’s log at Cloudflare.</li>
+          <li><b>Apple</b> hosts the hello@debyko.com mailbox (iCloud Mail); messages you send us, and the form notifications, are stored there.</li>
         </ul>
         <p>Cloudflare, Google and Apple may process data outside the European Economic Area under their own safeguards for such transfers.</p>
       </section>
@@ -148,7 +150,8 @@
         <ul class="ruled">
           <li>A waitlist address: until the one message is sent when the product opens, then deleted.</li>
           <li>A sales request and the correspondence that follows: for as long as the conversation or the engagement lasts, and afterwards only as long as the law requires records to be kept.</li>
-          <li>Request data at Cloudflare and Google: for the periods those providers set.</li>
+          <li>Your IP address in the form’s request count: ten minutes, in memory only.</li>
+          <li>Request data at Cloudflare and Google, and delivery records at Mailjet: for the periods those providers set.</li>
         </ul>
       </section>
       <section id="rights">
@@ -159,6 +162,7 @@
         <h2><span class="article__n">—</span>Changes to this page <a class="anchor" href="#updates" aria-label="Link to this section">#</a></h2>
         <ul class="ruled ruled--dated">
           <li><span class="date">2026-09-18</span><span>First publication of this page.</span></li>
+          <li><span class="date">2026-09-18</span><span>The Contact sales and waitlist forms send through a function on this site and Mailjet instead of opening your email app; Mailjet added as a processor, with the IP address and country the notification carries.</span></li>
         </ul>
         <p>Each later change is added here with its date.</p>
       </section>

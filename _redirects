@@ -3,3 +3,6 @@
 /plans/*          /  302
 /og/README.md     /  302
 /og/*.svg         /  302
+# The Pages Function source is compiled by Pages; its file is not a page.
+/functions/*      /  302
+/_routes.json     /  302

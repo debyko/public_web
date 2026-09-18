@@ -597,6 +597,10 @@ a.credit__brand:hover { opacity: .65; }
 .dialog__body { padding: 18px; font: var(--dk-type-prose); color: var(--dk-text-secondary); display: flex; flex-direction: column; gap: 14px; }
 .dialog__body p { margin: 0; font: 400 14px/1.55 var(--dk-font-text); color: var(--dk-text-secondary); }
 .dialog__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--dk-border-hairline); background: var(--dk-surface-subtle); }
+/* Contact forms: the honeypot no person sees, and the inline reason a request was refused. */
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.form-error { margin: 0; padding: 8px 10px; border: 1px solid var(--dk-border-strong); border-left: 2px solid var(--dk-accent); font: 400 13px/1.5 var(--dk-font-text); color: var(--dk-text-primary); }
+.form-error a { color: var(--dk-text-accent); }
 .fields-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
 
 /* ── Narrow screens ─────────────────────────────────────────────────────── */

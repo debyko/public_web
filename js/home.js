@@ -1,6 +1,6 @@
 // Homepage wiring: navigation, dialogs, and the blocks fed by health and coverage.
 
-import { createStore, normaliseCoverage, normaliseCoverageHours, normaliseHealth, leadMailto, LEAD_ADDRESS } from './api.js';
+import { createStore, normaliseCoverage, normaliseCoverageHours, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
 import { mountSlice, mountFull, mountArena, closeProvenance } from './live-market.js';
 import { esc, fmt, age, utcTime, stateBlock } from './format.js';
 import { sourceText, sourceTimeText, metaStateBlock, coverageTotalsLine, datasetChips, filterHealthToCoverage } from './pages/shared.js';
@@ -46,6 +46,7 @@ function openDialog(name) {
   if (!dlg) return;
   dlg.querySelector('[data-part="form"]').hidden = false;
   dlg.querySelector('[data-part="result"]').hidden = true;
+  dlg.querySelector('[data-part="error"]').hidden = true;
   dlg.querySelector('[data-part="submit"]').hidden = false;
   dlg.hidden = false;
   const first = dlg.querySelector('input, select, textarea');
@@ -55,23 +56,48 @@ const closeDialogs = () => document.querySelectorAll('.dialog-scrim').forEach(d 
 
 document.querySelectorAll('.dialog-scrim').forEach(scrim => {
   scrim.addEventListener('click', e => { if (e.target === scrim || e.target.closest('[data-close]')) closeDialogs(); });
-  scrim.querySelector('form').addEventListener('submit', e => {
+  scrim.querySelector('form').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.currentTarget;
-    const href = leadMailto(scrim.id.replace('dialog-', ''), Object.fromEntries(new FormData(form)));
-    // Hand the message to the reader's email app, then say plainly what happened and where it goes —
-    // with the address as a link, for a browser that has no email app to open.
-    window.location.href = href;
-    scrim.querySelector('[data-part="form"]').hidden = true;
-    scrim.querySelector('[data-part="submit"]').hidden = true;
-    const out = scrim.querySelector('[data-part="result"]');
-    out.textContent = '';
-    out.append(out.dataset.success + ' If no email app opened, write to ');
-    const link = document.createElement('a');
-    link.href = href;
-    link.textContent = LEAD_ADDRESS;
-    out.append(link, '.');
-    out.hidden = false;
+    const f = Object.fromEntries(new FormData(form));
+    const button = scrim.querySelector('[data-part="submit"]');
+    const label = button.querySelector('span');
+    const idle = label.textContent;
+    const error = scrim.querySelector('[data-part="error"]');
+    error.hidden = true;
+    button.disabled = true;
+    label.textContent = 'Sending…';
+    const sales = scrim.id === 'dialog-sales';
+    const result = await submitLead({
+      kind: sales ? 'sales' : 'waitlist',
+      engagement: sales ? f.engagement : undefined,
+      product: sales ? undefined : f.product,
+      organisation: f.organisation || '',
+      email: f.email || '',
+      message: f.scope || '',
+      website: f.website || ''
+    });
+    button.disabled = false;
+    label.textContent = idle;
+    if (result.ok) {
+      scrim.querySelector('[data-part="form"]').hidden = true;
+      button.hidden = true;
+      const out = scrim.querySelector('[data-part="result"]');
+      out.textContent = out.dataset.success;
+      out.hidden = false;
+      return;
+    }
+    // A reason the reader can act on keeps the form open; anything else points to the mailbox.
+    error.textContent = '';
+    if ((result.status === 400 || result.status === 429) && result.reason) {
+      error.textContent = result.reason;
+    } else {
+      const link = document.createElement('a');
+      link.href = 'mailto:' + LEAD_ADDRESS;
+      link.textContent = LEAD_ADDRESS;
+      error.append('Could not send — write to ', link, '.');
+    }
+    error.hidden = false;
   });
 });
 

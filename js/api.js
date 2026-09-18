@@ -366,21 +366,27 @@ export function normaliseCoverageHours(d, hours = 48) {
 
 // ── Forms ───────────────────────────────────────────────────────────────────────────────────
 
-/** Where the contact and waitlist forms deliver. The same mechanism the Subscribe buttons use:
- *  the form opens the reader's own email app with the message addressed and filled in, and it
- *  leaves from their address when they press Send. A server-side handler (Pages Function → mail)
- *  replaces this once mail sending is configured for the zone. */
+/** Where a request goes when the form itself cannot send it. The only mailto left on the forms. */
 export const LEAD_ADDRESS = 'hello@debyko.com';
 
-/** mailto: for a waitlist ('wait') or sales ('sales') request, every field in the body. */
-export function leadMailto(kind, fields) {
-  const f = fields || {};
-  const lines = kind === 'sales'
-    ? [['Engagement', f.engagement], ['Organisation', f.organisation], ['Work email', f.email], ['Venues · instruments · period', f.scope]]
-    : [['Product of interest', f.product], ['Email', f.email]];
-  const subject = kind === 'sales' ? 'Contact sales — ' + (f.engagement || 'request') : 'Waitlist — ' + (f.product || 'product');
-  const body = lines.map(([k, v]) => k + ': ' + (String(v || '').trim() || '—')).join('\n') + '\n\nSent from debyko.com';
-  return 'mailto:' + LEAD_ADDRESS + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+/**
+ * Sends a Contact sales or waitlist request to the Pages Function (functions/api/contact.js), which
+ * mails it to hello@debyko.com through Mailjet. Returns { ok, status, reason }: status 0 means the
+ * request never reached the function.
+ */
+export async function submitLead(payload) {
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    let body = {};
+    try { body = await res.json(); } catch { /* a non-JSON answer is treated as a failure below */ }
+    return { ok: res.status === 200 && body.ok === true, status: res.status, reason: typeof body.reason === 'string' ? body.reason : '' };
+  } catch {
+    return { ok: false, status: 0, reason: '' };
+  }
 }
 
 // ── Shared store ────────────────────────────────────────────────────────────────────────────

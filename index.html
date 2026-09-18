@@ -25,11 +25,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=c28b843f9b">
+  <link rel="stylesheet" href="css/site.css?v=7672a537e7">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=fbd4252b7d","/js/arena-chart.js":"/js/arena-chart.js?v=21e324017d","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=c3d239c15b","/js/live-market.js":"/js/live-market.js?v=ba0a742dae","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=9ca766a23e","/js/arena-chart.js":"/js/arena-chart.js?v=21e324017d","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=08bd9c7ad2","/js/live-market.js":"/js/live-market.js?v=ba0a742dae","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
-  <script type="module" src="js/home.js?v=c3d239c15b"></script>
+  <script type="module" src="js/home.js?v=08bd9c7ad2"></script>
 </head>
 <body>
 
@@ -698,7 +698,7 @@
   </div>
 </footer>
 
-<!-- Dialogs. Submitting opens the reader's email app with the request to hello@debyko.com filled in (js/api.js leadMailto). -->
+<!-- Dialogs. Submitting posts to /api/contact (functions/api/contact.js), which mails hello@debyko.com through Mailjet. -->
 <div class="dialog-scrim" id="dialog-wait" hidden>
   <form class="dialog dialog--narrow" role="dialog" aria-modal="true" aria-label="Join the waitlist">
     <header class="dialog__head"><h2 class="dialog__title">Join the waitlist</h2><span class="dialog__meta">Product interest</span>
@@ -708,9 +708,11 @@
         <p>Studio Trader is in development; Agent is a prototype. The address is used for one message when the chosen product opens. No account is created.</p>
         <label class="field"><span class="field__label">Email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
         <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>Studio Trader</option><option>Agent</option><option>Both</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
-        <span class="meta">Join opens your email app with a message to hello@debyko.com, filled in from this form. It leaves from your own address when you press Send.</span>
+        <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
+        <p class="form-error" data-part="error" role="alert" hidden></p>
+        <span class="meta">Your address is used for one message when the chosen product opens, and for nothing else.</span>
       </div>
-      <p data-part="result" data-success="Your email app has the message ready — press Send there. One message follows when the product opens." hidden></p>
+      <p data-part="result" data-success="You’re on the list. One email when it opens." hidden></p>
     </div>
     <footer class="dialog__foot">
       <button type="button" class="btn btn--ghost" data-close><span>Close</span></button>
@@ -735,9 +737,11 @@
           <option>Custom dataset or export</option><option>Connector</option><option>White-label</option><option>Enterprise API</option><option>Studio Pro access</option><option>Agent early access</option>
         </select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         <label class="field"><span class="field__label">Venues · instruments · period</span><textarea name="scope" rows="4" placeholder="e.g. BTC perpetual on three venues, 12–14 Sep 2026, 40 executions"></textarea></label>
-        <span class="meta">Send opens your email app with the request to hello@debyko.com, filled in from this form. A person reads it; a scope comes back before any price.</span>
+        <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
+        <p class="form-error" data-part="error" role="alert" hidden></p>
+        <span class="meta">Goes to hello@debyko.com. A person reads it; a scope comes back before any price.</span>
       </div>
-      <p data-part="result" data-success="Your email app has the request ready — press Send there. A person reads it; a scope comes back before any price." hidden></p>
+      <p data-part="result" data-success="Sent. A person reads it; scope comes back before price." hidden></p>
     </div>
     <footer class="dialog__foot">
       <button type="button" class="btn btn--ghost" data-close><span>Close</span></button>
