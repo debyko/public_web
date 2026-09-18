@@ -25,11 +25,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=1303ba6000">
+  <link rel="stylesheet" href="css/site.css?v=c28b843f9b">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=fdde2ae443","/js/arena-chart.js":"/js/arena-chart.js?v=21e324017d","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=01910247d8","/js/live-market.js":"/js/live-market.js?v=ba0a742dae","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=fbd4252b7d","/js/arena-chart.js":"/js/arena-chart.js?v=21e324017d","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=c3d239c15b","/js/live-market.js":"/js/live-market.js?v=ba0a742dae","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
-  <script type="module" src="js/home.js?v=01910247d8"></script>
+  <script type="module" src="js/home.js?v=c3d239c15b"></script>
 </head>
 <body>
 
@@ -79,8 +79,8 @@
         <button class="nav__trigger" aria-expanded="false">Company</button>
         <div class="nav__menu" hidden>
           <a href="#company">About</a>
-          <a href="#" data-open="sales">Contact Sales</a>
-          <a href="#" data-open="wait">Join the Waitlist</a>
+          <a href="?open=sales" data-open="sales">Contact Sales</a>
+          <a href="?open=wait" data-open="wait">Join the Waitlist</a>
         </div>
       </div>
     </nav>
@@ -95,7 +95,7 @@
     <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="/arena/">Arena</a><a href="#studio-pro" data-scroll="studio-pro">Studio Pro</a><a href="#trader" data-scroll="trader">Studio Trader</a><a href="#agent" data-scroll="agent">Agent</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="#evidence" data-scroll="evidence">Execution Evidence</a><a href="#services" data-scroll="services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="#pricing" data-scroll="pricing">Pricing</a><a href="#" data-open="sales">Contact Sales</a><a href="#" data-open="wait">Join the Waitlist</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="#pricing" data-scroll="pricing">Pricing</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
     <div class="mobile-nav__actions">
       <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
       <button class="btn" data-open="sales"><span>Contact sales</span></button>
@@ -470,7 +470,7 @@
           <tbody>
             <tr><td class="td-venue">BINANCE-F</td><td class="td-sym">BTCUSDT</td><td class="td-num">77,354.1</td><td class="td-num">77,355.0</td><td class="td-num">0.12 bps</td><td class="td-num">412.816 / 398.104 BTC</td><td class="td-mono r age-col">1 s <span class="faint">/</span> <span class="ar-chip ar-chip--live"><span class="ar-chip__val">2 m 40 s</span></span></td><td class="meta muted" style="white-space:nowrap">collected · no gap</td></tr>
             <tr><td class="td-venue">OKX</td><td class="td-sym">BTC-USDT-SWAP</td><td class="td-num">77,353.9</td><td class="td-num">77,355.3</td><td class="td-num">0.18 bps</td><td class="td-num">190.220 / 184.650 BTC</td><td class="td-mono r age-col">2 s <span class="faint">/</span> <span class="ar-chip ar-chip--delayed"><span class="ar-chip__val">11 m 04 s</span></span></td><td class="meta muted" style="white-space:nowrap">collected · depth delayed</td></tr>
-            <tr><td class="td-venue">DERIBIT</td><td class="td-sym">BTC-PERPETUAL</td><td class="td-num">77,352.5</td><td class="td-num">77,356.0</td><td class="td-num">0.45 bps</td><td class="td-num">—</td><td class="td-mono r age-col">4 s <span class="faint">/</span> <span class="ar-chip ar-chip--notcollected"><span class="ar-chip__val">—</span></span></td><td class="meta muted" style="white-space:nowrap">depth not collected in period</td></tr>
+            <tr><td class="td-venue">BYBIT-PERP</td><td class="td-sym">BTCUSDT</td><td class="td-num">77,353.8</td><td class="td-num">77,355.1</td><td class="td-num">0.17 bps</td><td class="td-num">96.412 / 101.337 BTC</td><td class="td-mono r age-col">3 s <span class="faint">/</span> <span class="ar-chip ar-chip--live"><span class="ar-chip__val">1 m 12 s</span></span></td><td class="meta muted" style="white-space:nowrap">collected · no gap</td></tr>
             <tr><td class="td-venue">GMX-V2</td><td class="td-sym">BTC/USD [WBTC]</td><td class="td-num dk-hatch">—</td><td class="td-num dk-hatch">—</td><td class="td-num dk-hatch">—</td><td class="td-num dk-hatch">—</td><td class="td-mono r age-col">5 s <span class="faint">/</span> <span class="ar-chip ar-chip--unsupported"><span class="ar-chip__val">—</span></span></td><td class="meta muted" style="white-space:nowrap">oracle/vault · no book</td></tr>
           </tbody>
         </table>
@@ -686,18 +686,19 @@
             <circle cx="6.6" cy="20" r="2" fill="#B8129F"/><circle cx="33.4" cy="20" r="2" fill="#B8129F"/>
           </svg><span>CryptoSmith X</span></span>
           market data engine.</p>
+        <p class="credit credit--legal">Operated by MB „Blynai“ · Vilnius, Lithuania · <a href="https://blynai.eu">blynai.eu</a></p>
       </div>
       <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="/arena/">Arena</a><a href="#studio-pro">Studio Pro</a><a href="#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="#agent">Agent <span class="nav-tag">prototype</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="#evidence">Execution Evidence</a><a href="#services">Data &amp; Research</a><a href="#services">Venues &amp; Platforms</a><a href="#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="#" data-open="sales">Contact Sales</a><a href="#" data-open="wait">Join the Waitlist</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="#">Privacy</a><a href="#">Terms</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="/legal/privacy/">Privacy</a><a href="/legal/terms/">Terms</a></div>
     </div>
-    <div class="site-footer__bottom"><span>© 2026 BlynAI, MB</span><span>debyko.com · Times are UTC</span></div>
+    <div class="site-footer__bottom"><span>© 2026 MB „Blynai“</span><span>debyko.com · Times are UTC</span></div>
   </div>
 </footer>
 
-<!-- Dialogs. No endpoint receives these forms yet; submitting says so instead of pretending. -->
+<!-- Dialogs. Submitting opens the reader's email app with the request to hello@debyko.com filled in (js/api.js leadMailto). -->
 <div class="dialog-scrim" id="dialog-wait" hidden>
   <form class="dialog dialog--narrow" role="dialog" aria-modal="true" aria-label="Join the waitlist">
     <header class="dialog__head"><h2 class="dialog__title">Join the waitlist</h2><span class="dialog__meta">Product interest</span>
@@ -707,9 +708,9 @@
         <p>Studio Trader is in development; Agent is a prototype. The address is used for one message when the chosen product opens. No account is created.</p>
         <label class="field"><span class="field__label">Email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
         <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>Studio Trader</option><option>Agent</option><option>Both</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
-        <span class="meta">Endpoint pending · nothing is sent until a handler is connected</span>
+        <span class="meta">Join opens your email app with a message to hello@debyko.com, filled in from this form. It leaves from your own address when you press Send.</span>
       </div>
-      <p data-part="result" data-success="Recorded. One message follows when the product opens; nothing else is sent." hidden></p>
+      <p data-part="result" data-success="Your email app has the message ready — press Send there. One message follows when the product opens." hidden></p>
     </div>
     <footer class="dialog__foot">
       <button type="button" class="btn btn--ghost" data-close><span>Close</span></button>
@@ -734,9 +735,9 @@
           <option>Custom dataset or export</option><option>Connector</option><option>White-label</option><option>Enterprise API</option><option>Studio Pro access</option><option>Agent early access</option>
         </select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         <label class="field"><span class="field__label">Venues · instruments · period</span><textarea name="scope" rows="4" placeholder="e.g. BTC perpetual on three venues, 12–14 Sep 2026, 40 executions"></textarea></label>
-        <span class="meta">Endpoint pending · nothing is sent until a handler is connected · no response time is promised</span>
+        <span class="meta">Send opens your email app with the request to hello@debyko.com, filled in from this form. A person reads it; a scope comes back before any price.</span>
       </div>
-      <p data-part="result" data-success="Recorded. The request is read by a person; a scope follows before any price." hidden></p>
+      <p data-part="result" data-success="Your email app has the request ready — press Send there. A person reads it; a scope comes back before any price." hidden></p>
     </div>
     <footer class="dialog__foot">
       <button type="button" class="btn btn--ghost" data-close><span>Close</span></button>

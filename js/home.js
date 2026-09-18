@@ -1,6 +1,6 @@
 // Homepage wiring: navigation, dialogs, and the blocks fed by health and coverage.
 
-import { createStore, normaliseCoverage, normaliseCoverageHours, normaliseHealth, submitLead } from './api.js';
+import { createStore, normaliseCoverage, normaliseCoverageHours, normaliseHealth, leadMailto, LEAD_ADDRESS } from './api.js';
 import { mountSlice, mountFull, mountArena, closeProvenance } from './live-market.js';
 import { esc, fmt, age, utcTime, stateBlock } from './format.js';
 import { sourceText, sourceTimeText, metaStateBlock, coverageTotalsLine, datasetChips, filterHealthToCoverage } from './pages/shared.js';
@@ -55,14 +55,22 @@ const closeDialogs = () => document.querySelectorAll('.dialog-scrim').forEach(d 
 
 document.querySelectorAll('.dialog-scrim').forEach(scrim => {
   scrim.addEventListener('click', e => { if (e.target === scrim || e.target.closest('[data-close]')) closeDialogs(); });
-  scrim.querySelector('form').addEventListener('submit', async e => {
+  scrim.querySelector('form').addEventListener('submit', e => {
     e.preventDefault();
     const form = e.currentTarget;
-    const result = await submitLead(scrim.id.replace('dialog-', ''), Object.fromEntries(new FormData(form)));
+    const href = leadMailto(scrim.id.replace('dialog-', ''), Object.fromEntries(new FormData(form)));
+    // Hand the message to the reader's email app, then say plainly what happened and where it goes —
+    // with the address as a link, for a browser that has no email app to open.
+    window.location.href = href;
     scrim.querySelector('[data-part="form"]').hidden = true;
     scrim.querySelector('[data-part="submit"]').hidden = true;
     const out = scrim.querySelector('[data-part="result"]');
-    out.textContent = result.ok ? out.dataset.success : result.reason;
+    out.textContent = '';
+    out.append(out.dataset.success + ' If no email app opened, write to ');
+    const link = document.createElement('a');
+    link.href = href;
+    link.textContent = LEAD_ADDRESS;
+    out.append(link, '.');
     out.hidden = false;
   });
 });

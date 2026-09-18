@@ -366,9 +366,21 @@ export function normaliseCoverageHours(d, hours = 48) {
 
 // ── Forms ───────────────────────────────────────────────────────────────────────────────────
 
-/** Waitlist and sales requests. No endpoint exists yet, so nothing is sent and the caller is told so. */
-export async function submitLead(/* kind, fields */) {
-  return { ok: false, reason: 'No endpoint is connected yet. Nothing was sent.' };
+/** Where the contact and waitlist forms deliver. The same mechanism the Subscribe buttons use:
+ *  the form opens the reader's own email app with the message addressed and filled in, and it
+ *  leaves from their address when they press Send. A server-side handler (Pages Function → mail)
+ *  replaces this once mail sending is configured for the zone. */
+export const LEAD_ADDRESS = 'hello@debyko.com';
+
+/** mailto: for a waitlist ('wait') or sales ('sales') request, every field in the body. */
+export function leadMailto(kind, fields) {
+  const f = fields || {};
+  const lines = kind === 'sales'
+    ? [['Engagement', f.engagement], ['Organisation', f.organisation], ['Work email', f.email], ['Venues · instruments · period', f.scope]]
+    : [['Product of interest', f.product], ['Email', f.email]];
+  const subject = kind === 'sales' ? 'Contact sales — ' + (f.engagement || 'request') : 'Waitlist — ' + (f.product || 'product');
+  const body = lines.map(([k, v]) => k + ': ' + (String(v || '').trim() || '—')).join('\n') + '\n\nSent from debyko.com';
+  return 'mailto:' + LEAD_ADDRESS + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 }
 
 // ── Shared store ────────────────────────────────────────────────────────────────────────────

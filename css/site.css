@@ -494,6 +494,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 a.credit__brand:hover { opacity: .65; }
 .credit__brand i { font-style: normal; color: var(--dk-text-accent); }
 .credit__mark { display: inline-block; align-self: center; }
+.credit--legal a { color: var(--dk-text-primary); }
 .credit__mark--blynai { width: 14px; height: 14px; }
 .credit__mark--csx { width: 22.7px; height: 22.7px; margin: -6px -3px; }
 
