@@ -71,7 +71,9 @@ function cell(reg, r, key, val, unit, group, opts = {}) {
   if (opts.formula) lines.push({ k: 'Derived', v: opts.formula });
   // Every price in the table is printed to the same decimals; this says what the venue's own step is,
   // so a padded zero is never read as a tick the venue quotes.
-  if (opts.price) lines.push({ k: 'Venue price step', v: r.step != null ? String(r.step) : 'not published · printed to 2 decimals' });
+  if (opts.price) lines.push({ k: 'Venue price step', v: r.stepRaw != null ? String(r.stepRaw) + (r.unit !== 1 ? ' per ' + fmt(r.unit, 0) + ' ' + r.base : '') : 'not published · printed to 2 decimals' });
+  // A venue that lists 1000PEPE or kPEPE quotes a thousand PEPE; the table prints every venue per one.
+  if (opts.price && r.unit !== 1) lines.push({ k: 'Quoted unit', v: r.sym + ' is priced per ' + fmt(r.unit, 0) + ' ' + r.base + ' · shown per 1 ' + r.base + ' (venue price ÷ ' + fmt(r.unit, 0) + ')' });
   if (kind === 'MISSING') lines.push({ k: 'Note', v: 'This snapshot carries no value for the field. Shown as empty, not as zero.' });
   if (kind === 'NOT_COLLECTED') lines.push({ k: 'Note', v: 'This service does not collect the order book on this venue — GET /v1/coverage lists no depth dataset for it. Not a freshness problem, and not a statement that the venue has no book.' });
   if (kind === 'UNSUPPORTED') lines.push({ k: 'Note', v: r.model === 'oracle_vault' ? 'Oracle/vault market: no order book, so bid, ask, spread and depth are not published.' : 'The venue publishes no such field.' });
@@ -107,7 +109,7 @@ function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}
     const c = {
       bid: cell(reg, r, 'Bid', r.bid, quote, 't', { decimals: priceDecimals, price: true }),
       ask: cell(reg, r, 'Ask', r.ask, quote, 't', { decimals: priceDecimals, price: true }),
-      spread: cell(reg, r, 'Spread', spreadVal, 'bps', 't', { decimals: 2, formula: typeof spreadVal === 'number' ? 'spread = (ask − bid) / mid × 10,000 · inputs: bid ' + fmt(r.bid, 2) + ', ask ' + fmt(r.ask, 2) : null }),
+      spread: cell(reg, r, 'Spread', spreadVal, 'bps', 't', { decimals: 2, formula: typeof spreadVal === 'number' ? 'spread = (ask − bid) / mid × 10,000 · inputs: bid ' + fmt(r.bid, priceDecimals) + ', ask ' + fmt(r.ask, priceDecimals) : null }),
       mark: cell(reg, r, 'Mark', r.mark, quote, 't', { decimals: priceDecimals, price: true }),
       index: cell(reg, r, 'Index', r.index, quote, 't', { decimals: priceDecimals, price: true }),
       fund,
@@ -115,7 +117,7 @@ function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}
         decimals: oiInBase ? 3 : 0,
         formula: 'openInterestNotional = ' + (r.oiNotional != null ? fmt(r.oiNotional, 0) + ' ' + quote : '—') + (r.mult != null ? ' · contract multiplier ×' + r.mult : ' · contract multiplier not published')
       }),
-      depth: cell(reg, r, 'Depth', depth, quote, 'd', { formula: 'quote notional resting within ±25 bps of depthRef ' + (r.depthRef != null ? fmt(r.depthRef, 2) : '—') + ' · bid ' + (typeof r.db === 'number' ? fmt(r.db, 0) : '—') + ' / ask ' + (typeof r.da === 'number' ? fmt(r.da, 0) : '—') }),
+      depth: cell(reg, r, 'Depth', depth, quote, 'd', { formula: 'quote notional resting within ±25 bps of depthRef ' + (r.depthRef != null ? fmt(r.depthRef, priceDecimals) : '—') + ' · bid ' + (typeof r.db === 'number' ? fmt(r.db, 0) : '—') + ' / ask ' + (typeof r.da === 'number' ? fmt(r.da, 0) : '—') }),
       venueTime: cell(reg, r, 'Venue time', r.vt, '', 't'),
       received: cell(reg, r, 'Received', r.rt, '', 't'),
       ageT: cell(reg, r, 'Age · ticker', 1, '', 't', { chip: true }),
@@ -137,6 +139,20 @@ function buildRows(targets, now, reg, { limit = Infinity, byQuote = false } = {}
 }
 
 /** 18,966,819 → 18.97M: depth is read as an order of magnitude; the exact figure is in the provenance. */
+/** Price charts print as many decimals as the table's price columns — the finest per-one-unit step
+ *  among the venues — so PEPE at 0.0000042 is not drawn and labelled as 0.00. Other metrics keep
+ *  their own fixed decimals. */
+const chartDecimals = (plan, m) => (m.kind === 'candles' && plan && plan.length
+  ? Math.max(m.decimals, ...plan.map(t => normalise(t, 0).pdec || 0))
+  : m.decimals);
+
+/** Said on the chart when some venue quotes a multiple of the asset (1000PEPE, kPEPE). */
+const perOneNote = (plan, m) => {
+  if (m.kind !== 'candles' || !plan) return '';
+  const scaled = plan.map(t => normalise(t, 0)).filter(r => r.unit !== 1);
+  return scaled.length ? ' · per 1 ' + scaled[0].base + ' (' + scaled.length + ' venues quote a multiple of it and are divided)' : '';
+};
+
 const compact = n => (Math.abs(n) >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : Math.abs(n) >= 1e3 ? (n / 1e3).toFixed(2) + 'K' : fmt(n, 0));
 
 // ── Quote groups ────────────────────────────────────────────────────────────────────────────
@@ -737,6 +753,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
   let lw = null;
   function renderArenaChart() {
     const S = store.state, src = source(store, S), m = METRICS[ui.metric];
+    const decimals = chartDecimals(S.plan, m);
     const quote = (S.live && S.live.targets.find(t => t.row) || {}).row?.quoteAsset;
     const unit = m.unit === 'quote' ? 'quote currency' : m.unit;
     const ser = S.series && S.series.key === seriesKey() ? S.series : null;
@@ -781,15 +798,17 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
       lw = createArenaChart($('lw'));
     }
     $('chart-label').textContent = ui.metric + ' · ' + unit + (quote && m.unit !== 'bps' && !m.unit.startsWith('%') ? ' (' + quote + ' where quoted)' : '') +
+      perOneNote(S.plan, m) +
       (candles && ui.candleVenue ? ' · candles: ' + ui.candleVenue + ', other venues dimmed' : '');
     $('chart-note').textContent = list.some(s => s.truncated) ? ' · some venues capped at 5,000 rows' : '';
-    lw.update({ key: seriesKey(), list, view: candles ? 'candles' : 'lines', candleVenue: ui.candleVenue, hidden: ui.hidden, styles, decimals: m.decimals })
+    lw.update({ key: seriesKey(), list, view: candles ? 'candles' : 'lines', candleVenue: ui.candleVenue, hidden: ui.hidden, styles, decimals })
       .catch(err => console.warn('[arena chart]', err));
   }
 
   function renderChart() {
     if (arena) { renderArenaChart(); return; }
     const S = store.state, src = source(store, S), m = METRICS[ui.metric];
+    const decimals = chartDecimals(S.plan, m);
     const quote = (S.live && S.live.targets.find(t => t.row) || {}).row?.quoteAsset;
     const unit = m.unit === 'quote' ? 'quote currency' : m.unit;
     const ser = S.series && S.series.key === seriesKey() ? S.series : null;
@@ -845,7 +864,7 @@ export function mountFull(root, store, { syncUrl = false, arena = false } = {}) 
         <span class="meta-xs" style="font-size:11px">Lines never bridge a gap · x axis UTC${truncated ? ' · some venues capped at 5,000 rows' : ''}</span></div>
       <div class="lm-chart__plot">
         <svg viewBox="0 0 800 240" preserveAspectRatio="none">${grid.map(v => `<line class="grid" x1="0" x2="800" y1="${sy(v).toFixed(1)}" y2="${sy(v).toFixed(1)}"/>`).join('')}${paths}</svg>
-        <div class="lm-chart__ylabels">${grid.map(v => `<span>${fmt(v, m.decimals)}</span>`).join('')}</div>
+        <div class="lm-chart__ylabels">${grid.map(v => `<span>${fmt(v, decimals)}</span>`).join('')}</div>
       </div>
       <div class="lm-chart__x">${xs.map(x => `<span>${x}</span>`).join('')}</div>`;
   }

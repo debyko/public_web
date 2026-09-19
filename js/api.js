@@ -45,6 +45,30 @@ const QUOTE_PREFERENCE = ['USDT', 'USD', 'USDC'];
 
 const num = v => (v == null || v === '' ? null : Number(v));
 const baseOf = asset => ALIASES[String(asset || '').toUpperCase()] || String(asset || '').toUpperCase();
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * How many units of the base asset one quoted price is for. Most venues quote PEPE per 1 PEPE;
+ * Binance, Bybit, Aster, Coinbase, Weex and Synthetix list 1000PEPE, and Hyperliquid, Nado and
+ * GMX list kPEPE — their price is for 1,000 PEPE. Side by side, per-1 venues sat a thousand times
+ * lower (Kraken's candles drew as a flat 0.00) and BEST/WORST compared prices of different things.
+ *
+ * Read from the SYMBOL, not from the API's contractMultiplier: that field is contract size, and
+ * for this purpose it is wrong both ways (Coinbase 1000PEPE-PERP publishes 1, Synthetix
+ * 1000PEPE-USDT publishes 1,000,000; Gate PEPE_USDT publishes 10,000,000 and quotes per 1).
+ * A digit prefix may follow a venue prefix (Weex cmt_1000pepeusdt); the k prefix is lower case
+ * only, so an asset whose own name starts with K is never read as a thousand of something.
+ */
+export function priceUnit(symbol, baseAsset) {
+  const sym = String(symbol || ''), base = String(baseAsset || '').toUpperCase();
+  if (!sym || !base) return 1;
+  const b = escRe(base);
+  if (new RegExp('(^|[^A-Za-z0-9])(1000000|1M)' + b, 'i').test(sym)) return 1e6;
+  if (new RegExp('(^|[^A-Za-z0-9])1000' + b, 'i').test(sym)) return 1e3;
+  if (new RegExp('(^|[^A-Za-z0-9])k' + b + '(?![a-z])').test(sym)) return 1e3;
+  return 1;
+}
+const perUnit = (v, unit) => (v == null ? null : v / unit);
 
 // ── HTTP ────────────────────────────────────────────────────────────────────────────────────
 
@@ -177,7 +201,11 @@ export async function loadSnapshots(base, plan, log) {
 export function normalise(t, now) {
   const r = t.row || {}, seg = t.seg || {}, inst = t.inst || {};
   const oracle = seg.marketModel === 'oracle_vault';
-  const quoteOrUnsup = v => (oracle && v == null ? UNSUP : num(v));
+  // Every price below is per ONE unit of the base asset, whatever the venue lists (priceUnit).
+  const unit = priceUnit(inst.symbol || r.symbol, inst.baseAsset || r.baseAsset);
+  const price = v => perUnit(num(v), unit);
+  const quoteOrUnsup = v => (oracle && v == null ? UNSUP : price(v));
+  const step = perUnit(num(inst.priceStep), unit);
   const noDepth = !oracle && Array.isArray(seg.datasets) && !seg.datasets.includes('depth');
 
   const elapsed = Math.max(0, (now - (t.fetchedAt || now)) / 1000);
@@ -195,15 +223,17 @@ export function normalise(t, now) {
     base: r.baseAsset || inst.baseAsset || '',
     quote: r.quoteAsset || inst.quoteAsset || '',
     bid: quoteOrUnsup(r.bidPrice), ask: quoteOrUnsup(r.askPrice),
-    mark: num(r.markPrice), index: num(r.indexPrice),
+    mark: price(r.markPrice), index: price(r.indexPrice),
     fund: r.fundingRate == null ? null : Number(r.fundingRate) * 100,
     pred: r.fundingRatePredicted == null ? null : Number(r.fundingRatePredicted) * 100,
     fint: num(inst.fundingIntervalHours),
-    // Price decimals follow the venue's own price step (0.1 → 1, 1 → 0); a venue that publishes no step gets 2.
-    step: num(inst.priceStep),
-    pdec: inst.priceStep ? Math.min(8, Math.max(0, Math.ceil(-Math.log10(Number(inst.priceStep)) - 1e-9))) : 2,
+    // Price decimals follow the venue's own price step (0.1 → 1, 1 → 0), per one unit of the base, so
+    // a per-1000 venue's step is divided like its prices; a venue that publishes no step gets 2. Up to
+    // 10: PEPE per 1 PEPE steps at 1e-10, and at 8 every venue printed the same 0.00000422.
+    unit, stepRaw: num(inst.priceStep), step,
+    pdec: step ? Math.min(10, Math.max(0, Math.ceil(-Math.log10(step) - 1e-9))) : 2,
     oi: num(r.openInterest), oiNotional: num(r.openInterestNotional), mult: num(inst.contractMultiplier),
-    db: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthBid25Bps), da: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthAsk25Bps), depthRef: num(r.depthRef),
+    db: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthBid25Bps), da: oracle ? UNSUP : noDepth ? NOTCOL : num(r.depthAsk25Bps), depthRef: price(r.depthRef),
     vt: utcMillis(r.venueTs), rt: utcMillis(r.receivedAt), rto: utcMillis(r.openInterestAt), rtd: utcMillis(r.depthAt),
     ag: { t: ageT, o: ageO, d: ageD },
     st: {
@@ -260,8 +290,10 @@ export async function loadSeries(base, targets, metric, range, log) {
       if (!r.ok) return { venue, points: [], failed: true };
       const bars = (r.data.series && (r.data.series[t.inst.symbol] || Object.values(r.data.series)[0])) || [];
       const warning = (r.data.warnings || [])[0];
+      // Per one unit of the base, as the table prints them (priceUnit): 1000PEPE and PEPE on one axis.
+      const unit = priceUnit(t.inst.symbol, t.inst.baseAsset);
       const points = bars
-        .map(b => ({ t: Date.parse(b.openTime), v: num(b.close), o: num(b.open), h: num(b.high), l: num(b.low) }))
+        .map(b => ({ t: Date.parse(b.openTime), v: perUnit(num(b.close), unit), o: perUnit(num(b.open), unit), h: perUnit(num(b.high), unit), l: perUnit(num(b.low), unit) }))
         .filter(p => !isNaN(p.t) && p.v != null && p.t >= now - rg.ms);
       return { venue, points, unsupported: !points.length && /publish/i.test(String(warning || '')), warning };
     }

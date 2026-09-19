@@ -175,7 +175,10 @@ export function createArenaChart(el) {
     const c = colors();
     const sig = JSON.stringify(c);
     if (sig !== themeSig) { chart.applyOptions(themeOptions(c)); themeSig = sig; dataKey = null; }
-    if (v.decimals !== decimals) { decimals = v.decimals; chart.applyOptions({ localization: { priceFormatter: x => fmt(x, decimals) } }); }
+    // The series' own price format sets the axis step (minMove): at the default 0.01 a PEPE-sized
+    // price has no ticks between 0.00 and 0.01. A change of decimals rebuilds the series with it.
+    if (v.decimals !== decimals) { decimals = v.decimals; chart.applyOptions({ localization: { priceFormatter: x => fmt(x, decimals) } }); dataKey = null; }
+    const priceFormat = { type: 'price', precision: decimals, minMove: Math.pow(10, -decimals) };
 
     const drawable = v.list.filter(s => !s.unsupported && !s.notCollected && s.points.length);
     const isCandles = v.view === 'candles';
@@ -192,7 +195,7 @@ export function createArenaChart(el) {
         if (isCandles && s.venue === v.candleVenue) {
           const api = chart.addSeries(lib.CandlestickSeries, {
             upColor: 'rgba(0,0,0,0)', downColor: c.ink, borderUpColor: c.ink, borderDownColor: c.ink,
-            wickUpColor: c.ink, wickDownColor: c.ink, priceLineVisible: false, lastValueVisible: false
+            wickUpColor: c.ink, wickDownColor: c.ink, priceLineVisible: false, lastValueVisible: false, priceFormat
           });
           const d = withGaps(s.points, candleItem);
           api.setData(d.data);
@@ -202,7 +205,7 @@ export function createArenaChart(el) {
         }
         const api = chart.addSeries(lib.LineSeries, {
           ...colorOf(s), lineWidth: 1, priceLineVisible: false, lastValueVisible: false,
-          crosshairMarkerVisible: false
+          crosshairMarkerVisible: false, priceFormat
         });
         const d = withGaps(s.points, lineItem);
         api.setData(d.data);
