@@ -1,9 +1,10 @@
-// Homepage wiring: navigation, dialogs, and the blocks fed by health and coverage.
+// Homepage wiring: navigation, dialogs, the hero's live slice, the API snippet and the status line.
+// Everything else live lives on its own page — /arena/, /data/coverage/, /data/status/.
 
-import { createStore, normaliseCoverage, normaliseCoverageHours, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
-import { mountSlice, mountFull, mountArena, closeProvenance } from './live-market.js';
-import { esc, fmt, age, utcTime, stateBlock } from './format.js';
-import { sourceText, sourceTimeText, metaStateBlock, coverageTotalsLine, datasetChips, filterHealthToCoverage } from './pages/shared.js';
+import { createStore, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
+import { mountSlice, closeProvenance } from './live-market.js';
+import { fmt, utcTime } from './format.js';
+import { filterHealthToCoverage } from './pages/shared.js';
 
 const store = createStore();
 const $ = sel => document.querySelector(sel);
@@ -113,53 +114,13 @@ document.addEventListener('keydown', e => {
 const openOnLoad = new URLSearchParams(location.search).get('open');
 if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
 
-// ── Live market blocks ──────────────────────────────────────────────────────────────────────
+// ── Live market slice ───────────────────────────────────────────────────────────────────────
 
-mountSlice($('#live-slice'), store, () => scrollToId('proof'));
-mountFull($('#live-full'), store);
-mountArena($('#live-arena'), store);
+// The full comparison is Arena's; the slice's own link leads there rather than down the page.
+mountSlice($('#live-slice'), store, () => { location.href = '/arena/'; });
+$('#live-slice [data-slot="more"]').textContent = 'Full comparison →';
 
-// ── Studio Pro: catalogue, coverage hours, API snippet ──────────────────────────────────────
-
-function renderCatalogue(S) {
-  const rows = S.cov ? normaliseCoverage(S.cov.data) : [];
-  $('#catalogue-tag').textContent = S.cov && rows.length ? sourceText(S.cov, store.env, 'perp venues · collected / listed') : 'No data';
-  $('#catalogue-rows').innerHTML = rows.map(v => `<tr>
-    <td class="td-venue">${esc(v.venue)}</td>
-    <td style="padding:6px 10px"><div class="row gap-6" style="gap:4px">${datasetChips(v)}</div></td>
-    <td class="td-num">${v.collected != null ? fmt(v.collected, 0) + (v.listed != null ? ' / ' + fmt(v.listed, 0) : '') : '—'}</td>
-    <td class="td-mono r">${v.since ? esc(String(v.since).slice(0, 10)) : '—'}</td>
-  </tr>`).join('');
-  $('#catalogue-state').innerHTML = rows.length ? '' : `<div style="padding:14px">${metaStateBlock(S.metaLoaded, 'GET /v1/coverage')}</div>`;
-  // The table lists the perp venues this page compares; the totals are every collecting venue, spot
-  // included — which is why the two counts differ, and the response says both.
-  const line = coverageTotalsLine(S.cov && S.cov.data && S.cov.data.totals);
-  if (line) $('#catalogue-totals').textContent = line;
-}
-
-function renderHours(S) {
-  const rows = S.covHours ? normaliseCoverageHours(S.covHours.data, 48) : null;
-  $('#hours-tag').textContent = rows ? sourceText(S.covHours, store.env) : S.covHours ? 'Shape not recognised' : 'No data';
-  if (!rows || !rows.length) { $('#hours-rows').innerHTML = metaStateBlock(S.metaLoaded, 'GET /v1/coverage/hours?days=7'); return; }
-  // This strip covers every collecting venue, spot included — more than the perp venues in the tables above.
-  $('#hours-scope').textContent = rows.length + ' collecting venues · perp and spot';
-  $('#hours-rows').innerHTML = rows.map(v => {
-    const cells = v.cells.map((h, i) => {
-      const when = h.hour ? new Date(h.hour).toISOString().slice(5, 13).replace('T', ' ') + ':00 UTC' : '';
-      let fill = 'transparent', stroke = 'var(--dk-border-strong)', tip;
-      if (/not_collected/.test(h.state)) { fill = 'url(#hatch-hours)'; stroke = 'var(--dk-border-hairline)'; tip = when + ' · not_collected_yet'; }
-      else if (/not_observed/.test(h.state)) { tip = when + ' · not_observed' + (h.cause ? ' · interruption: ' + h.cause : ' · no recorded interruption — cause unknown'); }
-      else {
-        const comp = h.completeness == null ? 1 : Math.max(0, Math.min(1, h.completeness));
-        fill = 'rgba(5,7,12,' + (0.2 + 0.75 * comp).toFixed(2) + ')'; stroke = 'transparent';
-        tip = when + ' · observed · completeness ' + Math.round(comp * 100) + '%' + (h.cause ? ' · interruption: ' + h.cause : '');
-      }
-      return `<rect x="${i * 10}" y="0" width="9" height="14" fill="${fill}" stroke="${stroke}" stroke-width="1" vector-effect="non-scaling-stroke"><title>${esc(tip)}</title></rect>` +
-        (h.cause && !/not_collected/.test(h.state) ? `<rect x="${i * 10 + 3}" y="-5" width="4" height="4" fill="#DE1A8C"/>` : '');
-    }).join('');
-    return `<div class="hours__row"><span class="hours__venue">${esc(v.code)}</span><svg class="hours__strip" viewBox="0 -6 480 20" preserveAspectRatio="none">${cells}</svg></div>`;
-  }).join('');
-}
+// ── Studio Pro: API snippet ─────────────────────────────────────────────────────────────────
 
 function renderSnippet(S) {
   const t = S.live && S.live.targets.find(x => x.row && x.code === 'okx-perp') || S.live && S.live.targets.find(x => x.row);
@@ -171,42 +132,23 @@ function renderSnippet(S) {
   $('#snippet-tag').textContent = 'values from the live response · ' + utcTime(S.live.at);
 }
 
-// ── Status ──────────────────────────────────────────────────────────────────────────────────
+// ── Status line ─────────────────────────────────────────────────────────────────────────────
 
+// One line from /health, filtered to the venues /coverage lists. The per-collector table is
+// /data/status/'s; here the claim keeps a live number so it cannot go stale silently.
 function renderStatus(S) {
-  // /health also reports internal service segments (the rollup runs under one); only venues listed
-  // by /coverage are shown, once that list is known.
   const H = S.health ? filterHealthToCoverage(normaliseHealth(S.health.data), S.cov && S.cov.data) : null;
+  const line = $('#status-line');
   if (!H) {
-    $('#status-table').hidden = true;
-    $('#status-overall').hidden = true;
-    $('#status-tag').textContent = 'No data';
-    $('#status-state').innerHTML = `<div style="padding:14px">${!S.metaLoaded ? stateBlock('loading', 'Requesting GET /health', 'Nothing is shown until the service answers.') : S.health ? stateBlock('error', '/health answered but its shape did not match', 'Nothing is shown in its place.')
-      : stateBlock('error', 'The status service did not answer and no saved response is on disk', 'Nothing is shown in its place.')}</div>`;
+    line.textContent = !S.metaLoaded ? 'Requesting' : S.health ? '/health answered in an unrecognised shape · nothing shown' : '/health did not answer · nothing shown';
     return;
   }
-  $('#status-state').innerHTML = '';
-  $('#status-table').hidden = false;
-  $('#status-overall').hidden = false;
-  const overall = H.overall || 'unknown';
-  $('#status-overall-word').textContent = overall;
-  $('#status-overall-word').className = 'ar-chip ' + (overall === 'ok' ? 'ar-chip--live' : 'ar-chip--delayed');
-  $('#status-tag').textContent = sourceTimeText(S.health, store.env);
-  $('#status-rows').innerHTML = H.rows.map(r => {
-    const kind = !r.fails ? 'live' : r.fails >= 5 ? 'stale' : 'delayed';
-    return `<tr>
-      <td class="td-venue">${esc(r.code)}</td>
-      <td><span class="ar-chip ar-chip--${kind}">${r.fails ? 'degraded' : 'Collecting'}</span><span class="meta-xs status-note">${esc(r.note)}</span></td>
-      <td class="td-mono r">${r.lastSuccessAt ? utcTime(r.lastSuccessAt).slice(0, 8) + ' · ' + age(r.lastSuccessAge) : '—'}</td>
-      <td class="td-num ${r.fails ? 'is-alert' : ''}">${fmt(r.fails, 0)}</td>
-      <td class="td-mono r muted wrap-cell">${r.lastError ? esc((r.lastErrorAge != null ? age(r.lastErrorAge) + ' · ' : '') + r.lastError) : '—'}</td>
-      <td class="td-num ${r.stale ? 'is-alert' : ''}">${fmt(r.stale, 0)}</td>
-      <td class="td-mono r">${r.lastSuccessAt ? utcTime(r.lastSuccessAt) : '—'}</td>
-    </tr>`;
-  }).join('');
+  const degraded = H.rows.filter(r => r.fails).length;
+  line.textContent = (S.health.src === 'live' ? '' : 'Saved · ') + fmt(H.rows.length - degraded, 0) + ' venues collecting · '
+    + fmt(degraded, 0) + (degraded === 1 ? ' collector' : ' collectors') + ' degraded · updated ' + utcTime(S.health.at).slice(0, 5) + ' UTC';
 }
 
-store.subscribe(S => { renderCatalogue(S); renderHours(S); renderStatus(S); }, ['meta']);
+store.subscribe(renderStatus, ['meta']);
 store.subscribe(renderSnippet, ['snapshot']);
-renderCatalogue(store.state); renderHours(store.state); renderStatus(store.state);
+renderStatus(store.state);
 store.start();

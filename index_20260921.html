@@ -36,6 +36,7 @@
 <!-- Shared SVG patterns: hatching means "nothing stored here", never zero. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
+    <pattern id="hatch-hours" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1" height="6" fill="rgba(5,7,12,.16)"/></pattern>
     <pattern id="hatch-candles" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1" height="6" fill="rgba(5,7,12,.16)"/></pattern>
   </defs>
 </svg>
@@ -110,7 +111,7 @@
     <div class="split split--5-7 split--start">
       <div class="stack gap-22">
         <div class="eyebrow">Verifiable crypto market infrastructure</div>
-        <h1 class="h1">Crypto market data, with the evidence attached.</h1>
+        <h1 class="h1">Crypto markets, with the evidence attached.</h1>
         <p class="lead">Compare venues live, investigate market history, connect through an API, or run isolated execution agents — without hiding the source, age or absence of the underlying data.</p>
         <div class="row gap-10" style="margin-top:4px">
           <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
@@ -134,9 +135,10 @@
       </div>
       <p class="prose">Ticker, open interest and depth arrive by different calls at different rates. A price two seconds old can sit next to depth several minutes old, so the table shows an age for each group — never one age per row. Freshness is judged per call against that call's expected cadence.</p>
     </div>
+    <div class="panel" id="live-full"></div>
     <div class="row gap-10">
       <a class="btn btn--primary" href="/arena/"><span>Open full Arena</span></a>
-      <a class="btn" href="/data/methodology/"><span>View methodology</span></a>
+      <button class="btn" data-scroll="method"><span>View methodology</span></button>
     </div>
   </div>
 </section>
@@ -162,7 +164,7 @@
 
 <!-- 4 · Arena -->
 <section id="products" class="section">
-  <div class="wrap split split--7-5 split--end">
+  <div class="wrap split split--5-7 split--start">
     <div class="stack gap-18">
       <div class="row gap-10">
         <span class="label">01 / Live venue comparison</span>
@@ -171,8 +173,6 @@
       <div class="product-name">Arena</div>
       <h2 class="h2">One market. Every available venue. Side by side.</h2>
       <p class="prose">Compare the same instrument across the venues that quote it. Inspect price, spread, funding, open interest, depth and the age of every observation.</p>
-    </div>
-    <div class="stack gap-18">
       <ul class="ruled">
         <li>Multi-venue comparison</li>
         <li>Age per data group</li>
@@ -184,6 +184,14 @@
       <div class="row gap-10">
         <a class="btn btn--primary" href="/arena/"><span>Explore Arena</span></a>
         <a class="btn" href="/data/coverage/"><span>See coverage</span></a>
+      </div>
+    </div>
+    <div class="stack gap-14">
+      <div id="live-arena" style="min-width:0"></div>
+      <div class="notes-3">
+        <div><span class="ar-chip ar-chip--best">Best</span> <span class="ar-chip ar-chip--worst">Worst</span> rank the live order-book figures shown here; USD, USDT and USDC are compared as one currency.</div>
+        <div>Hatched cells: the venue publishes no such field. An oracle-vault market has no book, so no spread.</div>
+        <div>Two ages per row here — price and depth arrive by separate calls.</div>
       </div>
     </div>
   </div>
@@ -228,6 +236,33 @@
     </div>
 
     <div class="workstation">
+      <div class="cell cell--left">
+        <div class="panel__head"><span class="label label--accent">Catalogue · GET /v1/coverage</span><span class="meta-xs" id="catalogue-tag">Requesting</span></div>
+        <div class="scroll-x">
+          <table class="tbl min-460">
+            <thead><tr><th>Venue</th><th>Datasets</th><th class="r">Instruments</th><th class="r">Listed since</th></tr></thead>
+            <tbody id="catalogue-rows"></tbody>
+          </table>
+        </div>
+        <div id="catalogue-state"></div>
+        <div class="panel__note"><span id="catalogue-totals">Totals across every collecting venue come from the same response.</span><br>Outlined dataset: not collected for this venue · +n: further datasets · Instruments: collected / listed · Since: as published</div>
+      </div>
+
+      <div class="cell">
+        <div class="panel__head"><span class="label">Coverage · GET /v1/coverage/hours</span><span class="meta-xs"><span id="hours-scope">Every collecting venue</span> · ticker snapshots · last 48 h · UTC · <span id="hours-tag">Requesting</span></span></div>
+        <div class="cell__body gap-6" style="gap:5px">
+          <div class="hours" id="hours-rows"></div>
+          <div class="hours__row"><span></span><div class="hours__axis"><span>−48 h</span><span>−24 h</span><span>now</span></div></div>
+          <div class="legend-row">
+            <span><span class="swatch swatch--observed"></span>observed · shade = completeness</span>
+            <span><span class="swatch swatch--not-observed"></span>not observed</span>
+            <span><span class="swatch swatch--not-collected dk-hatch"></span>not collected yet</span>
+            <span><span class="swatch swatch--mark"></span>recorded interruption · cause on hover</span>
+          </div>
+          <div class="meta-xs" style="margin-top:auto;padding-top:8px;line-height:1.5">Measured for ticker snapshots only — candles, trades, liquidations and order books are not measured here. A gap without a mark means an unknown cause, not continuity.</div>
+        </div>
+      </div>
+
       <div class="cell cell--left">
         <div class="panel__head"><span class="label">Trade candles · 1 h · UTC</span><span class="meta-xs">Structure</span></div>
         <div class="cell__body gap-8" style="gap:8px">
@@ -498,11 +533,17 @@
         <span class="meta">There is no stored "written" or "available" time, so none is shown.</span>
       </div>
     </div>
-    <ul class="ruled">
-      <li>Ticker, open interest and depth arrive by separate calls; each keeps its own received time and age.</li>
-      <li>A gap inside collection and a period before collection began are named differently. Neither is a zero.</li>
-      <li>BEST and WORST rank only values that are present, live and from an order book.</li>
-    </ul>
+    <div class="method-grid">
+      <div><span class="method-grid__n">01</span><span class="method-grid__t">What is collected</span><span class="method-grid__b">Ticker, open interest and depth per venue and instrument, each by its own call, each stored with the time it was received.</span></div>
+      <div><span class="method-grid__n">02</span><span class="method-grid__t">How instruments are grouped</span><span class="method-grid__b">By base asset and contract type — BTC perpetual — because no cross-venue canonical ID is published. The selector lists what the store holds.</span></div>
+      <div><span class="method-grid__n">03</span><span class="method-grid__t">Venue time vs received time</span><span class="method-grid__b">Venue time is printed only where the venue sends one. Received time is always present. No other timestamp is stored.</span></div>
+      <div><span class="method-grid__n">04</span><span class="method-grid__t">Age and status</span><span class="method-grid__b">Age is now minus received. LIVE, DELAYED and STALE are computed per call against that call's expected cadence, set by the collector.</span></div>
+      <div><span class="method-grid__n">05</span><span class="method-grid__t">Gaps vs not collected yet</span><span class="method-grid__b">A gap is a period inside collection with no observation. Not collected yet is a period before collection began. They look different and are named differently.</span></div>
+      <div><span class="method-grid__n">06</span><span class="method-grid__t">Derived values</span><span class="method-grid__b">Spread = (ask − bid) / mid × 10,000. OI notional = OI × mark. Depth bands within 10 / 25 / 50 bps of a stated reference. Each shows its inputs.</span></div>
+      <div><span class="method-grid__n">07</span><span class="method-grid__t">When a comparison is valid</span><span class="method-grid__b">BEST and WORST rank bid, ask, spread and depth among venues whose value is present, live and from an order book, inside each quote-currency group. A figure left out says why in its provenance.</span></div>
+      <div><span class="method-grid__n">08</span><span class="method-grid__t">What the platform cannot know</span><span class="method-grid__b">Anything a venue does not publish, anything between two observations, and anything before collection started.</span></div>
+      <div><span class="method-grid__n">09</span><span class="method-grid__t">Venue-reported vs derived</span><span class="method-grid__b">Bid, ask, mark, index, funding and open interest are venue-reported. Spread, notional and depth bands are derived and say so.</span></div>
+    </div>
     <div class="row gap-10">
       <a class="btn btn--primary" href="/data/methodology/"><span>Read the methodology</span></a>
       <a class="btn" href="/data/coverage/"><span>Inspect data coverage</span></a>
@@ -521,10 +562,20 @@
       <p class="prose">Per venue and per collector, with ages. There is no single "all systems operational" badge: a degraded depth feed on one venue is shown as exactly that.</p>
     </div>
     <div class="panel">
-      <div class="panel__head panel__head--roomy">
-        <span class="label">Collectors · GET /v1/health</span>
-        <span class="meta-xs" id="status-line">Requesting</span>
+      <div class="panel__head">
+        <div class="row gap-14">
+          <span class="label">Collectors · per venue · GET /v1/health</span>
+          <span class="row gap-8 meta-xs muted" id="status-overall" hidden>Overall, as the API states it:<span id="status-overall-word" class="fresh"></span></span>
+        </div>
+        <span class="meta-xs" id="status-tag">Requesting</span>
       </div>
+      <div class="scroll-x" id="status-table" hidden>
+        <table class="tbl tbl--roomy min-900">
+          <thead><tr><th>Venue</th><th>Collector state</th><th class="r">Last success · age</th><th class="r">Consecutive failures</th><th class="r">Last error · age</th><th class="r">Instruments stale</th><th class="r">Latest observation</th></tr></thead>
+          <tbody id="status-rows"></tbody>
+        </table>
+      </div>
+      <div id="status-state"></div>
     </div>
     <div class="row gap-10">
       <a class="btn btn--primary" href="/data/status/"><span>View data status</span></a>
