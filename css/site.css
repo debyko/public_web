@@ -488,7 +488,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 
 .closing { display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--dk-border-strong); padding-top: 22px; }
 
-/* Footer credit: the author, the company and the engine, each mark at the cap height of the line. */
+/* Footer credit: the author, then the company that operates the site under licence, its mark at the cap height of the line. */
 .credit { margin: 0; font: 400 12px/1.7 var(--dk-font-text); color: var(--dk-text-muted); }
 .credit__brand { display: inline-flex; align-items: baseline; gap: 3px; font-weight: 600; color: var(--dk-text-primary); white-space: nowrap; opacity: 1; }
 a.credit__brand:hover { opacity: .65; }
@@ -496,7 +496,6 @@ a.credit__brand:hover { opacity: .65; }
 .credit__mark { display: inline-block; align-self: center; }
 .credit--legal a { color: var(--dk-text-primary); }
 .credit__mark--blynai { width: 14px; height: 14px; }
-.credit__mark--csx { width: 22.7px; height: 22.7px; margin: -6px -3px; }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 .site-footer { border-top: 1px solid var(--dk-border-strong); padding: 48px 0 32px; }
