@@ -411,6 +411,11 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 /* Figure buttons: every live figure opens its provenance */
 .fig { background: none; border: 0; margin: 0; display: block; width: 100%; padding: 6px; cursor: help; text-align: right; font: 400 12px/1.3 var(--dk-font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--dk-text-primary); }
 .fig__unit { color: var(--dk-text-faint); font-size: 10px; margin-left: 4px; }
+/* A figure splits into integer and fraction so a column's decimal points line up: the integer box is
+   right-aligned, the fraction box left-aligned, both as wide as the widest the column has shown. */
+.num { display: inline-flex; align-items: baseline; }
+.num__i { font-style: normal; text-align: right; }
+.num__f { font-style: normal; text-align: left; }
 /* Fixed unit widths in characters of the unit's own font, left-aligned, so numbers share a right edge. */
 .fig__unit.u3, .arena-table .unit.u3 { display: inline-block; width: 3ch; text-align: left; }
 .fig__unit.u5, .arena-table .unit.u5 { display: inline-block; width: 5ch; text-align: left; }

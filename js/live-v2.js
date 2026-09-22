@@ -22,14 +22,51 @@ const HERO_MARKETS = 3;
 const kindOf = age => age == null ? 'missing' : age < 2 ? 'live' : age < 30 ? 'delayed' : 'stale';
 const WORD = { live: 'LIVE', delayed: 'DELAYED', stale: 'STALE', missing: 'MISSING' };
 
-const priceFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 });
-const price = v => v == null ? '—' : priceFmt.format(v);
+const priceFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 });
+
+// Venues quote at their own price step and publish marks to their own precision, so the digits in a
+// column differ from row to row and from poll to poll. Each number is split into sign, integer part
+// and fraction; the column reserves the widest of each it has seen, so the decimal point of every
+// figure in a column sits on one vertical line and nothing shifts when a venue gains or loses a
+// decimal. Widths only grow within a page's life: a column that shrank back would jump once more.
+// The digits themselves are never padded or rounded — the value is printed as the venue published it.
+const widest = new Map();
+const fixedFmt = dp => new Intl.NumberFormat('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+// A venue's own price is printed exactly as published; a derived figure keeps the fixed number of
+// decimals its definition states, trailing zeros and all, so the column reads as one number.
+const format = (v, dp) => (dp == null ? priceFmt : fixedFmt(dp)).format(Math.abs(v));
+
+function measure(col, v, dp) {
+  if (v == null) return;
+  const [i, f] = format(v, dp).split('.');
+  const w = widest.get(col) || { sign: 0, int: 0, frac: 0 };
+  widest.set(col, {
+    sign: Math.max(w.sign, v < 0 ? 1 : 0),
+    int: Math.max(w.int, i.length),
+    frac: Math.max(w.frac, f ? f.length + 1 : 0)
+  });
+}
+function figure(col, v, unit, dp) {
+  const w = widest.get(col) || { sign: 0, int: 0, frac: 0 };
+  const box = (cls, text, ch) => `<i class="num__${cls}" style="min-width:${ch}ch">${text}</i>`;
+  if (v == null) return `<span class="num">${box('i', '—', w.sign + w.int)}${box('f', '', w.frac)}</span>`
+    + (unit ? `<span class="fig__unit">${unit}</span>` : '');
+  const [i, f] = format(v, dp).split('.');
+  return `<span class="num">${box('i', (v < 0 ? '−' : '') + i, w.sign + w.int)}${box('f', f ? '.' + f : '', w.frac)}</span>`
+    + (unit ? `<span class="fig__unit">${unit}</span>` : '');
+}
 const ageText = s => s == null ? '—' : s < 10 ? s.toFixed(1) + ' s' : Math.round(s) + ' s';
 const since = ms => ms < 90_000 ? Math.round(ms / 1000) + ' s' : Math.round(ms / 60_000) + ' min';
 
 // Kraken publishes funding as an absolute amount and as a relative rate; Hyperliquid as a rate. Both
 // settle hourly, so the relative rates compare directly. A venue with neither field shows "—".
 const fundingOf = r => r.fundingRelativeRate ?? r.fundingRate ?? null;
+
+// Derived figures carry their own precision: a spread reads to a hundredth of a basis point and a
+// funding rate to four decimals of a per cent. Venue-published prices are never rounded.
+// Spread in basis points, from the venue's own bid and ask; null unless both are present.
+const spreadOf = r => (r.bid != null && r.ask != null && r.bid + r.ask > 0)
+  ? (r.ask - r.bid) / ((r.bid + r.ask) / 2) * 1e4 : null;
 
 /** GET /v1/markets + /v1/segments. Listings the registry has not mapped to a market are dropped:
  *  a listing without a market cannot be compared with anything, so it has no row here. */
@@ -117,21 +154,34 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
   };
 
   function paintValues() {
-    for (const tr of body.querySelectorAll('tr[data-key]')) {
+    const trs = [...body.querySelectorAll('tr[data-key]')];
+    // Measure every figure on screen first: a column's width is set by the widest row in it, not by
+    // the row being drawn.
+    for (const tr of trs) {
+      const r = rows.get(tr.dataset.key);
+      if (!r) continue;
+      measure('px', r.bid); measure('px', r.ask); measure('mark', r.markPrice);
+      const fr = fundingOf(r);
+      measure('spread', spreadOf(r), 2); measure('funding', fr == null ? null : fr * 100, 4);
+    }
+    for (const tr of trs) {
       const r = rows.get(tr.dataset.key);
       // No row in the snapshot is not a zero: the cells keep their dash and say why.
       if (!r) {
-        for (const f of ['bid', 'ask', 'spread', 'mark', 'funding']) setCell(tr, f, '—', 'The snapshot carries no value for this listing yet');
+        const why = 'The snapshot carries no value for this listing yet';
+        setCell(tr, 'bid', figure('px', null, 'bid'), why);
+        setCell(tr, 'ask', figure('px', null, 'ask'), why);
+        setCell(tr, 'spread', figure('spread', null, 'bps'), why);
+        setCell(tr, 'mark', figure('mark', null), why);
+        setCell(tr, 'funding', figure('funding', null, '%'), why);
         continue;
       }
-      const mid = r.bid != null && r.ask != null ? (r.bid + r.ask) / 2 : null;
-      const spread = mid ? (r.ask - r.bid) / mid * 1e4 : null;
-      const f = fundingOf(r);
-      setCell(tr, 'bid', `${price(r.bid)}<span class="fig__unit">bid</span>`, r.bid == null ? 'The venue published no bid' : null);
-      setCell(tr, 'ask', `${price(r.ask)}<span class="fig__unit">ask</span>`, r.ask == null ? 'The venue published no ask' : null);
-      setCell(tr, 'spread', spread == null ? '—' : `${spread.toFixed(2)}<span class="fig__unit">bps</span>`, spread == null ? 'Spread needs both a bid and an ask' : null);
-      setCell(tr, 'mark', price(r.markPrice), r.markPrice == null ? 'The venue published no mark price' : null);
-      setCell(tr, 'funding', f == null ? '—' : `${(f * 100).toFixed(4)}<span class="fig__unit">%</span>`, f == null ? 'The venue published no funding rate' : null);
+      const spread = spreadOf(r), f = fundingOf(r);
+      setCell(tr, 'bid', figure('px', r.bid, 'bid'), r.bid == null ? 'The venue published no bid' : null);
+      setCell(tr, 'ask', figure('px', r.ask, 'ask'), r.ask == null ? 'The venue published no ask' : null);
+      setCell(tr, 'spread', figure('spread', spread, 'bps', 2), spread == null ? 'Spread needs both a bid and an ask' : null);
+      setCell(tr, 'mark', figure('mark', r.markPrice), r.markPrice == null ? 'The venue published no mark price' : null);
+      setCell(tr, 'funding', figure('funding', f == null ? null : f * 100, '%', 4), f == null ? 'The venue published no funding rate' : null);
     }
   }
 
