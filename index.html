@@ -262,6 +262,42 @@
   </div>
 </section>
 
+<!-- 2c · For bot builders -->
+<section id="bots" class="section">
+  <div class="wrap stack gap-32">
+    <div class="split split--5-7 split--end">
+      <div class="stack gap-14">
+        <div class="eyebrow">For bot builders</div>
+        <h2 class="h2">Why did my bot do that at 14:03:07? Ask the API. It answers with what your bot could have known then.</h2>
+      </div>
+      <p class="prose">Your market-data layer becomes an HTTP client and a <code>where</code> clause. Every value with its venue, receive time, age and unit; the venue's raw fields next to ours; nothing invented when a venue goes quiet.</p>
+    </div>
+    <div class="panel">
+      <div class="panel__head"><span class="label label--accent">A bot's loop · API v2</span><span class="meta-xs">In development</span></div>
+      <pre class="snippet"># every cycle
+POST /v2/snapshots          where venue = KRAKEN-FUTURES     → ticker, mark, funding, oi, band depth
+POST /v2/candles            timeframe 15m · price_type mark  → the venue&#x27;s own mark candles, closed only
+
+# on restart
+POST /v2/snapshots/history  at [your last 30 cycle instants] → what was known at each instant, gaps explicit
+
+# at 3 a.m.
+POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot could have known then,
+                                                               byte-identical once settled</pre>
+    </div>
+    <ul class="ruled ruled--grid ruled--min-200">
+      <li><code>include_raw</code> — the venue's own field names next to ours. Swap the source, keep your formulas.</li>
+      <li><code>units: base | published</code>, and every value says its unit. <code>kPEPE</code> is <code>base×1000</code>, not a surprise in production.</li>
+      <li><code>present / stale / missing / not published / off</code> — a dead websocket cannot feed you yesterday's price as today's.</li>
+      <li><code>items_sha256</code> — settled history is byte-identical on replay. Your backtest is reproducible, and you can prove it.</li>
+    </ul>
+    <div class="row gap-10">
+      <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
+      <a class="btn" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API v1 documentation</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- 3 · Principles -->
 <section class="section">
   <div class="wrap split split--5-7">
