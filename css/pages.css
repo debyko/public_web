@@ -19,7 +19,7 @@
 .article > section { display: flex; flex-direction: column; gap: 12px; padding: 26px 0; border-bottom: 1px solid var(--dk-border-hairline); scroll-margin-top: 70px; }
 .article h2 { font: 600 22px/1.25 var(--dk-font-display); letter-spacing: -.02em; color: var(--dk-text-primary); display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
 .article h3 { font: 600 13px/1 var(--dk-font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dk-text-faint); }
-.article p { margin: 0; font: 400 15px/1.65 var(--dk-font-text); color: var(--dk-text-secondary); max-width: var(--dk-measure-prose); text-wrap: pretty; }
+.article p { margin: 0; font: 400 15px/1.65 var(--dk-font-text); color: var(--dk-text-secondary); text-wrap: pretty; }
 .article__n { font: 400 12px/1 var(--dk-font-mono); color: var(--dk-text-faint); }
 
 /* The # beside a heading. */

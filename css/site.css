@@ -23,11 +23,10 @@ svg { display: block; }
 .section--core + .section { border-top: 0; }
 .h2--core { font-size: 40px; line-height: 1.08; }
 @media (max-width: 720px) { .h2--core { font-size: 30px; } }
-.core-head { max-width: 860px; }
 .core-lead { color: var(--dk-text-secondary); }
-.pipe { display: flex; flex-direction: column; align-items: center; max-width: 860px; margin: 0 auto; width: 100%; }
+.pipe { display: flex; flex-direction: column; align-items: center; width: 100%; }
 .pipe-node { width: 100%; border: 1px solid var(--dk-border-strong); background: var(--dk-surface-panel); padding: 18px 22px; display: flex; flex-direction: column; gap: 10px; }
-.pipe-node--bot { border-style: dashed; max-width: 620px; }
+.pipe-node--bot { border-style: dashed; }
 .pipe-node--dql { border-color: var(--dk-accent); box-shadow: 0 0 0 1px var(--dk-accent) inset; }
 .pipe-label { font: 600 10px/1 var(--dk-font-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--dk-text-muted); }
 .pipe-label--accent { color: var(--dk-text-accent); }
@@ -81,7 +80,7 @@ svg { display: block; }
 .rates__v { font: 400 26px/1 var(--dk-font-mono); color: var(--dk-text-primary); }
 .rates__k { font: 400 13px/1.4 var(--dk-font-text); color: var(--dk-text-secondary); }
 .pricing-row .offer__price { white-space: normal; }
-.core-foot { display: flex; flex-direction: column; gap: 8px; max-width: 760px; }
+.core-foot { display: flex; flex-direction: column; gap: 8px; }
 @media (max-width: 900px) {
   .rates { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
   .core-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
