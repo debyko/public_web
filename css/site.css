@@ -417,6 +417,17 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .num__i { font-style: normal; text-align: right; }
 .num__f { font-style: normal; text-align: left; }
 .ar-chip__word { display: inline-block; text-align: left; }
+/* The hero's age cell holds one shape whatever the status is: LIVE draws a dot and no box, DELAYED
+   and STALE draw a bordered one, and the difference in padding and border moved the whole cell on
+   every poll. One box, one width, the value and the word right where they were. */
+.slice-table .fig--chip .ar-chip { display: inline-flex; justify-content: flex-end; gap: 6px;
+  border: 1px solid transparent; padding: 0 4px; min-width: 15ch; }
+.slice-table .fig--chip .ar-chip--live { padding-left: 4px; }
+/* Every chip keeps the dot's slot, painted only for LIVE: without it the dot pushed the age and the
+   status word sideways the moment a row went from LIVE to DELAYED. */
+.slice-table .fig--chip .ar-chip::before { content: ""; flex: none; width: 4px; height: 4px;
+  border-radius: 50%; background: transparent; margin-right: 0; }
+.slice-table .fig--chip .ar-chip--live::before { background: currentColor; }
 /* Fixed unit widths in characters of the unit's own font, left-aligned, so numbers share a right edge. */
 .fig__unit.u3, .arena-table .unit.u3 { display: inline-block; width: 3ch; text-align: left; }
 .fig__unit.u5, .arena-table .unit.u5 { display: inline-block; width: 5ch; text-align: left; }

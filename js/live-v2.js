@@ -61,6 +61,10 @@ const ageText = s => s == null ? '—' : s < 10 ? s.toFixed(1) + ' s' : Math.rou
 // every poll. Both get a box as wide as the widest they have shown.
 let ageW = 6;
 const STATUS_W = Math.max(...Object.values(WORD).map(w => w.length));
+// A chip's letters are spread — .14em on the word, .04em on the value — so a box of N ch is too
+// narrow for N characters and the widest word still pushed the chip's edge out. The slot counts the
+// spacing in.
+const slot = (chars, spacing) => `calc(${chars}ch + ${chars} * ${spacing}em)`;
 const since = ms => ms < 90_000 ? Math.round(ms / 1000) + ' s' : Math.round(ms / 60_000) + ' min';
 
 // Kraken publishes funding as an absolute amount and as a relative rate; Hyperliquid as a rate. Both
@@ -198,7 +202,7 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
       const kind = kindOf(age);
       const text = ageText(age);
       ageW = Math.max(ageW, text.length);
-      setCell(tr, 'age', `<span class="ar-chip ar-chip--${kind === 'missing' ? 'stale' : kind}"><span class="ar-chip__val" style="min-width:${ageW}ch;text-align:right">${text}</span><span class="ar-chip__word" style="min-width:${STATUS_W}ch">${WORD[kind]}</span></span>`,
+      setCell(tr, 'age', `<span class="ar-chip ar-chip--${kind === 'missing' ? 'stale' : kind}"><span class="ar-chip__val" style="min-width:${slot(ageW, 0.04)};text-align:right">${text}</span><span class="ar-chip__word" style="min-width:${slot(STATUS_W, 0.14)}">${WORD[kind]}</span></span>`,
         age == null ? 'No ticker received for this listing yet' : 'Age since DEBYKO received the ticker · transport ' + (rows.get(tr.dataset.key)?.transport || '—'));
     }
     if (lastOk) {
