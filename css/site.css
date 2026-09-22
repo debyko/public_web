@@ -73,8 +73,17 @@ svg { display: block; }
 .arb__out { display: flex; gap: 12px; align-items: baseline; border-top: 1px solid var(--dk-border-hairline); padding-top: 12px; font: 500 14px/1 var(--dk-font-display); color: var(--dk-text-primary); }
 .core-caps { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1px; background: var(--dk-border-hairline); border: 1px solid var(--dk-border-hairline); }
 .core-caps span { background: var(--dk-surface-page); padding: 14px 16px; font: 600 11px/1 var(--dk-font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dk-text-primary); }
+.core-price { margin: 0; font: 400 12px/1.5 var(--dk-font-mono); color: var(--dk-text-secondary); }
+.core-price a { color: inherit; }
+.core-screen .pipe-node--match { gap: 8px; }
+.rates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 28px; border-top: 1px solid var(--dk-border-strong); }
+.rates > div { padding: 16px 0 4px; display: flex; flex-direction: column; gap: 8px; }
+.rates__v { font: 400 26px/1 var(--dk-font-mono); color: var(--dk-text-primary); }
+.rates__k { font: 400 13px/1.4 var(--dk-font-text); color: var(--dk-text-secondary); }
+.pricing-row .offer__price { white-space: normal; }
 .core-foot { display: flex; flex-direction: column; gap: 8px; max-width: 760px; }
 @media (max-width: 900px) {
+  .rates { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
   .core-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 720px) {

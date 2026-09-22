@@ -120,6 +120,33 @@ if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
 mountSlice($('#live-slice'), store, () => { location.href = '/arena/'; });
 $('#live-slice [data-slot="more"]').textContent = 'Full comparison →';
 
+// ── For bot builders: the curl on the page, run live ────────────────────────────────────────
+
+// The command shown is the request made: same URL, no key, production.
+(async () => {
+  const out = $('#curl-out'), tag = $('#curl-tag');
+  if (!out) return;
+  const url = $('#curl-live').textContent.match(/"(.+)"/)[1];
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    const t = (d.tickers || [])[0];
+    if (!t) throw new Error('no ticker in the response');
+    const pick = ['segmentCode', 'symbol', 'quoteAsset', 'bidPrice', 'askPrice', 'markPrice', 'fundingRate', 'openInterest', 'openInterestAt', 'depthAt', 'venueTs', 'receivedAt', 'ageSeconds'];
+    out.textContent = JSON.stringify({ asOf: d.asOf, exchange: d.exchange, tickers: [Object.fromEntries(pick.map(k => [k, t[k] ?? null]))] }, null, 2);
+    tag.textContent = 'live · fetched ' + utcTime(new Date().toISOString()) + ' · trimmed to 13 of its fields';
+  } catch (err) {
+    out.textContent = 'The request failed (' + err.message + '). Nothing is shown in its place.';
+    tag.textContent = 'no response';
+  }
+})();
+
+document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(document.getElementById(btn.dataset.copy).textContent); btn.textContent = 'Copied'; }
+  catch { btn.textContent = 'Select and copy'; }
+}));
+
 // ── Studio Pro: API snippet ─────────────────────────────────────────────────────────────────
 
 function renderSnippet(S) {

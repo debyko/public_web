@@ -25,11 +25,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=cb90d68f0a">
+  <link rel="stylesheet" href="css/site.css?v=23088bb33c">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=a4a8c3dd3a","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=9265de0c79","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
-  <script type="module" src="js/home.js?v=a4a8c3dd3a"></script>
+  <script type="module" src="js/home.js?v=9265de0c79"></script>
 </head>
 <body>
 
@@ -154,49 +154,47 @@
       <h2 class="h2 h2--core">Stop writing exchange-specific market checks into every bot.</h2>
       <p class="lead core-lead">Ask one question across every venue. DEBYKO handles venue mappings, stale data, historical state and missing responses — your bot gets one deterministic answer.</p>
       <div class="row gap-10"><button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button></div>
+      <p class="core-price">€99 / month, DQL and API v2 included · monthly, no annual plan · <a href="https://cryptosmithx.blynai.eu/scalar/v1">API v1</a> free today, no key</p>
     </div>
 
-    <div class="pipe" aria-label="One trading condition, from your bot through DEBYKO and back to your bot">
+    <div class="pipe" aria-label="One bot condition, from what you mean through DEBYKO to your bot">
       <div class="pipe-node pipe-node--bot">
-        <span class="pipe-label">Your bot</span>
-        <p class="pipe-ask">“Find ETH perps where funding is above 5 bps on at least three venues, every reading under a minute old.”</p>
+        <span class="pipe-label">What you mean</span>
+        <p class="pipe-ask">BTC on Kraken and Hyperliquid more than 35 bps apart, both books holding $100,000 within 25 bps, every price under five seconds old, and hourly funding more than 1 bps apart.</p>
       </div>
       <div class="pipe-arrow" aria-hidden="true"></div>
       <div class="pipe-node pipe-node--dql">
-        <span class="pipe-label pipe-label--accent">DQL</span>
-        <pre class="pipe-code">count(venues where funding_8h &gt; 5bps
-             and age(funding) &lt; 1m) &gt;= 3
-  order by max(venues where age(funding) &lt; 1m, funding_8h) desc</pre>
+        <span class="pipe-label pipe-label--accent">What you write · DQL</span>
+        <pre class="pipe-code">(max(venues, mark) - min(venues, mark)) / min(venues, mark) &gt; 35bps
+  and all(venues where age(mark) &lt; 5s
+          and depth_bid_value(25bps) &gt; 100000
+          and depth_ask_value(25bps) &gt; 100000)
+  and max(venues, funding) - min(venues, funding) &gt; 1bps
+  where instrument = BTC-PERP and venue in (KRAKEN-FUTURES, HYPERLIQUID)</pre>
       </div>
       <div class="pipe-arrow" aria-hidden="true"></div>
       <div class="pipe-venues">
-        <span>VENUE-B</span><span>VENUE-A</span><span>VENUE-C</span><span>VENUE-D</span><span class="pipe-venues__more">+ every venue that lists ETH-PERP</span>
+        <span>KRAKEN-FUTURES · PF_XBTUSD</span><span>HYPERLIQUID · BTC</span>
       </div>
       <div class="pipe-arrow" aria-hidden="true"></div>
-      <div class="pipe-node pipe-node--match">
-        <div class="pipe-match-head"><span class="pipe-label pipe-label--accent">Match</span><span class="pipe-match-inst">ETH-PERP</span><span class="pipe-match-count">3 of 4 venues</span></div>
-        <div class="pipe-row"><span class="pipe-row__venue">VENUE-A <small>ETHUSD</small></span><span class="pipe-row__num">+7.2 bps</span><span class="pipe-row__age">1.1 s old</span><span class="pipe-row__mark">✓</span></div><div class="pipe-row"><span class="pipe-row__venue">VENUE-B <small>ETHUSDT</small></span><span class="pipe-row__num">+6.1 bps</span><span class="pipe-row__age">1.8 s old</span><span class="pipe-row__mark">✓</span></div><div class="pipe-row"><span class="pipe-row__venue">VENUE-C <small>ETHUSDT</small></span><span class="pipe-row__num">+5.8 bps</span><span class="pipe-row__age">1.0 s old</span><span class="pipe-row__mark">✓</span></div><div class="pipe-row pipe-row--stale"><span class="pipe-row__venue">VENUE-D <small>ETH-USDT</small></span><span class="pipe-row__num">+9.4 bps</span><span class="pipe-row__age">10 m 5 s old</span><span class="pipe-row__mark">STALE · not counted</span></div>
-        <p class="pipe-note">The highest reading is ten minutes old, so it is shown with its age and counted for nothing.</p>
-        <details class="pipe-raw"><summary>Raw answer</summary><pre class="pipe-code">{ &quot;instrument&quot;: &quot;ETH-PERP&quot;, &quot;result&quot;: &quot;true&quot;,
-  &quot;venues&quot;: [
-    { &quot;venue&quot;: &quot;VENUE-A&quot;, &quot;symbol&quot;: &quot;ETHUSD&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
-      { &quot;value&quot;: 0.00072, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:30:03.912Z&quot;,
-        &quot;age_ms&quot;: 1088, &quot;status&quot;: &quot;present&quot; } } },
-    { &quot;venue&quot;: &quot;VENUE-B&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
-      { &quot;value&quot;: 0.00061, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:30:03.204Z&quot;,
-        &quot;age_ms&quot;: 1796, &quot;status&quot;: &quot;present&quot; } } },
-    { &quot;venue&quot;: &quot;VENUE-C&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
-      { &quot;value&quot;: 0.00058, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:30:04.018Z&quot;,
-        &quot;age_ms&quot;: 982, &quot;status&quot;: &quot;present&quot; } } },
-    { &quot;venue&quot;: &quot;VENUE-D&quot;, &quot;symbol&quot;: &quot;ETH-USDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
-      { &quot;value&quot;: 0.00094, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:20:00.310Z&quot;,
-        &quot;age_ms&quot;: 604690, &quot;status&quot;: &quot;stale&quot; } } } ] }</pre></details>
+      <div class="pipe-node pipe-node--match arb" aria-label="Illustrative match on BTC-PERP">
+        <div class="pipe-match-head"><span class="pipe-label pipe-label--accent">Match</span><span class="pipe-match-inst">BTC-PERP</span><span class="pipe-match-count">2 of 2 venues</span></div>
+        <div class="arb__pair">
+          <div><span class="pipe-label">KRAKEN-FUTURES</span><span class="arb__px">85,421.20</span><span class="meta-xs">mark · USD · 0.4 s old</span></div>
+          <div><span class="pipe-label">HYPERLIQUID</span><span class="arb__px">85,760.40</span><span class="meta-xs">mark · USD · 0.7 s old</span></div>
+        </div>
+        <div class="arb__gap"><span>39.7 bps</span></div>
+        <ul class="arb__checks">
+          <li>Depth within 25 bps · $2.3M / $2.1M · $0.9M / $1.2M ✓</li>
+          <li>Freshness · every price under 5 s ✓</li>
+          <li>Funding per hour · +0.2 vs +1.4 bps ✓</li>
+        </ul>
       </div>
       <div class="pipe-arrow" aria-hidden="true"></div>
       <div class="pipe-outs">
         <div><span class="pipe-label">API</span><span>JSON to your code</span></div>
         <div><span class="pipe-label">Agent</span><span>Webhook on match</span></div>
-        <div><span class="pipe-label">Your Runner</span><span>Order with your keys</span></div>
+        <div><span class="pipe-label">Runner · optional</span><span>Or let Runner place the order with your keys</span></div>
       </div>
     </div>
 
@@ -206,38 +204,35 @@
       <div><span class="core-card__t">One query, every venue</span><span class="core-card__b">No Binance branch. No Hyperliquid branch. No Bybit branch. One condition against every venue that lists the instrument.</span></div>
       <div><span class="core-card__t">Stale data can’t trigger your bot</span><span class="core-card__b"><code>age(funding) &lt; 1m</code> is part of the condition. A venue that stopped answering does not silently keep yesterday’s value alive.</span></div>
       <div><span class="core-card__t">Backtest the same question</span><span class="core-card__b">Add <code>as of 2026-09-22T08:00:00Z</code>. The condition is evaluated against only what DEBYKO had actually received by that instant.</span></div>
-      <div><span class="core-card__t">Send the result to your bot</span><span class="core-card__b">JSON through the API. A webhook on match through Agent. Your Runner places the order with your own keys — DEBYKO never sees them.</span></div>
+      <div><span class="core-card__t">Send the result to your bot</span><span class="core-card__b">JSON through the API. A webhook on match through Agent. Or let Runner place the order with your own keys — DEBYKO never sees them.</span></div>
     </div>
 
-    <div class="split split--6-6 split--center core-arb">
+    <div class="split split--5-7 split--start core-screen">
       <div class="stack gap-14">
-        <span class="pipe-label pipe-label--accent">Find markets where</span>
-        <ul class="core-list">
-          <li>the price gap between two venues is above 35 bps</li>
-          <li>and both hold more than $100,000 within 25 bps of mid, each side</li>
-          <li>and every price is under five seconds old</li>
-          <li>and their 8-hour funding differs by more than 8 bps</li>
-        </ul>
-        <pre class="pipe-code pipe-code--box">(max(venues, mark) - min(venues, mark)) / min(venues, mark) &gt; 35bps
-  and all(venues where age(mark) &lt; 5s
-          and depth_bid_value(25bps) &gt; 100000
-          and depth_ask_value(25bps) &gt; 100000)
-  and max(venues, funding_8h) - min(venues, funding_8h) &gt; 8bps
-  where instrument = BTC-PERP and venue in (VENUE-A, VENUE-B)</pre>
+        <span class="pipe-label pipe-label--accent">Or screen every venue at once</span>
+        <p class="core-list">Every ETH perp where funding is above 5 bps on at least three venues, each reading under a minute old.</p>
+        <pre class="pipe-code pipe-code--box">count(venues where funding_8h &gt; 5bps
+             and age(funding) &lt; 1m) &gt;= 3
+  order by max(venues where age(funding) &lt; 1m, funding_8h) desc</pre>
       </div>
-      <div class="arb" aria-label="Illustrative match on BTC-PERP">
-        <span class="arb__inst">BTC-PERP</span>
-        <div class="arb__pair">
-          <div><span class="pipe-label">VENUE-A</span><span class="arb__px">85,421.20</span><span class="meta-xs">mark · 0.4 s old</span></div>
-          <div><span class="pipe-label">VENUE-B</span><span class="arb__px">85,760.40</span><span class="meta-xs">mark · 0.7 s old</span></div>
-        </div>
-        <div class="arb__gap"><span>39.7 bps</span></div>
-        <ul class="arb__checks">
-          <li>Depth within 25 bps · $4.1M / $3.8M · $0.9M / $1.2M ✓</li>
-          <li>Freshness · every price under 5 s ✓</li>
-          <li>Funding · +1.0 vs +9.6 bps per 8 h ✓</li>
-        </ul>
-        <div class="arb__out"><span class="pipe-label pipe-label--accent">Match</span><span>→ Agent webhook → your bot</span></div>
+      <div class="pipe-node pipe-node--match">
+        <div class="pipe-match-head"><span class="pipe-label pipe-label--accent">Match</span><span class="pipe-match-inst">ETH-PERP</span><span class="pipe-match-count">3 of 4 venues</span></div>
+        <div class="pipe-row"><span class="pipe-row__venue">HYPERLIQUID <small>ETH</small></span><span class="pipe-row__num">+7.2 bps</span><span class="pipe-row__age">1.1 s old</span><span class="pipe-row__mark">✓</span></div><div class="pipe-row"><span class="pipe-row__venue">BINANCE-USDM <small>ETHUSDT</small></span><span class="pipe-row__num">+6.1 bps</span><span class="pipe-row__age">1.8 s old</span><span class="pipe-row__mark">✓</span></div><div class="pipe-row"><span class="pipe-row__venue">BYBIT-PERP <small>ETHUSDT</small></span><span class="pipe-row__num">+5.8 bps</span><span class="pipe-row__age">1.0 s old</span><span class="pipe-row__mark">✓</span></div><div class="pipe-row pipe-row--stale"><span class="pipe-row__venue">OKX-PERP <small>ETH-USDT-SWAP</small></span><span class="pipe-row__num">+9.4 bps</span><span class="pipe-row__age">10 m 5 s old</span><span class="pipe-row__mark">STALE · not counted</span></div>
+        <p class="pipe-note">The highest reading is ten minutes old, so it is shown with its age and counted for nothing.</p>
+        <details class="pipe-raw"><summary>Raw answer</summary><pre class="pipe-code">{ &quot;instrument&quot;: &quot;ETH-PERP&quot;, &quot;result&quot;: &quot;true&quot;,
+  &quot;venues&quot;: [
+    { &quot;venue&quot;: &quot;HYPERLIQUID&quot;, &quot;symbol&quot;: &quot;ETH&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00072, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:30:03.912Z&quot;,
+        &quot;age_ms&quot;: 1088, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;BINANCE-USDM&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00061, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:30:03.204Z&quot;,
+        &quot;age_ms&quot;: 1796, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;BYBIT-PERP&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00058, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:30:04.018Z&quot;,
+        &quot;age_ms&quot;: 982, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;OKX-PERP&quot;, &quot;symbol&quot;: &quot;ETH-USDT-SWAP&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00094, &quot;unit&quot;: &quot;fraction&quot;, &quot;received_at&quot;: &quot;2026-09-22T09:20:00.310Z&quot;,
+        &quot;age_ms&quot;: 604690, &quot;status&quot;: &quot;stale&quot; } } } ] }</pre></details>
       </div>
     </div>
 
@@ -250,7 +245,7 @@
     <div class="core-foot">
       <p class="statement">A venue that did not answer is unknown, not false and not zero.</p>
       <p class="meta">No buy, sell or signal anywhere in the language. It describes the market; what to do stays with you.</p>
-      <p class="meta-xs">Draft syntax · illustrative venues and values</p>
+      <p class="meta-xs">Draft syntax · illustrative values</p>
     </div>
   </div>
 </section>
@@ -278,6 +273,25 @@ POST /v2/snapshots/history  at [your last 30 cycle instants] → what was known 
 POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot could have known then,
                                                                byte-identical once settled</pre>
     </div>
+    <div class="workstation">
+      <div class="cell cell--left">
+        <div class="panel__head"><span class="label label--accent">Try it now · API v1 · no key</span><button class="text-btn text-btn--sm" data-copy="curl-live">Copy</button></div>
+        <pre class="snippet" id="curl-live">curl -s &quot;https://cryptosmithx.blynai.eu/v1/snapshot?exchange=hyperliquid&amp;symbols=BTC&quot;</pre>
+        <div class="panel__note">Leave out <code>symbols</code> and the whole venue comes back in one request.</div>
+      </div>
+      <div class="cell">
+        <div class="panel__head"><span class="label">Response</span><span class="meta-xs" id="curl-tag">requesting</span></div>
+        <pre class="snippet" id="curl-out">Requesting the live response…</pre>
+        <div class="panel__note">Today: this, no key. Tomorrow: the same values, in one condition.</div>
+      </div>
+    </div>
+    <div class="rates">
+      <div><span class="rates__v">≈3 / s</span><span class="rates__k">Kraken Futures ticker</span></div>
+      <div><span class="rates__v">≈8 / s</span><span class="rates__k">Hyperliquid ticker</span></div>
+      <div><span class="rates__v">≈1 / s</span><span class="rates__k">mark, open interest, stats</span></div>
+      <div><span class="rates__v">every 1 s</span><span class="rates__k">depth bands from the full WebSocket book, stored per second</span></div>
+    </div>
+    <p class="meta-xs">Measured on the v2 collectors, 2026-09-21/22.</p>
     <ul class="ruled ruled--grid ruled--min-200">
       <li><code>include_raw</code> — the venue's own field names next to ours. Swap the source, keep your formulas.</li>
       <li><code>units: base | published</code>, and every value says its unit. <code>kPEPE</code> is <code>base×1000</code>, not a surprise in production.</li>
@@ -288,6 +302,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
       <a class="btn" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API v1 documentation</span></a>
     </div>
+    <p class="core-price core-price--light">€99 / month, DQL and API v2 included · monthly, no annual plan · <a href="https://cryptosmithx.blynai.eu/scalar/v1">API v1</a> free today, no key</p>
   </div>
 </section>
 
@@ -445,11 +460,12 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
     <div class="dark-panel" data-theme="dark">
       <div class="dark-panel__head"><span class="dark-tag">Sample alert · illustrative values</span><span class="dark-meta">Agent · rule r_funding_eth</span></div>
       <div class="journal">
-        <div class="journal__line"><span class="journal__t">09:30:04.120 UTC</span><span class="journal__id">r_funding_eth</span><span class="journal__k journal__k--decide">TRUE</span><span class="journal__m">ETH-PERP · 2 of 3 venues above 1 bps · condition met</span></div>
-        <div class="journal__line"><span class="journal__t">09:30:02.940 UTC</span><span class="journal__id">HYPERLIQUID</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 2.4 bps · age 1.2 s · present</span></div>
-        <div class="journal__line"><span class="journal__t">09:30:01.710 UTC</span><span class="journal__id">KRAKEN-F</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 1.3 bps · age 2.4 s · present</span></div>
-        <div class="journal__line journal__line--warn"><span class="journal__t">09:19:59.120 UTC</span><span class="journal__id">VENUE-C</span><span class="journal__k journal__k--warn">STALE</span><span class="journal__m">funding_8h 3.1 bps · age 10 m 5 s · not counted</span></div>
-        <div class="journal__line"><span class="journal__t">09:30:04.180 UTC</span><span class="journal__id">r_funding_eth</span><span class="journal__k">SENT</span><span class="journal__m">Telegram · webhook to your Runner</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:05.112 UTC</span><span class="journal__id">r_funding_eth</span><span class="journal__k journal__k--decide">TRUE</span><span class="journal__m">ETH-PERP · 3 of 4 venues above 5 bps · condition met</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:03.912 UTC</span><span class="journal__id">HYPERLIQUID</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 7.2 bps · age 1.1 s · present</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:03.204 UTC</span><span class="journal__id">BINANCE-USDM</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 6.1 bps · age 1.8 s · present</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:04.018 UTC</span><span class="journal__id">BYBIT-PERP</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 5.8 bps · age 1.0 s · present</span></div>
+        <div class="journal__line journal__line--warn"><span class="journal__t">09:20:00.310 UTC</span><span class="journal__id">OKX-PERP</span><span class="journal__k journal__k--warn">STALE</span><span class="journal__m">funding_8h 9.4 bps · age 10 m 5 s · not counted</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:05.180 UTC</span><span class="journal__id">r_funding_eth</span><span class="journal__k">SENT</span><span class="journal__m">webhook to your bot, with your tag</span></div>
       </div>
       <div class="dark-note" style="padding:8px 14px;border-top:1px solid #1E2430;font-size:10px">Every alert carries the values it fired on, with venue, received time and age. A stale venue is shown, not counted.</div>
     </div>
