@@ -170,7 +170,7 @@ function renderStatus(S) {
 // The venue count in the DQL list comes from /coverage (perp venues), never typed.
 function renderDqlVenues(S) {
   const rows = S.cov ? normaliseCoverage(S.cov.data) : [];
-  if (rows.length) $('#dql-venues').textContent = fmt(rows.length, 0) + ' perpetual venues';
+  if (rows.length) $('#dql-venues').textContent = fmt(rows.length, 0) + ' perpetual venues collected today,';
 }
 
 store.subscribe(renderStatus, ['meta']);
