@@ -180,8 +180,8 @@
       <div class="pipe-node pipe-node--match arb" aria-label="Illustrative match on BTC-PERP">
         <div class="pipe-match-head"><span class="pipe-label pipe-label--accent">Match</span><span class="pipe-match-inst">BTC-PERP</span><span class="pipe-match-count">2 of 2 venues</span></div>
         <div class="arb__pair">
-          <div><span class="pipe-label">KRAKEN-FUTURES</span><span class="arb__px">85,421.20</span><span class="meta-xs">mark · USD · 0.21 s old · 2 ms from the venue</span></div>
-          <div><span class="pipe-label">HYPERLIQUID</span><span class="arb__px">85,760.40</span><span class="meta-xs">mark · USD · 0.13 s old · 3 ms from the venue</span></div>
+          <div><span class="pipe-label">KRAKEN-FUTURES</span><span class="arb__px">85,421.20</span><span class="meta-xs">mark · USD · 0.21 s old</span></div>
+          <div><span class="pipe-label">HYPERLIQUID</span><span class="arb__px">85,760.40</span><span class="meta-xs">mark · USD · 0.13 s old</span></div>
         </div>
         <div class="arb__gap"><span>39.7 bps</span></div>
         <ul class="arb__checks">
@@ -286,13 +286,13 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       </div>
     </div>
     <div class="rates">
-      <div><span class="rates__v">2 ms</span><span class="rates__k">p50 from the venue’s timestamp to a stored row · p95 7 ms, clock offset removed</span></div>
+      <div><span class="rates__v">26 ms</span><span class="rates__k">Kraken Futures trades, p50 from the venue’s timestamp to our receipt · tickers 74 ms</span></div>
       <div><span class="rates__v">≈3 / s</span><span class="rates__k">Kraken Futures ticker</span></div>
       <div><span class="rates__v">≈8 / s</span><span class="rates__k">Hyperliquid ticker</span></div>
       <div><span class="rates__v">≈1 / s</span><span class="rates__k">mark, open interest, stats</span></div>
       <div><span class="rates__v">every 1 s</span><span class="rates__k">depth bands from the full WebSocket book, stored per second</span></div>
     </div>
-    <p class="meta-xs">Measured on the v2 collectors, 2026-09-21/22.</p>
+    <p class="meta-xs">Measured on the v2 collectors, 2026-09-21/22; receipt times over a 20-second sample of the live stream, 2026-09-22.</p>
     <ul class="ruled ruled--grid ruled--min-200">
       <li><code>include_raw</code> — the venue's own field names next to ours. Swap the source, keep your formulas.</li>
       <li><code>units: base | published</code>, and every value says its unit. <code>kPEPE</code> is <code>base×1000</code>, not a surprise in production.</li>
