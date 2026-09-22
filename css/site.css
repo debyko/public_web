@@ -75,7 +75,7 @@ svg { display: block; }
 .core-price { margin: 0; font: 400 12px/1.5 var(--dk-font-mono); color: var(--dk-text-secondary); }
 .core-price a { color: inherit; }
 .core-screen .pipe-node--match { gap: 8px; }
-.rates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 28px; border-top: 1px solid var(--dk-border-strong); }
+.rates { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0 28px; border-top: 1px solid var(--dk-border-strong); }
 .rates > div { padding: 16px 0 4px; display: flex; flex-direction: column; gap: 8px; }
 .rates__v { font: 400 26px/1 var(--dk-font-mono); color: var(--dk-text-primary); }
 .rates__k { font: 400 13px/1.4 var(--dk-font-text); color: var(--dk-text-secondary); }
