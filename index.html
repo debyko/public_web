@@ -119,7 +119,7 @@
           <button class="btn" data-scroll="dql"><span>See DQL</span></button>
           <button class="text-btn" data-open="sales">Contact sales</button>
         </div>
-        <button class="link-btn" data-open="wait">Join the waitlist for DQL, the Studio subscription, Agent and Runner</button>
+        <button class="link-btn" data-open="wait">Join the waitlist for DQL, Agent and Runner</button>
       </div>
       <div id="live-slice" style="min-width:0;align-self:stretch"></div>
     </div>
@@ -407,8 +407,8 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <div class="row gap-10">
         <a class="btn btn--primary" href="/arena/"><span>Open live comparison</span></a>
         <a class="btn" href="https://studio.debyko.com"><span>Open Studio ↗</span></a>
-        <button class="btn" data-open="wait"><span>Join the waitlist</span></button>
-        <button class="btn" data-scroll="plans"><span>Compare plans</span></button>
+        <a class="btn" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a>
+        <a class="btn" href="#plans" data-scroll="plans"><span>Compare plans</span></a>
       </div>
     </div>
   </div>
@@ -687,7 +687,6 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <p class="prose">One key covers Studio, the API and Agent. Whatever a plan includes in Studio, it includes in the API under the same key. Products that do not exist yet are listed as such.</p>
     </div>
 
-    <!-- Paid CTAs read "Join the waitlist" until Paddle approves the live account; then they become "Start 7-day trial" and open checkout. -->
     <div class="plan-cards">
         <div class="plan-card">
           <span class="plan-card__name">Free</span>
@@ -699,19 +698,19 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
           <span class="plan-card__name">Mini</span>
           <span class="plan-card__price">€9 / month</span>
           <p class="plan-card__desc">Four venues, fifty instruments each, thirty days of history, two live streams, DQL screening.</p>
-          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+          <div class="plan-card__cta"><a class="btn btn--sm btn--full" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a></div>
         </div>
         <div class="plan-card">
           <span class="plan-card__name">Standard</span>
           <span class="plan-card__price">€29 / month</span>
           <p class="plan-card__desc">Every venue, every instrument, one year of history, full order books, five live streams, CSV export.</p>
-          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+          <div class="plan-card__cta"><a class="btn btn--sm btn--full" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a></div>
         </div>
         <div class="plan-card">
           <span class="plan-card__name">Pro</span>
           <span class="plan-card__price">€79 / month</span>
           <p class="plan-card__desc">Everything in Standard, all history, twenty live streams, higher limits for bots and screens.</p>
-          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+          <div class="plan-card__cta"><a class="btn btn--sm btn--full" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a></div>
         </div>
         <div class="plan-card">
           <span class="plan-card__name">Team and enterprise</span>
@@ -720,6 +719,8 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
           <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
         </div>
     </div>
+
+    <p class="meta">A card is taken at the start of the trial and nothing is charged before day eight. Cancel any time from your account.</p>
 
     <p class="prose prose--sm">Trials run seven days with a card on file and nothing charged until day eight; cancel before that and nothing is charged at all. Every plan renews monthly and can be cancelled at any time from your account — access runs to the end of the paid month. Checkout, invoices and VAT are handled by Paddle, our merchant of record; VAT is added at checkout where it applies. Refunds: see the <a href="/legal/refund/">refund policy</a>.</p>
 
@@ -733,7 +734,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         <div class="pricing-row"><span class="offer__name">Arena</span><span class="offer__price" style="text-align:left">By invitation</span><span class="pricing-row__status hide-narrow">Closed beta</span><button class="btn btn--sm btn--full" data-open="sales"><span>Request access</span></button></div>
         <div class="pricing-row"><span class="offer__name">Execution Evidence and services</span><span class="offer__price" style="text-align:left">Typical scope ranges</span><span class="pricing-row__status hide-narrow">Contact sales</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
         <div class="rule-end"></div>
-        <div class="row gap-10" style="margin-top:18px"><button class="btn" data-scroll="plans"><span>Compare plans</span></button></div>
+        <div class="row gap-10" style="margin-top:18px"><a class="btn" href="#plans" data-scroll="plans"><span>Compare plans</span></a></div>
       </div>
     </div>
   </div>
@@ -779,16 +780,16 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
           <tr>
             <th scope="row"></th>
             <td><a class="btn btn--full" href="https://studio.debyko.com/account"><span>Get a key</span></a></td>
-            <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
-            <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
-            <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
+            <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a></td>
+            <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a></td>
+            <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account"><span>Start the 7-day trial</span></a></td>
           </tr>
         </tfoot>
       </table>
     </div>
     <div class="stack gap-10">
       <p class="prose prose--sm">Which two venues and ten instruments are in Free is published on <a href="/data/coverage/">Coverage</a> and recomputed daily from traded volume; the list can change, and the change is dated there.</p>
-      <div class="meta">Monthly prices, VAT added at checkout where it applies. No annual plan, no discounts. Checkout comes once billing exists.</div>
+      <div class="meta">Monthly prices, VAT added at checkout where it applies. No annual plan, no discounts.</div>
     </div>
   </div>
 </section>
@@ -798,7 +799,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
   <div class="wrap split split--1-1">
     <div class="closing">
       <span class="label">Product interest</span>
-      <h2 class="h2 h2--small">Join the waitlist for DQL, the Studio subscription, Agent and Runner.</h2>
+      <h2 class="h2 h2--small">Join the waitlist for DQL, Agent and Runner.</h2>
       <p class="prose prose--sm">One address, one product of interest. Nothing else is asked.</p>
       <div><button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button></div>
     </div>
@@ -837,9 +838,9 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <button type="button" class="dialog__close" data-close aria-label="Close"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
     <div class="dialog__body">
       <div class="stack gap-14" data-part="form">
-        <p>DQL and Runner are in development, the Studio subscription is pre-launch and Agent is planned. The address is used for one message when the chosen product opens. No account is created.</p>
+        <p>DQL and Runner are in development and Agent is planned. Studio plans are on sale now at <a href="https://studio.debyko.com/account">studio.debyko.com</a>. The address is used for one message when the chosen product opens. No account is created.</p>
         <label class="field"><span class="field__label">Email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
-        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>DQL</option><option>Studio subscription</option><option>Agent</option><option>Runner</option><option>All of them</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>DQL</option><option>Agent</option><option>Runner</option><option>All of them</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
         <p class="form-error" data-part="error" role="alert" hidden></p>
         <span class="meta">Your address is used for one message when the chosen product opens, and for nothing else.</span>
