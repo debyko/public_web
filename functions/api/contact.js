@@ -17,9 +17,11 @@ const MAILJET_URL = 'https://api.mailjet.com/v3.1/send';
 const ENGAGEMENTS = [
   'Execution Evidence Pilot', 'One-off Execution Audit', 'Continuous Execution Monitoring',
   'Venue Comparison Report', 'Custom dataset or export', 'Connector', 'White-label',
-  'Enterprise API', 'Studio Pro access', 'Agent early access'
+  'Enterprise API', 'Studio subscription', 'Arena beta access',
+  // Offered before the 2026-09 product lineup; still accepted from pages cached before it.
+  'Studio Pro access', 'Agent early access'
 ];
-const PRODUCTS = ['Studio Trader', 'Agent', 'Both'];
+const PRODUCTS = ['Studio subscription', 'Agent', 'Runner', 'All three', 'Studio Trader', 'Both'];
 
 const LIMIT = 5;
 const WINDOW_MS = 10 * 60 * 1000;

@@ -47,10 +47,12 @@
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Products</button>
         <div class="nav__menu" hidden>
-          <a href="/arena/">Arena <span class="nav-tag">live</span></a>
-          <a href="#studio-pro">Studio Pro <span class="nav-tag">live</span></a>
-          <a href="#trader">Studio Trader <span class="nav-tag">in development</span></a>
-          <a href="#agent">Agent <span class="nav-tag">prototype</span></a>
+          <a href="#studio">Studio <span class="nav-tag">free · live</span></a>
+          <a href="#api">API <span class="nav-tag">v1 live</span></a>
+          <a href="#dql">DQL <span class="nav-tag">in development</span></a>
+          <a href="#agent">Agent <span class="nav-tag">planned</span></a>
+          <a href="#runner">Runner <span class="nav-tag">in development</span></a>
+          <a href="#arena">Arena <span class="nav-tag">closed beta</span></a>
         </div>
       </div>
       <div class="nav__item">
@@ -91,7 +93,7 @@
     <button class="menu-btn" aria-expanded="false">Menu</button>
   </div>
   <div class="mobile-nav" hidden>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="/arena/">Arena</a><a href="#studio-pro" data-scroll="studio-pro">Studio Pro</a><a href="#trader" data-scroll="trader">Studio Trader</a><a href="#agent" data-scroll="agent">Agent</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="#studio" data-scroll="studio">Studio</a><a href="#api" data-scroll="api">API</a><a href="#dql" data-scroll="dql">DQL</a><a href="#agent" data-scroll="agent">Agent</a><a href="#runner" data-scroll="runner">Runner</a><a href="#arena" data-scroll="arena">Arena</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="#evidence" data-scroll="evidence">Execution Evidence</a><a href="#services" data-scroll="services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="#pricing" data-scroll="pricing">Pricing</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
@@ -111,13 +113,13 @@
       <div class="stack gap-22">
         <div class="eyebrow">Verifiable crypto market infrastructure</div>
         <h1 class="h1">Crypto market data, with the evidence attached.</h1>
-        <p class="lead">Compare venues live, investigate market history, connect through an API, or run isolated execution agents — without hiding the source, age or absence of the underlying data.</p>
+        <p class="lead">See one instrument on every venue that quotes it, query the market in DQL, get told when a condition becomes true, and place orders through a Runner on your own infrastructure — without hiding the source, age or absence of the underlying data.</p>
         <div class="row gap-10" style="margin-top:4px">
           <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
           <button class="btn" data-scroll="products"><span>Explore products</span></button>
           <button class="text-btn" data-open="sales">Contact sales</button>
         </div>
-        <button class="link-btn" data-open="wait">Join the waitlist for Studio Trader and Agent</button>
+        <button class="link-btn" data-open="wait">Join the waitlist for the Studio subscription, Agent and Runner</button>
       </div>
       <div id="live-slice" style="min-width:0;align-self:stretch"></div>
     </div>
@@ -135,7 +137,7 @@
       <p class="prose">Ticker, open interest and depth arrive by different calls at different rates. A price two seconds old can sit next to depth several minutes old, so the table shows an age for each group — never one age per row. Freshness is judged per call against that call's expected cadence.</p>
     </div>
     <div class="row gap-10">
-      <a class="btn btn--primary" href="/arena/"><span>Open full Arena</span></a>
+      <a class="btn btn--primary" href="/arena/"><span>Open live comparison</span></a>
       <a class="btn" href="/data/methodology/"><span>View methodology</span></a>
     </div>
   </div>
@@ -160,75 +162,22 @@
   </div>
 </section>
 
-<!-- 4 · Arena -->
+<!-- 4 · Studio -->
 <section id="products" class="section">
-  <div class="wrap split split--7-5 split--end">
+  <span id="studio-pro"></span>
+  <div id="studio" class="wrap split split--7-5 split--start">
     <div class="stack gap-18">
       <div class="row gap-10">
-        <span class="label">01 / Live venue comparison</span>
-        <span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg><span>Live</span></span>
+        <span class="label">01 / Market data</span>
+        <span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg><span>Free · Live</span></span>
+        <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>Subscription · Pre-launch</span></span>
       </div>
-      <div class="product-name">Arena</div>
-      <h2 class="h2">One market. Every available venue. Side by side.</h2>
-      <p class="prose">Compare the same instrument across the venues that quote it. Inspect price, spread, funding, open interest, depth and the age of every observation.</p>
-    </div>
-    <div class="stack gap-18">
-      <ul class="ruled">
-        <li>Multi-venue comparison</li>
-        <li>Age per data group</li>
-        <li>Missing values stay visible</li>
-        <li>BEST / WORST only when comparable</li>
-        <li>Source behind every number</li>
-      </ul>
-      <div class="price-line"><span class="label">Price</span><span class="price-line__value">Free</span></div>
-      <div class="row gap-10">
-        <a class="btn btn--primary" href="/arena/"><span>Explore Arena</span></a>
-        <a class="btn" href="/data/coverage/"><span>See coverage</span></a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 5 · Studio Pro -->
-<section id="studio-pro" class="section">
-  <div class="wrap stack gap-48">
-    <div class="split split--7-5 split--start">
-      <div class="stack gap-18">
-        <div class="row gap-10">
-          <span class="label">02 / Data and history</span>
-          <span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg><span>Live</span></span>
-        </div>
-        <div class="product-name">Studio Pro</div>
-        <h2 class="h2">Market history with its gaps left in.</h2>
-        <p class="prose">Explore instruments and venues, see exactly what was collected and when, inspect historical candles, funding, open interest, trades, liquidations and order-book depth, and reach the same data through an API.</p>
-        <p class="statement">A missing observation is empty, not zero. The age and origin of every value stay visible.</p>
-      </div>
-      <div class="stack gap-18">
-        <ul class="ruled ruled--grid ruled--min-200">
-          <li>Instrument and venue catalogue</li>
-          <li>Trade, mark and index candles where the venue publishes them</li>
-          <li>Funding with its interval</li>
-          <li>Open interest</li>
-          <li>Trades and liquidations</li>
-          <li>Order-book snapshots and depth bands</li>
-          <li>Coverage and gap view</li>
-          <li>API</li>
-        </ul>
-        <div class="price-grid">
-          <span class="label">Individual</span><span class="price-line__value">€99 / month</span>
-          <span class="label">Team</span><span class="price-line__value">€399 / month</span>
-        </div>
-        <div class="row gap-10">
-          <a class="btn btn--primary" href="mailto:hello@debyko.com?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Individual"><span>Subscribe</span></a>
-          <button class="btn" data-scroll="plans"><span>Compare plans</span></button>
-          <a class="btn" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API documentation</span></a>
-        </div>
-        <div class="meta">Subscribe opens an email to hello@debyko.com · checkout comes once billing exists</div>
-      </div>
-    </div>
-
-    <div class="workstation">
-      <div class="cell cell--left">
+      <div class="product-name">Studio</div>
+      <h2 class="h2">One instrument on every venue that quotes it, side by side.</h2>
+      <p class="prose">Live values, history with its gaps left in, and what each venue showed at any past moment. When you act, the order goes to your own Runner and is placed with your keys.</p>
+      <p class="statement">A missing observation is empty, not zero. The age and origin of every value stay visible.</p>
+      <div class="panel workstation" style="grid-template-columns:minmax(0,1fr)">
+      <div class="cell">
         <div class="panel__head"><span class="label">Trade candles · 1 h · UTC</span><span class="meta-xs">Structure</span></div>
         <div class="cell__body gap-8" style="gap:8px">
           <div class="candles">
@@ -275,6 +224,49 @@
         </div>
       </div>
 
+      </div>
+    </div>
+    <div class="stack gap-18">
+      <ul class="ruled">
+        <li>Free: the live comparison, with an age on every figure</li>
+        <li>Subscription: full history — candles, funding, open interest, trades, liquidations, order books</li>
+        <li>Subscription: point-in-time replay</li>
+        <li>Subscription: DQL screening</li>
+        <li>Orders go to your own Runner, never through DEBYKO</li>
+      </ul>
+      <div class="price-grid">
+        <span class="label">Free</span><span class="price-line__value">€0 · live now</span>
+        <span class="label">Individual</span><span class="price-line__value">€99 / month · pre-launch</span>
+        <span class="label">Team</span><span class="price-line__value">€399 / month · pre-launch</span>
+      </div>
+      <div class="row gap-10">
+        <a class="btn btn--primary" href="/arena/"><span>Open live comparison</span></a>
+        <button class="btn" data-open="wait"><span>Join the waitlist</span></button>
+        <button class="btn" data-scroll="plans"><span>Compare plans</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · API -->
+<section id="api" class="section">
+  <div class="wrap split split--5-7 split--start">
+    <div class="stack gap-18">
+      <div class="row gap-10">
+        <span class="label">02 / Data for your code</span>
+        <span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg><span>v1 · Live</span></span>
+        <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>v2 · In development</span></span>
+      </div>
+      <div class="product-name">API</div>
+      <h2 class="h2">The same data as Studio, for your code.</h2>
+      <p class="prose">v1 serves facts: coverage, snapshots, order books, candles, trades and a live stream. v2 adds DQL, one query language for screening and point-in-time questions across venues.</p>
+      <p class="statement">One key will cover Studio, API and Agent. Until keys ship, v1 is open.</p>
+      <div class="price-line"><span class="label">Price</span><span class="price-line__value">v1 open · no key yet</span></div>
+      <div class="row gap-10">
+        <a class="btn btn--primary" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API documentation</span></a>
+      </div>
+    </div>
+    <div class="panel workstation" style="grid-template-columns:minmax(0,1fr)">
       <div class="cell">
         <div class="panel__head"><span class="label">API</span><span class="meta-xs">Field names per /scalar/v1 · <span id="snippet-tag">waiting for the live response</span></span></div>
         <pre class="snippet" id="api-snippet">GET /v1/snapshot?exchange=okx-perp
@@ -285,11 +277,93 @@
   </div>
 </section>
 
-<!-- 6 · Studio Trader -->
-<section id="trader" class="section">
-  <div class="wrap split split--6-6 split--center">
+<!-- 6 · DQL -->
+<section id="dql" class="section">
+  <div class="wrap stack gap-48">
+    <div class="split split--7-5 split--end">
+      <div class="stack gap-18">
+        <div class="row gap-10">
+          <span class="label">03 / Query language</span>
+          <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
+        </div>
+        <div class="product-name">DQL · DEBYKO Query Language</div>
+        <h2 class="h2">Ask every venue the same question, and see which ones could answer.</h2>
+        <p class="prose">One condition, evaluated per instrument across every venue that lists it — funding, spread, open interest, depth within a price band, indicators over candles. Ask it now, or as of any past moment. The same query drives Studio screening, the API and Agent.</p>
+        <p class="statement">A venue that did not answer is unknown, not false and not zero.</p>
+      </div>
+      <div class="stack gap-18">
+        <ul class="ruled">
+          <li>any, all and count across venues. Never an average</li>
+          <li>Present, stale, missing, not published, switched off: five states, never merged</li>
+          <li>Point in time: as of an instant, from what was actually received by then</li>
+          <li>Text for people, JSON for machines, one meaning</li>
+        </ul>
+        <div class="row gap-10">
+          <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
+        </div>
+        <div class="meta">No buy, sell or signal anywhere in the language. It describes the market; what to do stays with you.</div>
+      </div>
+    </div>
+    <div class="workstation">
+      <div class="cell cell--left">
+        <div class="panel__head"><span class="label label--accent">Query</span><span class="meta-xs">DQL · draft syntax</span></div>
+        <pre class="snippet">count(venues where funding_8h &gt; 1bps) &gt;= 2
+  order by max(venues, funding_8h) desc
+  where base in (BTC, ETH, SOL)</pre>
+        <div class="panel__note">Instruments where at least two venues publish an 8-hour funding rate above one basis point, highest first. Add <code>as of 2026-09-21T09:30:00Z</code> and the same question is answered for that moment.</div>
+      </div>
+      <div class="cell">
+        <div class="panel__head"><span class="label">Answer</span><span class="meta-xs">Illustrative values</span></div>
+        <pre class="snippet">"instrument": "ETH-PERP", "result": "true",
+"venues": [
+  { "venue": "HYPERLIQUID", "symbol": "ETH",
+    "funding_8h": { "value": 0.00024, "age_ms": 1180, "status": "present" } },
+  { "venue": "KRAKEN-FUTURES", "symbol": "PF_ETHUSD",
+    "funding_8h": { "value": 0.00013, "age_ms": 2410, "status": "present" } },
+  { "venue": "VENUE-C", "symbol": "ETHUSDT",
+    "funding_8h": { "value": 0.00031, "age_ms": 605000, "status": "stale" } } ]</pre>
+        <div class="panel__note">The stale venue is shown with its true age and is not counted: two venues qualify, not three. Every venue listing the instrument is in the answer, including the ones that could not answer.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Agent -->
+<section id="agent" class="section">
+  <div class="wrap split split--5-7 split--center">
+    <div class="stack gap-18">
+      <div class="row gap-10">
+        <span class="label">04 / Alerts</span>
+        <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>Planned</span></span>
+      </div>
+      <div class="product-name">Agent</div>
+      <h2 class="h2">Write what to watch. Hear when it becomes true.</h2>
+      <p class="prose">Write a condition in DQL. Agent evaluates it on your schedule and tells you by Telegram or webhook when it becomes true, with the values and their sources attached.</p>
+      <p class="statement">It receives your Runner's execution reports and publishes how often each rule fired — never whether it was right.</p>
+      <div class="price-line"><span class="label">Price</span><span class="price-line__value muted">Not available yet</span></div>
+      <div class="row gap-10">
+        <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
+      </div>
+    </div>
     <div class="dark-panel" data-theme="dark">
-      <div class="dark-panel__head"><span class="dark-tag">Concept · in development · not a working product</span><span class="dark-meta">Studio Trader</span></div>
+      <div class="dark-panel__head"><span class="dark-tag">Sample alert · illustrative values</span><span class="dark-meta">Agent · rule r_funding_eth</span></div>
+      <div class="journal">
+        <div class="journal__line"><span class="journal__t">09:30:04.120 UTC</span><span class="journal__id">r_funding_eth</span><span class="journal__k journal__k--decide">TRUE</span><span class="journal__m">ETH-PERP · 2 of 3 venues above 1 bps · condition met</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:02.940 UTC</span><span class="journal__id">HYPERLIQUID</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 2.4 bps · age 1.2 s · present</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:01.710 UTC</span><span class="journal__id">KRAKEN-F</span><span class="journal__k">VALUE</span><span class="journal__m">funding_8h 1.3 bps · age 2.4 s · present</span></div>
+        <div class="journal__line journal__line--warn"><span class="journal__t">09:19:59.120 UTC</span><span class="journal__id">VENUE-C</span><span class="journal__k journal__k--warn">STALE</span><span class="journal__m">funding_8h 3.1 bps · age 10 m 5 s · not counted</span></div>
+        <div class="journal__line"><span class="journal__t">09:30:04.180 UTC</span><span class="journal__id">r_funding_eth</span><span class="journal__k">SENT</span><span class="journal__m">Telegram · webhook to your Runner</span></div>
+      </div>
+      <div class="dark-note" style="padding:8px 14px;border-top:1px solid #1E2430;font-size:10px">Every alert carries the values it fired on, with venue, received time and age. A stale venue is shown, not counted.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Runner -->
+<section id="runner" class="section">
+  <div class="wrap split split--6-6 split--center">
+    <div id="trader" class="dark-panel" data-theme="dark">
+      <div class="dark-panel__head"><span class="dark-tag">Concept · not a working product</span><span class="dark-meta">Studio · order ticket</span></div>
       <div class="trader">
         <div class="row dark-label" style="justify-content:space-between;gap:10px"><span>BTC perpetual · venue not selected</span><span>Account · not connected</span></div>
         <div class="stack gap-6">
@@ -309,102 +383,54 @@
           <button class="btn btn--lg btn--full" disabled><span>Buy</span></button>
           <button class="btn btn--lg btn--full" disabled><span>Sell</span></button>
         </div>
-        <div class="dark-note">Controls are inactive in this concept. Buy and sell are two separate deliberate actions; there is no one-click order.</div>
+        <div class="dark-note">Buy and Sell send a webhook to your Runner, which places the order with your keys. Controls are inactive in this concept; there is no one-click order.</div>
       </div>
     </div>
     <div class="stack gap-18">
       <div class="row gap-10">
-        <span class="label">03 / Manual execution</span>
+        <span class="label">05 / Execution</span>
         <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
       </div>
-      <div class="product-name">Studio Trader</div>
-      <h2 class="h2">Trade the market without losing sight of the source.</h2>
-      <p class="prose">A simpler interface for people who need to act rather than study: clear market state, deliberate buy and sell controls, and a connection to an exchange account the user controls.</p>
+      <div class="product-name">Runner</div>
+      <h2 class="h2">Your orders, placed with your keys, on your infrastructure.</h2>
+      <p class="prose">Runner runs on your infrastructure, not ours. It takes a webhook from Agent or Studio, places the order on the exchange with your own API keys and reports the execution back.</p>
+      <p class="statement">DEBYKO never sees your keys or your funds.</p>
       <ul class="ruled ruled--grid ruled--min-180">
-        <li>Large readable values</li>
-        <li>Few elements per screen</li>
-        <li>No flashing prices</li>
-        <li>No urgency pressure</li>
+        <li>Docker service · .NET</li>
+        <li>Cloudflare Worker · TypeScript</li>
+        <li>Webhook in, order out</li>
+        <li>Execution report back</li>
       </ul>
       <div class="price-line"><span class="label">Price</span><span class="price-line__value muted">Not available yet</span></div>
       <div class="row gap-10">
         <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
-        <button class="btn"><span>Explore Trader</span></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 7 · Agent -->
-<section id="agent" class="section">
-  <div class="wrap stack gap-48">
-    <div class="split split--7-5 split--end">
-      <div class="stack gap-18">
-        <div class="row gap-10">
-          <span class="label">04 / Automated execution</span>
-          <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg><span>Prototype</span></span>
-        </div>
-        <div class="product-name">Agent</div>
-        <h2 class="h2">Automated execution under the operator's control.</h2>
-        <p class="prose">One isolated bot for one exchange account. Every decision is written to a journal the operator can open and review.</p>
+<!-- 9 · Arena -->
+<section id="arena" class="section">
+  <div class="wrap split split--7-5 split--end">
+    <div class="stack gap-18">
+      <div class="row gap-10">
+        <span class="label">06 / Agent board</span>
+        <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>Closed beta</span></span>
       </div>
-      <div class="stack gap-18">
-        <ul class="ruled ruled--grid ruled--min-160">
-          <li>One account per agent</li>
-          <li>Operational state</li>
-          <li>Decision journal</li>
-          <li>Strategy and risk parameters</li>
-          <li>Pause by setting position size to zero</li>
-        </ul>
-        <div class="price-line"><span class="label">Price</span><span class="price-line__value">Scoped pilot</span></div>
-        <div class="row gap-10">
-          <button class="btn btn--primary" data-open="sales"><span>Request early access</span></button>
-          <button class="btn"><span>Explore Agent</span></button>
-        </div>
-      </div>
+      <div class="product-name">Arena</div>
+      <h2 class="h2">A public board of agents, built from their execution reports.</h2>
+      <p class="prose">Expectancy, drawdown, share of losing trades, venues traded. Every row says whether its figures are self-reported or verified. Opt-in, under a pseudonym.</p>
     </div>
-
-    <div class="agent-console" data-theme="dark">
-      <div class="agent-console__side">
-        <div class="dark-panel__head" style="flex-wrap:nowrap"><span class="dark-label">Process</span><span class="dark-tag dark-tag--sm">Prototype · sample</span></div>
-        <div class="kv">
-          <span class="kv__k">Agent</span><span>agent_01</span>
-          <span class="kv__k">Account</span><span>one exchange account · 1 : 1</span>
-          <span class="kv__k">State</span><span><span class="status-chip status-chip--sm status-chip--accent"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg><span>Running</span></span></span>
-          <span class="kv__k">Last decision</span><span>17:15:44.011 UTC · 8 s</span>
-          <span class="kv__k">Journal</span><span>1,204 entries · replayable</span>
-        </div>
-        <div class="stack gap-10" style="padding:14px">
-          <span class="dark-label dark-label--sm">Parameters</span>
-          <div class="params">
-            <span class="params__k">Instrument</span><span>BTC perpetual</span>
-            <span class="params__k">Position size</span><span>0.050 BTC</span>
-            <span class="params__k">Max order size</span><span>0.010 BTC</span>
-            <span class="params__k">Max ticker age</span><span>5 s</span>
-            <span class="params__k">Max depth age</span><span>10 m</span>
-          </div>
-          <div class="dark-note" style="border-top:1px solid #1E2430;padding-top:10px">Position size 0.000 BTC pauses the agent. There is no separate pause switch.</div>
-        </div>
-      </div>
-      <div class="stack">
-        <div class="dark-panel__head" style="flex-wrap:nowrap"><span class="dark-label">Decision journal · UTC</span><span class="dark-meta" style="color:#6D7583">newest last</span></div>
-        <div class="journal">
-          <div class="journal__line"><span class="journal__t">17:15:38.002 UTC</span><span class="journal__id">d_8f21c1</span><span class="journal__k">OBSERVE</span><span class="journal__m">mark 77,352.31 USD · age 2 s · depth age 3 m 12 s</span></div>
-          <div class="journal__line"><span class="journal__t">17:15:38.004 UTC</span><span class="journal__id">d_8f21c1</span><span class="journal__k journal__k--decide">DECIDE</span><span class="journal__m">hold · spread 0.12 bps within limit · no order</span></div>
-          <div class="journal__line"><span class="journal__t">17:15:41.207 UTC</span><span class="journal__id">d_8f21c2</span><span class="journal__k">OBSERVE</span><span class="journal__m">mark 77,352.02 USD · age 2 s · depth age 9 m 4 s</span></div>
-          <div class="journal__line"><span class="journal__t">17:15:41.209 UTC</span><span class="journal__id">d_8f21c2</span><span class="journal__k journal__k--decide">DECIDE</span><span class="journal__m">hold · depth age above 5 m, size capped at 0.000 BTC</span></div>
-          <div class="journal__line journal__line--warn"><span class="journal__t">17:15:44.011 UTC</span><span class="journal__id">d_8f21c3</span><span class="journal__k journal__k--warn">WARN</span><span class="journal__m">depth feed age 27 m 10 s exceeds max depth age 10 m · decision deferred</span></div>
-          <div class="journal__line"><span class="journal__t">17:15:44.013 UTC</span><span class="journal__id">d_8f21c3</span><span class="journal__k">STATE</span><span class="journal__m">running · awaiting fresher depth · position unchanged</span></div>
-          <div class="journal__line"><span class="journal__t">17:15:47.300 UTC</span><span class="journal__id">d_8f21c4</span><span class="journal__k">OBSERVE</span><span class="journal__m">mark 77,351.88 USD · age 3 s · depth age 2 m 48 s</span></div>
-          <div class="journal__line"><span class="journal__t">17:15:47.302 UTC</span><span class="journal__id">d_8f21c4</span><span class="journal__k journal__k--decide">DECIDE</span><span class="journal__m">hold · inputs fresh · size 0.050 BTC unchanged · no order</span></div>
-        </div>
-        <div class="dark-note" style="margin-top:auto;padding:8px 14px;border-top:1px solid #1E2430;font-size:10px">Every line carries a decision ID and the ages of the inputs it used. The journal records decisions, not results.</div>
+    <div class="stack gap-18">
+      <p class="statement">Today it shows the first two agents, self-reported. Reports from other Runners come with Runner.</p>
+      <div class="row gap-10">
+        <button class="btn btn--primary" data-open="sales"><span>Request access</span></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 8 · Execution evidence -->
+<!-- 10 · Execution evidence -->
 <section id="evidence" class="section section--panel">
   <div class="wrap stack gap-48">
     <div class="split split--6-6 split--end">
@@ -459,7 +485,7 @@
   </div>
 </section>
 
-<!-- 9 · Services -->
+<!-- 11 · Services -->
 <section id="services" class="section">
   <div class="wrap split split--4-8 split--start">
     <div class="stack gap-14">
@@ -471,14 +497,14 @@
       <div class="offer offer--top"><span class="offer__name">Custom historical dataset or export</span><span class="offer__desc hide-narrow">A defined slice of stored observations, with collection start and gaps documented.</span><span class="offer__price offer__price--sm">€500 – €5,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
       <div class="offer offer--top"><span class="offer__name">Market microstructure research</span><span class="offer__desc hide-narrow">Analysis of spread, depth, funding or liquidation behaviour over collected history.</span><span class="offer__price offer__price--sm">€1,000 – €5,000</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
       <div class="offer offer--top"><span class="offer__name">Exchange or protocol connector</span><span class="offer__desc hide-narrow">A collector for a venue not yet covered, with its cadence and fields stated.</span><span class="offer__price offer__price--sm">€1,500 – €10,000<br><span class="muted">+ €200 – €1,000 / month maintenance</span></span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
-      <div class="offer offer--top"><span class="offer__name">White-label Arena widget or API</span><span class="offer__desc hide-narrow">The comparison table or its API under another name, with provenance intact.</span><span class="offer__price offer__price--sm">€2,000 – €10,000<br><span class="muted">+ €300 – €2,000 / month</span></span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+      <div class="offer offer--top"><span class="offer__name">White-label Studio widget or API</span><span class="offer__desc hide-narrow">The comparison table or its API under another name, with provenance intact.</span><span class="offer__price offer__price--sm">€2,000 – €10,000<br><span class="muted">+ €300 – €2,000 / month</span></span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
       <div class="offer offer--top"><span class="offer__name">Enterprise API and infrastructure</span><span class="offer__desc hide-narrow">Dedicated capacity, retention and support terms agreed per engagement.</span><span class="offer__price offer__price--sm">Custom</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
       <div class="rule-end"></div>
     </div>
   </div>
 </section>
 
-<!-- 10 · Methodology -->
+<!-- 12 · Methodology -->
 <section id="method" class="section section--panel">
   <div class="wrap stack gap-48">
     <div class="split split--5-7 split--end">
@@ -510,7 +536,7 @@
   </div>
 </section>
 
-<!-- 11 · Status -->
+<!-- 13 · Status -->
 <section id="status" class="section">
   <div class="wrap stack gap-32">
     <div class="split split--5-7 split--end">
@@ -533,7 +559,7 @@
   </div>
 </section>
 
-<!-- 12 · Pricing -->
+<!-- 14 · Pricing -->
 <section id="pricing" class="section">
   <div class="wrap split split--4-8 split--start">
     <div class="stack gap-14">
@@ -542,11 +568,13 @@
       <p class="prose">Products that do not exist yet are listed as such.</p>
     </div>
     <div class="stack">
-      <div class="pricing-row"><span class="offer__name">Arena</span><span class="offer__price" style="text-align:left">€0</span><span class="pricing-row__status hide-narrow">Live</span><button class="btn btn--sm btn--full" data-scroll="products"><span>Explore Arena</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Studio Pro · Individual</span><span class="offer__price" style="text-align:left">€99 / month</span><span class="pricing-row__status hide-narrow">Live · subscribe by email</span><a class="btn btn--primary btn--sm btn--full" href="mailto:hello@debyko.com?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Individual"><span>Subscribe</span></a></div>
-      <div class="pricing-row"><span class="offer__name">Studio Pro · Team</span><span class="offer__price" style="text-align:left">€399 / month</span><span class="pricing-row__status hide-narrow">Live · subscribe by email</span><a class="btn btn--primary btn--sm btn--full" href="mailto:hello@debyko.com?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Team"><span>Subscribe</span></a></div>
-      <div class="pricing-row"><span class="offer__name">Studio Trader</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Agent</span><span class="offer__price" style="text-align:left">Scoped pilot</span><span class="pricing-row__status hide-narrow">Prototype</span><button class="btn btn--sm btn--full" data-open="sales"><span>Request early access</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Studio · Free</span><span class="offer__price" style="text-align:left">€0</span><span class="pricing-row__status hide-narrow">Live</span><a class="btn btn--sm btn--full" href="/arena/"><span>Open live comparison</span></a></div>
+      <div class="pricing-row"><span class="offer__name">Studio · Individual</span><span class="offer__price" style="text-align:left">€99 / month</span><span class="pricing-row__status hide-narrow">Pre-launch</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Studio · Team</span><span class="offer__price" style="text-align:left">€399 / month</span><span class="pricing-row__status hide-narrow">Pre-launch</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+      <div class="pricing-row"><span class="offer__name">API v1</span><span class="offer__price" style="text-align:left">€0 · no key yet</span><span class="pricing-row__status hide-narrow">Live · v2 in development</span><a class="btn btn--sm btn--full" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View documentation</span></a></div>
+      <div class="pricing-row"><span class="offer__name">Agent</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">Planned</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Runner</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+      <div class="pricing-row"><span class="offer__name">Arena</span><span class="offer__price" style="text-align:left">By invitation</span><span class="pricing-row__status hide-narrow">Closed beta</span><button class="btn btn--sm btn--full" data-open="sales"><span>Request access</span></button></div>
       <div class="pricing-row"><span class="offer__name">Sales-led engagements</span><span class="offer__price" style="text-align:left">Typical scope ranges</span><span class="pricing-row__status hide-narrow">Execution Evidence · services</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
       <div class="rule-end"></div>
       <div class="row gap-10" style="margin-top:18px"><button class="btn" data-scroll="plans"><span>Compare plans</span></button></div>
@@ -554,56 +582,54 @@
   </div>
 </section>
 
-<!-- 12b · Compare plans (temporary, until a pricing page exists) -->
+<!-- 14b · Compare plans (temporary, until a pricing page exists) -->
 <section id="plans" class="section">
   <div class="wrap stack gap-32">
     <div class="split split--5-7 split--end">
       <div class="stack gap-14">
         <div class="label">Compare plans</div>
-        <h2 class="h2">Arena is free. Studio Pro adds the history and the API.</h2>
+        <h2 class="h2">Studio is free to watch. The subscription adds history, replay and DQL.</h2>
       </div>
-      <p class="prose">Individual and Team carry the same data; they differ in who uses it. Subscribing is by email for now — checkout comes once billing exists.</p>
+      <p class="prose">Individual and Team carry the same data; they differ in who uses it. The subscription is pre-launch: the waitlist gets one email when it opens.</p>
     </div>
     <div class="panel scroll-x">
       <table class="plans">
         <thead>
           <tr>
             <th scope="col"><span class="label">Included</span></th>
-            <th scope="col"><span class="plans__name">Arena</span><span class="plans__price">€0</span><span class="plans__for">Anyone</span></th>
-            <th scope="col"><span class="plans__name">Studio Pro · Individual</span><span class="plans__price">€99 / month</span><span class="plans__for">One person</span></th>
-            <th scope="col"><span class="plans__name">Studio Pro · Team</span><span class="plans__price">€399 / month</span><span class="plans__for">A team · seats agreed by email</span></th>
+            <th scope="col"><span class="plans__name">Studio · Free</span><span class="plans__price">€0</span><span class="plans__for">Anyone · live now</span></th>
+            <th scope="col"><span class="plans__name">Studio · Individual</span><span class="plans__price">€99 / month</span><span class="plans__for">One person · pre-launch</span></th>
+            <th scope="col"><span class="plans__name">Studio · Team</span><span class="plans__price">€399 / month</span><span class="plans__for">A team · pre-launch</span></th>
           </tr>
         </thead>
         <tbody>
             <tr><th scope="row">Live venue comparison, with the age of every figure</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Instrument and venue catalogue</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Trade, mark and index candles where the venue publishes them</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Funding with its interval, open interest</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Trades and liquidations</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Order-book snapshots and depth bands</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Coverage and gap view</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">API</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Coverage, collection status and methodology</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">API v1, open until keys ship</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Full history: candles, funding, open interest, trades, liquidations, order books</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Point-in-time replay</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">DQL screening</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
         </tbody>
         <tfoot>
           <tr>
             <th scope="row"></th>
-            <td><button class="btn btn--full" data-scroll="products"><span>Explore Arena</span></button></td>
-            <td><a class="btn btn--primary btn--full" href="mailto:hello@debyko.com?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Individual"><span>Subscribe</span></a></td>
-            <td><a class="btn btn--primary btn--full" href="mailto:hello@debyko.com?subject=Subscribe%20%E2%80%94%20Studio%20Pro%20Team"><span>Subscribe</span></a></td>
+            <td><a class="btn btn--full" href="/arena/"><span>Open live comparison</span></a></td>
+            <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
+            <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
           </tr>
         </tfoot>
       </table>
     </div>
-    <div class="meta">Subscribe opens an email to hello@debyko.com with the plan in the subject. Monthly prices; no annual plan, no discounts.</div>
+    <div class="meta">Monthly prices; no annual plan, no discounts. Checkout comes once billing exists.</div>
   </div>
 </section>
 
-<!-- 13 · Closing -->
+<!-- 15 · Closing -->
 <section class="section section--panel">
   <div class="wrap split split--1-1">
     <div class="closing">
       <span class="label">Product interest</span>
-      <h2 class="h2 h2--small">Join the waitlist for Studio Trader and Agent.</h2>
+      <h2 class="h2 h2--small">Join the waitlist for the Studio subscription, Agent and Runner.</h2>
       <p class="prose prose--sm">One address, one product of interest. Nothing else is asked.</p>
       <div><button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button></div>
     </div>
@@ -625,7 +651,7 @@
         <p class="credit">Built by Denisas Bykovas.</p>
         <p class="credit credit--legal">Operated under licence by <a class="credit__brand" href="https://blynai.eu"><svg class="credit__mark credit__mark--blynai" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/><circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/></svg><span>MB „Blyn<i>AI</i>“</span></a> · Vilnius, Lithuania · <a href="https://blynai.eu">blynai.eu</a></p>
       </div>
-      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="/arena/">Arena</a><a href="#studio-pro">Studio Pro</a><a href="#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="#agent">Agent <span class="nav-tag">prototype</span></a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="#studio">Studio</a><a href="#api">API</a><a href="#dql">DQL</a><a href="#agent">Agent <span class="nav-tag">planned</span></a><a href="#runner">Runner</a><a href="#arena">Arena <span class="nav-tag">beta</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="#evidence">Execution Evidence</a><a href="#services">Data &amp; Research</a><a href="#services">Venues &amp; Platforms</a><a href="#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
@@ -642,9 +668,9 @@
       <button type="button" class="dialog__close" data-close aria-label="Close"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
     <div class="dialog__body">
       <div class="stack gap-14" data-part="form">
-        <p>Studio Trader is in development; Agent is a prototype. The address is used for one message when the chosen product opens. No account is created.</p>
+        <p>The Studio subscription is pre-launch, Runner is in development and Agent is planned. The address is used for one message when the chosen product opens. No account is created.</p>
         <label class="field"><span class="field__label">Email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
-        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>Studio Trader</option><option>Agent</option><option>Both</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>Studio subscription</option><option>Agent</option><option>Runner</option><option>All three</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
         <p class="form-error" data-part="error" role="alert" hidden></p>
         <span class="meta">Your address is used for one message when the chosen product opens, and for nothing else.</span>
@@ -671,7 +697,7 @@
         </div>
         <label class="field"><span class="field__label">Engagement</span><span class="field__box field__box--select"><select name="engagement">
           <option>Execution Evidence Pilot</option><option>One-off Execution Audit</option><option>Continuous Execution Monitoring</option><option>Venue Comparison Report</option>
-          <option>Custom dataset or export</option><option>Connector</option><option>White-label</option><option>Enterprise API</option><option>Studio Pro access</option><option>Agent early access</option>
+          <option>Custom dataset or export</option><option>Connector</option><option>White-label</option><option>Enterprise API</option><option>Studio subscription</option><option>Arena beta access</option>
         </select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         <label class="field"><span class="field__label">Venues · instruments · period</span><textarea name="scope" rows="4" placeholder="e.g. BTC perpetual on three venues, 12–14 Sep 2026, 40 executions"></textarea></label>
         <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
