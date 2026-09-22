@@ -27,9 +27,9 @@
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
   <link rel="stylesheet" href="css/site.css?v=eb583cbfe0">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=a435a3d8bb","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/live-v2.js":"/js/live-v2.js?v=b8212d1018","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=d5dd260bcf","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/live-v2.js":"/js/live-v2.js?v=2d04109c9e","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
-  <script type="module" src="js/home.js?v=a435a3d8bb"></script>
+  <script type="module" src="js/home.js?v=d5dd260bcf"></script>
 </head>
 <body>
 
@@ -239,7 +239,7 @@
     <div class="stack gap-14">
       <span class="pipe-label">What a condition can read</span>
       <div class="core-caps"><span>Price &amp; spread</span><span>Funding</span><span>Open interest</span><span>Book depth in a band</span><span>Mark · index · basis</span><span>Candles</span><span>EMA · RSI · ATR</span><span>Data age</span><span>Venue count</span><span>any · all · count</span><span>min · max · sum</span><span>as of</span></div>
-      <p class="meta">Registry: Kraken Futures and Hyperliquid in preview, <span id="dql-venues">every perpetual venue we collect,</span> joining as their mappings land.</p>
+      <p class="meta">Registry, read from the platform: <span id="dql-venues">requesting…</span>. A venue or market added on the platform appears here on its own.</p>
     </div>
 
     <div class="core-foot">
@@ -426,6 +426,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <h2 class="h2">The same data as Studio, for your code.</h2>
       <p class="prose">v1 serves facts: coverage, snapshots, order books, candles, trades and a live stream. v2 adds DQL, one query language for screening and point-in-time questions across venues.</p>
       <p class="statement">One key will cover Studio, API and Agent. Until keys ship, v1 is open.</p>
+      <p class="meta">Registry, read from the platform: <span id="api-registry">requesting…</span>.</p>
       <div class="price-line"><span class="label">Price</span><span class="price-line__value">v1 open · no key yet</span></div>
       <div class="row gap-10">
         <a class="btn btn--primary" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API documentation</span></a>

@@ -1,9 +1,9 @@
 // Homepage wiring: navigation, dialogs, the hero's live slice, the API snippet and the status line.
 // Everything else live lives on its own page — /arena/, /data/coverage/, /data/status/.
 
-import { createStore, normaliseCoverage, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
+import { createStore, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
 import { closeProvenance } from './live-market.js';
-import { mountLiveV2 } from './live-v2.js';
+import { mountLiveV2, registryLine } from './live-v2.js';
 import { fmt, utcTime } from './format.js';
 import { filterHealthToCoverage } from './pages/shared.js';
 
@@ -119,7 +119,11 @@ if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
 
 // The hero reads the v2 platform (api.debyko.com), as the platform's /lab page does; the full
 // 16-venue comparison is still Arena's, on the v1 service.
-mountLiveV2($('#live-slice'), { onFullComparison: () => { location.href = '/arena/'; } });
+mountLiveV2($('#live-slice'), {
+  onFullComparison: () => { location.href = '/arena/'; },
+  // The DQL and API sections print the same registry the hero reads, never a typed count.
+  onRegistry: reg => { const line = registryLine(reg); for (const id of ['#dql-venues', '#api-registry']) $(id).textContent = line; }
+});
 
 // ── For bot builders: the curl on the page, run live ────────────────────────────────────────
 
@@ -176,15 +180,7 @@ function renderStatus(S) {
     + fmt(degraded, 0) + (degraded === 1 ? ' collector' : ' collectors') + ' degraded · updated ' + utcTime(S.health.at).slice(0, 5) + ' UTC';
 }
 
-// The venue count in the DQL list comes from /coverage (perp venues), never typed.
-function renderDqlVenues(S) {
-  const rows = S.cov ? normaliseCoverage(S.cov.data) : [];
-  if (rows.length) $('#dql-venues').textContent = fmt(rows.length, 0) + ' perpetual venues collected today,';
-}
-
 store.subscribe(renderStatus, ['meta']);
-store.subscribe(renderDqlVenues, ['meta']);
 store.subscribe(renderSnippet, ['snapshot']);
 renderStatus(store.state);
-renderDqlVenues(store.state);
 store.start();
