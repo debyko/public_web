@@ -120,25 +120,6 @@ if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
 mountSlice($('#live-slice'), store, () => { location.href = '/arena/'; });
 $('#live-slice [data-slot="more"]').textContent = 'Full comparison →';
 
-// ── DQL demo: one condition, three jobs ─────────────────────────────────────────────────────
-
-document.querySelectorAll('[data-dql-tab]').forEach(tab => tab.addEventListener('click', () => {
-  document.querySelectorAll('[data-dql-tab]').forEach(t => {
-    const on = t === tab;
-    t.setAttribute('aria-selected', String(on));
-    t.setAttribute('aria-pressed', String(on));
-    document.getElementById('dql-pane-' + t.dataset.dqlTab).hidden = !on;
-  });
-}));
-document.querySelectorAll('[data-dql-raw]').forEach(btn => btn.addEventListener('click', () => {
-  const raw = btn.getAttribute('aria-pressed') !== 'true';
-  btn.setAttribute('aria-pressed', String(raw));
-  btn.textContent = raw ? 'table' : 'raw';
-  const cell = btn.closest('.cell');
-  cell.querySelector('[data-dql-view="table"]').hidden = raw;
-  cell.querySelector('[data-dql-view="raw"]').hidden = !raw;
-}));
-
 // ── Studio Pro: API snippet ─────────────────────────────────────────────────────────────────
 
 function renderSnippet(S) {
