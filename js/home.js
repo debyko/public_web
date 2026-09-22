@@ -2,7 +2,8 @@
 // Everything else live lives on its own page — /arena/, /data/coverage/, /data/status/.
 
 import { createStore, normaliseCoverage, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
-import { mountSlice, closeProvenance } from './live-market.js';
+import { closeProvenance } from './live-market.js';
+import { mountLiveV2 } from './live-v2.js';
 import { fmt, utcTime } from './format.js';
 import { filterHealthToCoverage } from './pages/shared.js';
 
@@ -116,9 +117,9 @@ if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
 
 // ── Live market slice ───────────────────────────────────────────────────────────────────────
 
-// The full comparison is Arena's; the slice's own link leads there rather than down the page.
-mountSlice($('#live-slice'), store, () => { location.href = '/arena/'; });
-$('#live-slice [data-slot="more"]').textContent = 'Full comparison →';
+// The hero reads the v2 platform (api.debyko.com), as the platform's /lab page does; the full
+// 16-venue comparison is still Arena's, on the v1 service.
+mountLiveV2($('#live-slice'), { onFullComparison: () => { location.href = '/arena/'; } });
 
 // ── For bot builders: the curl on the page, run live ────────────────────────────────────────
 
