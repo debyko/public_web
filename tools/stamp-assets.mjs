@@ -12,6 +12,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
+import { writeSitemap } from './sitemap.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
 
@@ -58,3 +59,6 @@ for (const page of pages) {
     console.log('stamped', relative(root, page));
   }
 }
+
+// The sitemap is part of the same "do not leave it stale" job as the ?v= hashes.
+writeSitemap();
