@@ -25,11 +25,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=7bd923bb75">
+  <link rel="stylesheet" href="css/site.css?v=5e359f0884">
   <!-- importmap:begin -->
-  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=495f6aaea6","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
+  <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=56304fb1bd","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
-  <script type="module" src="js/home.js?v=495f6aaea6"></script>
+  <script type="module" src="js/home.js?v=56304fb1bd"></script>
 </head>
 <body>
 
@@ -149,23 +149,21 @@
     <div class="split split--7-5 split--end">
       <div class="stack gap-18">
         <div class="row gap-10">
-          <span class="label label--accent">The core · Query language</span>
+          <span class="product-name">DQL · DEBYKO Query Language</span>
           <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
         </div>
-        <div class="product-name">DQL · DEBYKO Query Language</div>
-        <h2 class="h2 h2--core">Ask every venue the same question, and see which ones could answer.</h2>
-        <p class="prose">One condition, evaluated per instrument across every venue that lists it — funding, spread, open interest, depth within a price band, indicators over candles. Ask it now, or as of any past moment. The same query drives Studio screening, the API and Agent.</p>
+        <h2 class="h2 h2--core">One condition. Every venue. Now, or as of any moment you name.</h2>
+        <p class="prose">Ask every venue the same question, and see which ones could answer. Filter on funding, spread, open interest, depth within a price band, or indicators over candles. The same line screens in Studio, answers through the API and fires an Agent alert.</p>
         <p class="statement">A venue that did not answer is unknown, not false and not zero.</p>
-        <p class="prose">Studio screens with it. The API answers it. Agent watches it.</p>
       </div>
       <div class="stack gap-18">
         <ul class="ruled">
-          <li>any, all and count across venues. Never an average</li>
-          <li>Present, stale, missing, not published, switched off: five states, never merged</li>
-          <li>Point in time: as of an instant, from what was actually received by then</li>
-          <li>Select by instrument, asset, venue or the venue's own symbol</li>
-          <li>ema, rsi, atr, percentiles with fixed, published windows</li>
-          <li>Text for people, JSON for machines, one meaning</li>
+          <li><span id="dql-venues">Every perpetual venue we collect</span>, CEX and DEX, in one condition</li>
+          <li>any, all, count, max, min, sum across venues — never an average</li>
+          <li>as of any instant, from what had been received by then</li>
+          <li>Depth within a price band, from the full received book</li>
+          <li>ema, rsi, atr with published formulas and fixed windows — recompute our number from public candles</li>
+          <li>Text for people, JSON for agents, one meaning</li>
         </ul>
         <div class="row gap-10">
           <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
@@ -173,26 +171,93 @@
         <div class="meta">No buy, sell or signal anywhere in the language. It describes the market; what to do stays with you.</div>
       </div>
     </div>
-    <div class="workstation">
-      <div class="cell cell--left">
-        <div class="panel__head"><span class="label label--accent">Query</span><span class="meta-xs">DQL · draft syntax</span></div>
-        <pre class="snippet">count(venues where funding_8h &gt; 1bps) &gt;= 2
-  order by max(venues, funding_8h) desc
-  where base in (BTC, ETH, SOL)</pre>
-        <div class="panel__note">Instruments where at least two venues publish an 8-hour funding rate above one basis point, highest first. Add <code>as of 2026-09-21T09:30:00Z</code> and the same question is answered for that moment.</div>
+
+    <div class="stack gap-10 dql-demo">
+      <div class="segmented" role="tablist" aria-label="One condition, three jobs">
+        <button role="tab" id="dql-tab-now" aria-controls="dql-pane-now" aria-selected="true" aria-pressed="true" data-dql-tab="now">Now · Studio</button>
+        <button role="tab" id="dql-tab-asof" aria-controls="dql-pane-asof" aria-selected="false" aria-pressed="false" data-dql-tab="asof">As of · API</button>
+        <button role="tab" id="dql-tab-alert" aria-controls="dql-pane-alert" aria-selected="false" aria-pressed="false" data-dql-tab="alert">Alert · Agent</button>
       </div>
-      <div class="cell">
-        <div class="panel__head"><span class="label">Answer</span><span class="meta-xs">Illustrative values</span></div>
-        <pre class="snippet">"instrument": "ETH-PERP", "result": "true",
-"venues": [
-  { "venue": "HYPERLIQUID", "symbol": "ETH",
-    "funding_8h": { "value": 0.00024, "age_ms": 1180, "status": "present" } },
-  { "venue": "KRAKEN-FUTURES", "symbol": "PF_ETHUSD",
-    "funding_8h": { "value": 0.00013, "age_ms": 2410, "status": "present" } },
-  { "venue": "VENUE-C", "symbol": "ETHUSDT",
-    "funding_8h": { "value": 0.00031, "age_ms": 605000, "status": "stale" } } ]</pre>
-        <div class="panel__note">The stale venue is shown with its true age and is not counted: two venues qualify, not three. Every venue listing the instrument is in the answer, including the ones that could not answer.</div>
+      <div class="workstation" role="tabpanel" id="dql-pane-now" aria-labelledby="dql-tab-now">
+        <div class="cell cell--left">
+          <div class="panel__head"><span class="label label--accent">Query</span></div>
+          <pre class="snippet">count(venues where funding_8h &gt; 5bps and age(funding) &lt; 1m) &gt;= 3
+  order by max(venues where age(funding) &lt; 1m, funding_8h) desc</pre>
+        </div>
+        <div class="cell">
+          <div class="panel__head"><span class="label">ETH-PERP · true · 3 of 4 venues · top: HYPERLIQUID 7.2 bps</span><button class="text-btn text-btn--sm" data-dql-raw aria-pressed="false">raw</button></div>
+          <div data-dql-view="table"><div class="scroll-x"><table class="tbl dql-table"><thead><tr><th>Venue · symbol</th><th class="r">funding_8h</th><th class="r">Received · UTC</th><th class="r">Age</th><th>Status</th></tr></thead><tbody><tr><td class="td-venue">HYPERLIQUID <span class="td-sym">ETH</span></td><td class="td-num">7.2 bps</td><td class="td-mono r">09:30:03.912</td><td class="td-mono r">1.1 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr><tr><td class="td-venue">BINANCE-USDM <span class="td-sym">ETHUSDT</span></td><td class="td-num">6.1 bps</td><td class="td-mono r">09:30:03.204</td><td class="td-mono r">1.8 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr><tr><td class="td-venue">BYBIT-PERP <span class="td-sym">ETHUSDT</span></td><td class="td-num">5.8 bps</td><td class="td-mono r">09:30:04.018</td><td class="td-mono r">1.0 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr><tr class="is-stale"><td class="td-venue">OKX-PERP <span class="td-sym">ETH-USDT-SWAP</span></td><td class="td-num">9.4 bps</td><td class="td-mono r">09:20:00.310</td><td class="td-mono r">10 m 5 s</td><td><span class="ar-chip ar-chip--stale">stale</span> <span class="meta-xs">not counted</span></td></tr></tbody></table></div></div>
+          <pre class="snippet" data-dql-view="raw" hidden>{ &quot;instrument&quot;: &quot;ETH-PERP&quot;, &quot;result&quot;: &quot;true&quot;,
+  &quot;venues&quot;: [
+    { &quot;venue&quot;: &quot;HYPERLIQUID&quot;, &quot;symbol&quot;: &quot;ETH&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00072, &quot;received_at&quot;: &quot;2026-09-22T09:30:03.912Z&quot;,
+        &quot;age_ms&quot;: 1088, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;BINANCE-USDM&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00061, &quot;received_at&quot;: &quot;2026-09-22T09:30:03.204Z&quot;,
+        &quot;age_ms&quot;: 1796, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;BYBIT-PERP&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00058, &quot;received_at&quot;: &quot;2026-09-22T09:30:04.018Z&quot;,
+        &quot;age_ms&quot;: 982, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;OKX-PERP&quot;, &quot;symbol&quot;: &quot;ETH-USDT-SWAP&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00094, &quot;received_at&quot;: &quot;2026-09-22T09:20:00.310Z&quot;,
+        &quot;age_ms&quot;: 604690, &quot;status&quot;: &quot;stale&quot; } } } ] }</pre>
+          <div class="panel__note">Four venues list ETH-PERP. The freshest three qualify. The highest reading is ten minutes old, so it is shown with its age and counted for nothing — not in the count, not in the max.</div>
+        </div>
       </div>
+      <div class="workstation" role="tabpanel" id="dql-pane-asof" aria-labelledby="dql-tab-asof" hidden>
+        <div class="cell cell--left">
+          <div class="panel__head"><span class="label label--accent">Query · as of</span></div>
+          <pre class="snippet">count(venues where funding_8h &gt; 5bps and age(funding) &lt; 1m) &gt;= 3
+  order by max(venues where age(funding) &lt; 1m, funding_8h) desc
+  as of 2026-09-22T08:00:00Z</pre>
+        </div>
+        <div class="cell">
+          <div class="panel__head"><span class="label">ETH-PERP · true · 4 of 4 venues · top: OKX-PERP 8.7 bps</span><button class="text-btn text-btn--sm" data-dql-raw aria-pressed="false">raw</button></div>
+          <div data-dql-view="table"><div class="scroll-x"><table class="tbl dql-table"><thead><tr><th>Venue · symbol</th><th class="r">funding_8h</th><th class="r">Received · UTC</th><th class="r">Age</th><th>Status</th></tr></thead><tbody><tr><td class="td-venue">OKX-PERP <span class="td-sym">ETH-USDT-SWAP</span></td><td class="td-num">8.7 bps</td><td class="td-mono r">07:59:59.530</td><td class="td-mono r">0.5 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr><tr><td class="td-venue">HYPERLIQUID <span class="td-sym">ETH</span></td><td class="td-num">7.2 bps</td><td class="td-mono r">07:59:58.870</td><td class="td-mono r">1.1 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr><tr><td class="td-venue">BINANCE-USDM <span class="td-sym">ETHUSDT</span></td><td class="td-num">6.1 bps</td><td class="td-mono r">07:59:59.102</td><td class="td-mono r">0.9 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr><tr><td class="td-venue">BYBIT-PERP <span class="td-sym">ETHUSDT</span></td><td class="td-num">5.8 bps</td><td class="td-mono r">07:59:58.640</td><td class="td-mono r">1.4 s</td><td><span class="ar-chip ar-chip--live">present</span></td></tr></tbody></table></div></div>
+          <pre class="snippet" data-dql-view="raw" hidden>{ &quot;instrument&quot;: &quot;ETH-PERP&quot;, &quot;result&quot;: &quot;true&quot;,
+  &quot;venues&quot;: [
+    { &quot;venue&quot;: &quot;OKX-PERP&quot;, &quot;symbol&quot;: &quot;ETH-USDT-SWAP&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00087, &quot;received_at&quot;: &quot;2026-09-22T07:59:59.530Z&quot;,
+        &quot;age_ms&quot;: 470, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;HYPERLIQUID&quot;, &quot;symbol&quot;: &quot;ETH&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00072, &quot;received_at&quot;: &quot;2026-09-22T07:59:58.870Z&quot;,
+        &quot;age_ms&quot;: 1130, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;BINANCE-USDM&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00061, &quot;received_at&quot;: &quot;2026-09-22T07:59:59.102Z&quot;,
+        &quot;age_ms&quot;: 898, &quot;status&quot;: &quot;present&quot; } } },
+    { &quot;venue&quot;: &quot;BYBIT-PERP&quot;, &quot;symbol&quot;: &quot;ETHUSDT&quot;, &quot;values&quot;: { &quot;funding_8h&quot;:
+      { &quot;value&quot;: 0.00058, &quot;received_at&quot;: &quot;2026-09-22T07:59:58.640Z&quot;,
+        &quot;age_ms&quot;: 1360, &quot;status&quot;: &quot;present&quot; } } } ] }</pre>
+          <div class="panel__note">Built only from values received by 08:00:00.000. A reading that arrived at 08:00:00.4 is not in it. At that moment OKX-PERP was fresh, so it counts and leads.</div>
+        </div>
+      </div>
+      <div class="workstation" role="tabpanel" id="dql-pane-alert" aria-labelledby="dql-tab-alert" hidden>
+        <div class="cell cell--left">
+          <div class="panel__head"><span class="label label--accent">Agent rule</span><span class="meta-xs">Agent · planned</span></div>
+          <pre class="snippet">{
+  &quot;query&quot;: &quot;count(venues where funding_8h &gt; 5bps
+            and age(funding) &lt; 1m) &gt;= 3
+            order by max(venues where age(funding) &lt; 1m,
+                         funding_8h) desc&quot;,
+  &quot;cadence&quot;: &quot;1m&quot;,
+  &quot;tag&quot;: &quot;funding-3-venues-eth&quot;,
+  &quot;webhook_url&quot;: &quot;https://runner.example.com/hook&quot;
+}</pre>
+        </div>
+        <div class="cell">
+          <div class="panel__head"><span class="label">Webhook</span></div>
+          <pre class="snippet">POST https://runner.example.com/hook
+
+{ &quot;tag&quot;: &quot;funding-3-venues-eth&quot;,
+  &quot;instrument&quot;: &quot;ETH-PERP&quot;,
+  &quot;result&quot;: &quot;true&quot;,
+  &quot;evaluated_at&quot;: &quot;2026-09-22T09:30:05.112Z&quot;,
+  &quot;venues&quot;: [ …the same four venues, each with
+              value, received_at, age_ms, status… ] }</pre>
+          <div class="panel__note">When the condition becomes true for an instrument, Agent posts once, with your tag verbatim. The tag is never read.</div>
+        </div>
+      </div>
+      <div class="meta-xs">Draft syntax · illustrative values</div>
     </div>
   </div>
 </section>

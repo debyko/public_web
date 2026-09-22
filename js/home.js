@@ -1,7 +1,7 @@
 // Homepage wiring: navigation, dialogs, the hero's live slice, the API snippet and the status line.
 // Everything else live lives on its own page — /arena/, /data/coverage/, /data/status/.
 
-import { createStore, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
+import { createStore, normaliseCoverage, normaliseHealth, submitLead, LEAD_ADDRESS } from './api.js';
 import { mountSlice, closeProvenance } from './live-market.js';
 import { fmt, utcTime } from './format.js';
 import { filterHealthToCoverage } from './pages/shared.js';
@@ -120,6 +120,25 @@ if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
 mountSlice($('#live-slice'), store, () => { location.href = '/arena/'; });
 $('#live-slice [data-slot="more"]').textContent = 'Full comparison →';
 
+// ── DQL demo: one condition, three jobs ─────────────────────────────────────────────────────
+
+document.querySelectorAll('[data-dql-tab]').forEach(tab => tab.addEventListener('click', () => {
+  document.querySelectorAll('[data-dql-tab]').forEach(t => {
+    const on = t === tab;
+    t.setAttribute('aria-selected', String(on));
+    t.setAttribute('aria-pressed', String(on));
+    document.getElementById('dql-pane-' + t.dataset.dqlTab).hidden = !on;
+  });
+}));
+document.querySelectorAll('[data-dql-raw]').forEach(btn => btn.addEventListener('click', () => {
+  const raw = btn.getAttribute('aria-pressed') !== 'true';
+  btn.setAttribute('aria-pressed', String(raw));
+  btn.textContent = raw ? 'table' : 'raw';
+  const cell = btn.closest('.cell');
+  cell.querySelector('[data-dql-view="table"]').hidden = raw;
+  cell.querySelector('[data-dql-view="raw"]').hidden = !raw;
+}));
+
 // ── Studio Pro: API snippet ─────────────────────────────────────────────────────────────────
 
 function renderSnippet(S) {
@@ -148,7 +167,15 @@ function renderStatus(S) {
     + fmt(degraded, 0) + (degraded === 1 ? ' collector' : ' collectors') + ' degraded · updated ' + utcTime(S.health.at).slice(0, 5) + ' UTC';
 }
 
+// The venue count in the DQL list comes from /coverage (perp venues), never typed.
+function renderDqlVenues(S) {
+  const rows = S.cov ? normaliseCoverage(S.cov.data) : [];
+  if (rows.length) $('#dql-venues').textContent = fmt(rows.length, 0) + ' perpetual venues';
+}
+
 store.subscribe(renderStatus, ['meta']);
+store.subscribe(renderDqlVenues, ['meta']);
 store.subscribe(renderSnippet, ['snapshot']);
 renderStatus(store.state);
+renderDqlVenues(store.state);
 store.start();
