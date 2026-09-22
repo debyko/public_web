@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=a65f713cd8">
+  <link rel="stylesheet" href="css/site.css?v=eb583cbfe0">
   <!-- importmap:begin -->
   <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=a435a3d8bb","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/live-v2.js":"/js/live-v2.js?v=b8212d1018","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
@@ -154,7 +154,7 @@
       <h2 class="h2 h2--core">Stop coding the same market checks differently for every exchange.</h2>
       <p class="lead core-lead">Write the condition once. DQL handles the rest — across every venue.</p>
       <div class="row gap-10"><button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button></div>
-      <p class="core-price">€99 / month, DQL and API v2 included · monthly, no annual plan · <a href="https://cryptosmithx.blynai.eu/scalar/v1">API v1</a> free today, no key</p>
+      <p class="core-price">In every plan, from €0 · one key covers Studio, the API and Agent · monthly, no annual plan · <a href="https://cryptosmithx.blynai.eu/scalar/v1">API v1</a> free today, no key</p>
     </div>
 
     <div class="pipe" aria-label="One bot condition, from what you mean through DEBYKO to your bot">
@@ -303,7 +303,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
       <a class="btn" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View API v1 documentation</span></a>
     </div>
-    <p class="core-price core-price--light">€99 / month, DQL and API v2 included · monthly, no annual plan · <a href="https://cryptosmithx.blynai.eu/scalar/v1">API v1</a> free today, no key</p>
+    <p class="core-price core-price--light">In every plan, from €0 · one key covers Studio, the API and Agent · monthly, no annual plan · <a href="https://cryptosmithx.blynai.eu/scalar/v1">API v1</a> free today, no key</p>
   </div>
 </section>
 
@@ -395,13 +395,14 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         <li>Free: the live comparison, with an age on every figure</li>
         <li>Subscription: full history — candles, funding, open interest, trades, liquidations, order books</li>
         <li>Subscription: point-in-time replay</li>
-        <li>Subscription: DQL screening</li>
+        <li>DQL screening: ten queries a minute on Free, more on every paid plan</li>
         <li>Orders go to your own Runner, never through DEBYKO</li>
       </ul>
       <div class="price-grid">
         <span class="label">Free</span><span class="price-line__value">€0 · live now</span>
-        <span class="label">Individual</span><span class="price-line__value">€99 / month · pre-launch</span>
-        <span class="label">Team</span><span class="price-line__value">€399 / month · pre-launch</span>
+        <span class="label">Mini</span><span class="price-line__value">€9 / month · pre-launch</span>
+        <span class="label">Standard</span><span class="price-line__value">€29 / month · pre-launch</span>
+        <span class="label">Pro</span><span class="price-line__value">€79 / month · pre-launch</span>
       </div>
       <div class="row gap-10">
         <a class="btn btn--primary" href="/arena/"><span>Open live comparison</span></a>
@@ -675,24 +676,63 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
 
 <!-- 13 · Pricing -->
 <section id="pricing" class="section">
-  <div class="wrap split split--4-8 split--start">
-    <div class="stack gap-14">
-      <div class="label">Pricing</div>
-      <h2 class="h2">Monthly. No annual toggle, no discounts.</h2>
-      <p class="prose">Products that do not exist yet are listed as such.</p>
+  <div class="wrap stack gap-32">
+    <div class="split split--5-7 split--end">
+      <div class="stack gap-14">
+        <div class="label">Pricing</div>
+        <h2 class="h2">Monthly. No annual toggle, no discounts.</h2>
+      </div>
+      <p class="prose">One key covers Studio, the API and Agent. Whatever a plan includes in Studio, it includes in the API under the same key. Products that do not exist yet are listed as such.</p>
     </div>
-    <div class="stack">
-      <div class="pricing-row"><span class="offer__name">DQL</span><span class="offer__price" style="text-align:left">In the subscription, API v2 and Agent</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Studio · Free</span><span class="offer__price" style="text-align:left">€0</span><span class="pricing-row__status hide-narrow">Live</span><a class="btn btn--sm btn--full" href="/arena/"><span>Open live comparison</span></a></div>
-      <div class="pricing-row"><span class="offer__name">Studio · Individual</span><span class="offer__price" style="text-align:left">€99 / month</span><span class="pricing-row__status hide-narrow">Pre-launch</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Studio · Team</span><span class="offer__price" style="text-align:left">€399 / month</span><span class="pricing-row__status hide-narrow">Pre-launch</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
-      <div class="pricing-row"><span class="offer__name">API v1</span><span class="offer__price" style="text-align:left">€0 · no key yet</span><span class="pricing-row__status hide-narrow">Live · v2 in development</span><a class="btn btn--sm btn--full" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View documentation</span></a></div>
-      <div class="pricing-row"><span class="offer__name">Agent</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">Planned</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Runner</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Arena</span><span class="offer__price" style="text-align:left">By invitation</span><span class="pricing-row__status hide-narrow">Closed beta</span><button class="btn btn--sm btn--full" data-open="sales"><span>Request access</span></button></div>
-      <div class="pricing-row"><span class="offer__name">Sales-led engagements</span><span class="offer__price" style="text-align:left">Typical scope ranges</span><span class="pricing-row__status hide-narrow">Execution Evidence · services</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
-      <div class="rule-end"></div>
-      <div class="row gap-10" style="margin-top:18px"><button class="btn" data-scroll="plans"><span>Compare plans</span></button></div>
+
+    <!-- Paid CTAs read "Join the waitlist" until Paddle approves the live account; then they become "Start 7-day trial" and open checkout. -->
+    <div class="plan-cards">
+        <div class="plan-card">
+          <span class="plan-card__name">Free</span>
+          <span class="plan-card__price">€0</span>
+          <p class="plan-card__desc">Two venues, ten instruments each. Live comparison, seven days of history, one live stream. No card, no time limit.</p>
+          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Get a key</span></button></div>
+        </div>
+        <div class="plan-card">
+          <span class="plan-card__name">Mini</span>
+          <span class="plan-card__price">€9 / month</span>
+          <p class="plan-card__desc">Four venues, fifty instruments each, thirty days of history, two live streams, DQL screening.</p>
+          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+        </div>
+        <div class="plan-card">
+          <span class="plan-card__name">Standard</span>
+          <span class="plan-card__price">€29 / month</span>
+          <p class="plan-card__desc">Every venue, every instrument, one year of history, full order books, five live streams, CSV export.</p>
+          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+        </div>
+        <div class="plan-card">
+          <span class="plan-card__name">Pro</span>
+          <span class="plan-card__price">€79 / month</span>
+          <p class="plan-card__desc">Everything in Standard, all history, twenty live streams, higher limits for bots and screens.</p>
+          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+        </div>
+        <div class="plan-card">
+          <span class="plan-card__name">Team and enterprise</span>
+          <span class="plan-card__price">By scope</span>
+          <p class="plan-card__desc">Several keys under one account, dedicated capacity, retention and support terms agreed per engagement.</p>
+          <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+        </div>
+    </div>
+
+    <p class="prose prose--sm">Trials run seven days with a card on file and nothing charged until day eight; cancel before that and nothing is charged at all. Every plan renews monthly and can be cancelled at any time from your account — access runs to the end of the paid month. Checkout, invoices and VAT are handled by Paddle, our merchant of record; VAT is added at checkout where it applies. Refunds: see the <a href="/legal/refund/">refund policy</a>.</p>
+
+    <div class="stack gap-14">
+      <div class="label">Everything that is not a plan</div>
+      <div class="stack">
+        <div class="pricing-row"><span class="offer__name">DQL</span><span class="offer__price" style="text-align:left">In the subscription, API v2 and Agent</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+        <div class="pricing-row"><span class="offer__name">API v1</span><span class="offer__price" style="text-align:left">€0 · no key yet</span><span class="pricing-row__status hide-narrow">Live · v2 in development</span><a class="btn btn--sm btn--full" href="https://cryptosmithx.blynai.eu/scalar/v1"><span>View documentation</span></a></div>
+        <div class="pricing-row"><span class="offer__name">Agent</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">Planned</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+        <div class="pricing-row"><span class="offer__name">Runner</span><span class="offer__price" style="text-align:left">Not available yet</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
+        <div class="pricing-row"><span class="offer__name">Arena</span><span class="offer__price" style="text-align:left">By invitation</span><span class="pricing-row__status hide-narrow">Closed beta</span><button class="btn btn--sm btn--full" data-open="sales"><span>Request access</span></button></div>
+        <div class="pricing-row"><span class="offer__name">Execution Evidence and services</span><span class="offer__price" style="text-align:left">Typical scope ranges</span><span class="pricing-row__status hide-narrow">Contact sales</span><button class="btn btn--sm btn--full" data-open="sales"><span>Contact sales</span></button></div>
+        <div class="rule-end"></div>
+        <div class="row gap-10" style="margin-top:18px"><button class="btn" data-scroll="plans"><span>Compare plans</span></button></div>
+      </div>
     </div>
   </div>
 </section>
@@ -703,39 +743,51 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
     <div class="split split--5-7 split--end">
       <div class="stack gap-14">
         <div class="label">Compare plans</div>
-        <h2 class="h2">Studio is free to watch. The subscription adds history, replay and DQL.</h2>
+        <h2 class="h2">The same data on every plan. Plans differ in how much of it, and how fast.</h2>
       </div>
-      <p class="prose">Individual and Team carry the same data; they differ in who uses it. The subscription is pre-launch: the waitlist gets one email when it opens.</p>
+      <p class="prose">One key covers Studio, the API and Agent. Whatever a plan includes in Studio, it includes in the API under the same key.</p>
     </div>
     <div class="panel scroll-x">
-      <table class="plans">
+      <table class="plans plans--5">
         <thead>
           <tr>
             <th scope="col"><span class="label">Included</span></th>
-            <th scope="col"><span class="plans__name">Studio · Free</span><span class="plans__price">€0</span><span class="plans__for">Anyone · live now</span></th>
-            <th scope="col"><span class="plans__name">Studio · Individual</span><span class="plans__price">€99 / month</span><span class="plans__for">One person · pre-launch</span></th>
-            <th scope="col"><span class="plans__name">Studio · Team</span><span class="plans__price">€399 / month</span><span class="plans__for">A team · pre-launch</span></th>
+            <th scope="col"><span class="plans__name">Free</span><span class="plans__price">€0</span><span class="plans__for">Anyone · no card</span></th>
+            <th scope="col"><span class="plans__name">Mini</span><span class="plans__price">€9 / month</span><span class="plans__for">One person</span></th>
+            <th scope="col"><span class="plans__name">Standard</span><span class="plans__price">€29 / month</span><span class="plans__for">One person · every venue</span></th>
+            <th scope="col"><span class="plans__name">Pro</span><span class="plans__price">€79 / month</span><span class="plans__for">Bots and screens</span></th>
           </tr>
         </thead>
         <tbody>
-            <tr><th scope="row">Live venue comparison, with the age of every figure</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Coverage, collection status and methodology</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">API v1, open until keys ship</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Full history: candles, funding, open interest, trades, liquidations, order books</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Point-in-time replay</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">DQL screening</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Price per month</th><td><span class="plans__v">€0</span></td><td><span class="plans__v">€9</span></td><td><span class="plans__v">€29</span></td><td><span class="plans__v">€79</span></td></tr>
+            <tr><th scope="row">Venues</th><td><span class="plans__v">2</span></td><td><span class="plans__v">4</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
+            <tr><th scope="row">Instruments per venue</th><td><span class="plans__v">10</span><span class="plans__sub">top by volume</span></td><td><span class="plans__v">50</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
+            <tr><th scope="row">Live comparison, with the age of every figure</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">History back</th><td><span class="plans__v">7 days</span></td><td><span class="plans__v">30 days</span></td><td><span class="plans__v">1 year</span></td><td><span class="plans__v">all</span></td></tr>
+            <tr><th scope="row">Order book</th><td><span class="plans__v">top 5 levels</span></td><td><span class="plans__v">top 25</span></td><td><span class="plans__v">full</span></td><td><span class="plans__v">full</span></td></tr>
+            <tr><th scope="row">Point-in-time replay (<span class="mono">as of</span>)</th><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td></tr>
+            <tr><th scope="row">DQL screening</th><td><span class="plans__v">10 / min</span></td><td><span class="plans__v">60 / min</span></td><td><span class="plans__v">600 / min</span></td><td><span class="plans__v">unlimited</span></td></tr>
+            <tr><th scope="row">API requests per second</th><td><span class="plans__v">2</span></td><td><span class="plans__v">5</span></td><td><span class="plans__v">20</span></td><td><span class="plans__v">50</span></td></tr>
+            <tr><th scope="row">API requests per day</th><td><span class="plans__v">5,000</span></td><td><span class="plans__v">50,000</span></td><td><span class="plans__v">500,000</span></td><td><span class="plans__v">5,000,000</span></td></tr>
+            <tr><th scope="row">Live stream connections</th><td><span class="plans__v">1</span></td><td><span class="plans__v">2</span></td><td><span class="plans__v">5</span></td><td><span class="plans__v">20</span></td></tr>
+            <tr><th scope="row">CSV export</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Card required</th><td><span class="plans__v">no</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">trial</span></td></tr>
         </tbody>
         <tfoot>
           <tr>
             <th scope="row"></th>
-            <td><a class="btn btn--full" href="/arena/"><span>Open live comparison</span></a></td>
+            <td><button class="btn btn--full" data-open="wait"><span>Get a key</span></button></td>
+            <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
             <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
             <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
           </tr>
         </tfoot>
       </table>
     </div>
-    <div class="meta">Monthly prices; no annual plan, no discounts. Checkout comes once billing exists.</div>
+    <div class="stack gap-10">
+      <p class="prose prose--sm">Which two venues and ten instruments are in Free is published on <a href="/data/coverage/">Coverage</a> and recomputed daily from traded volume; the list can change, and the change is dated there.</p>
+      <div class="meta">Monthly prices, VAT added at checkout where it applies. No annual plan, no discounts. Checkout comes once billing exists.</div>
+    </div>
   </div>
 </section>
 
@@ -770,7 +822,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="#evidence">Execution Evidence</a><a href="#services">Data &amp; Research</a><a href="#services">Venues &amp; Platforms</a><a href="#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="/legal/privacy/">Privacy</a><a href="/legal/terms/">Terms</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="/legal/privacy/">Privacy</a><a href="/legal/terms/">Terms</a><a href="/legal/refund/">Refund</a></div>
     </div>
     <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
   </div>

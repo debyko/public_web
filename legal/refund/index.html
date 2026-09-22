@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Data status — collector health per venue | DEBYKO</title>
-  <meta name="description" content="Collector state per venue: last success and its age, consecutive failures, the last error, and the instruments whose latest snapshot is stale.">
-  <link rel="canonical" href="https://debyko.com/data/status/">
+  <title>Refund policy | DEBYKO</title>
+  <meta name="description" content="What is refunded, what is not, and how to ask. Trials, first payments, renewals and one-off engagements.">
+  <link rel="canonical" href="https://debyko.com/legal/refund/">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://debyko.com/data/status/">
-  <meta property="og:title" content="DEBYKO Data status — collector health, per venue">
-  <meta property="og:description" content="Data quality as public system state: per venue, per collector, with ages. No single green badge.">
+  <meta property="og:url" content="https://debyko.com/legal/refund/">
+  <meta property="og:title" content="DEBYKO — Refund policy">
+  <meta property="og:description" content="What is refunded, what is not, and how to ask.">
   <meta property="og:image" content="https://debyko.com/og/debyko-og-1200x630.png?v=2">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="DEBYKO — Crypto market data, with the evidence attached. Every value keeps its source, timestamp and age.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DEBYKO Data status — collector health, per venue">
+  <meta name="twitter:title" content="DEBYKO — Refund policy">
   <meta name="twitter:description" content="Every value keeps its source, its time and its age.">
   <meta name="twitter:image" content="https://debyko.com/og/debyko-og-1200x630.png?v=2">
   <link rel="icon" href="../../assets/logo-mark.svg" type="image/svg+xml">
@@ -31,7 +31,6 @@
   <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=a435a3d8bb","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/live-v2.js":"/js/live-v2.js?v=b8212d1018","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
   <script defer src="../../js/nav.js?v=43d80b9eea"></script>
-  <script type="module" src="../../js/pages/status.js?v=afb1780d53"></script>
 </head>
 <body>
 
@@ -42,10 +41,12 @@
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Products</button>
         <div class="nav__menu" hidden>
-          <a href="../../arena/">Arena <span class="nav-tag">live</span></a>
-          <a href="../../#studio-pro">Studio Pro <span class="nav-tag">live</span></a>
-          <a href="../../#trader">Studio Trader <span class="nav-tag">in development</span></a>
-          <a href="../../#agent">Agent <span class="nav-tag">prototype</span></a>
+          <a href="../../#dql">DQL <span class="nav-tag">the core</span></a>
+          <a href="../../#studio">Studio <span class="nav-tag">free · live</span></a>
+          <a href="../../#api">API <span class="nav-tag">v1 live</span></a>
+          <a href="../../#agent">Agent <span class="nav-tag">planned</span></a>
+          <a href="../../#runner">Runner <span class="nav-tag">in development</span></a>
+          <a href="../../#arena">Arena <span class="nav-tag">closed beta</span></a>
         </div>
       </div>
       <div class="nav__item">
@@ -86,7 +87,7 @@
     <button class="menu-btn" aria-expanded="false">Menu</button>
   </div>
   <div class="mobile-nav" hidden>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader</a><a href="../../#agent">Agent</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../#dql">DQL</a><a href="../../#studio">Studio</a><a href="../../#api">API</a><a href="../../#agent">Agent</a><a href="../../#runner">Runner</a><a href="../../#arena">Arena</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
@@ -100,79 +101,52 @@
 <main id="top">
 
 <section class="section page-head">
-  <div class="wrap wrap--wide stack gap-22">
-    <div class="page-head__meta"><span class="eyebrow">Data · status</span><span class="label">Refreshes every 30 s · UTC</span></div>
+  <div class="wrap stack gap-22">
+    <div class="page-head__meta"><span class="eyebrow">Legal · refunds</span><span class="label">Published 2026-09-22 · last change 2026-09-22</span><span class="label legal-links"><a href="/legal/terms/">Terms</a><span aria-hidden="true">·</span><a href="/legal/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/legal/refund/" class="is-current" aria-current="page">Refunds</a></span></div>
     <div class="split split--7-5 split--end">
       <div class="stack gap-18">
-        <h1 class="h1">Data quality is public system state.</h1>
-        <p class="lead">Per venue and per collector, with the age of every figure. Overall state is shown as the service states it, beside the counts it summarises.</p>
+        <h1 class="h1">Refunds.</h1>
+        <p class="lead">What is refunded, what is not, and how to ask. This page changes only by a dated entry in the list at the end.</p>
       </div>
-      <p class="prose">There is no single "all systems operational" badge. A failing collector on one venue is shown as exactly that, next to the venues that are collecting normally.</p>
-    </div>
-    <div class="panel">
-      <div class="panel__head panel__head--roomy">
-        <span class="label label--accent">Overall · GET /v1/health</span>
-        <span class="meta-xs" id="status-tag">Time of the last response, printed from the response</span>
-      </div>
-      <div class="row gap-10" id="status-overall" style="padding:10px 14px">Requesting</div>
-      <div class="facts" id="status-counts"></div>
-      <div class="panel__note">Only venues listed by the coverage response are shown; internal service segments in the health response are hidden.</div>
+      <p class="prose">Questions: <a href="mailto:billing@debyko.com">billing@debyko.com</a>.</p>
     </div>
   </div>
 </section>
 
 <section class="section">
-  <div class="wrap wrap--wide stack gap-26">
-    <div class="split split--5-7 split--end">
-      <div class="stack gap-14">
-        <div class="label">Collectors</div>
-        <h2 class="h2">One row per venue. Open it for one row per collector.</h2>
-      </div>
-      <p class="prose">A venue collects through several collectors — snapshot, depth, funding, candles, trades, liquidations — and they fail independently. The venue row carries the worst state among them; the rows inside carry their own.</p>
-    </div>
-    <div class="panel">
-      <div class="panel__head">
-        <span class="label label--accent">Collectors · per venue · GET /v1/health</span>
-        <span class="meta-xs">Expandable rows · ages beside every timestamp</span>
-      </div>
-      <div class="scroll-x"><table class="tbl tbl--roomy min-900">
-        <thead><tr><th class="l">Venue</th><th>Collector state</th><th class="r">Last success · age</th><th class="r">Consecutive failures</th><th>Last error · age</th><th class="r">Instruments stale</th></tr></thead>
-        <tbody id="status-collector-rows"><tr><td colspan="6" style="padding:14px">Requesting</td></tr></tbody>
-      </table></div>
-      <div class="panel__note">Error text is shortened. No stack trace and no internal address is shown. Status is never colour alone — every chip carries its word.</div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap wrap--wide stack gap-26">
-    <div class="split split--5-7 split--end">
-      <div class="stack gap-14">
-        <div class="label">Stale instruments</div>
-        <h2 class="h2">Instruments whose latest snapshot is old.</h2>
-      </div>
-      <p class="prose">An instrument no longer collected still has a stored row. It is listed here with the age of its latest snapshot, and it appears in Arena as STALE — never as a live price.</p>
-    </div>
-    <div class="panel">
-      <div class="panel__head"><span class="label label--accent">Stale · from the same response</span><span class="meta-xs">Grouped by venue · symbols as the venue spells them</span></div>
-      <div id="status-stale" style="padding:14px">Requesting</div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap wrap--wide split split--1-1">
-    <div class="closing">
-      <span class="label">Coverage</span>
-      <h2 class="h2 h2--small">The record behind the present state.</h2>
-      <p class="prose prose--sm">What each venue collects, since when, and the hours nothing was observed.</p>
-      <div><a class="btn" href="../coverage/"><span>See coverage</span></a></div>
-    </div>
-    <div class="closing">
-      <span class="label">Methodology</span>
-      <h2 class="h2 h2--small">How age and state are computed.</h2>
-      <p class="prose prose--sm">Thresholds per call group, and what LIVE, DELAYED and STALE mean.</p>
-      <div><a class="btn" href="../methodology/#thresholds"><span>Read the methodology</span></a></div>
+  <div class="wrap">
+    <div class="article">
+      <section id="trials">
+        <h2><span class="article__n">01</span>Trials <a class="anchor" href="#trials" aria-label="Link to this section">#</a></h2>
+        <p>A paid plan starts with a seven-day trial. A card is taken at the start and nothing is charged before day eight. Cancel before day eight and nothing is charged at all — there is nothing to refund.</p>
+      </section>
+      <section id="first">
+        <h2><span class="article__n">02</span>The first payment <a class="anchor" href="#first" aria-label="Link to this section">#</a></h2>
+        <p>If the first charge of a subscription does not suit you, ask within fourteen days of it and it is refunded in full, without questions. This is at least what consumer law in the EU gives you and applies whether or not you used the service in those fourteen days.</p>
+      </section>
+      <section id="renewals">
+        <h2><span class="article__n">03</span>Renewals <a class="anchor" href="#renewals" aria-label="Link to this section">#</a></h2>
+        <p>Monthly renewals are not refunded. You can cancel at any time from your account; the plan stays active to the end of the paid month and is not charged again. If a renewal went through because you forgot to cancel, write within seven days of it and we will look at it — we usually refund an unused month once.</p>
+      </section>
+      <section id="services">
+        <h2><span class="article__n">04</span>Services <a class="anchor" href="#services" aria-label="Link to this section">#</a></h2>
+        <p>One-off engagements — Execution Evidence, datasets, connectors, research — are governed by the written scope agreed for each, not by this page.</p>
+      </section>
+      <section id="how">
+        <h2><span class="article__n">05</span>How to ask, and how it arrives <a class="anchor" href="#how" aria-label="Link to this section">#</a></h2>
+        <p>Write to <a href="mailto:billing@debyko.com">billing@debyko.com</a> from the account’s email address, or reply to the Paddle receipt. Refunds are issued by Paddle, our merchant of record, to the payment method used; they usually appear within five to ten business days depending on your bank.</p>
+      </section>
+      <section id="exceptions">
+        <h2><span class="article__n">06</span>Exceptions <a class="anchor" href="#exceptions" aria-label="Link to this section">#</a></h2>
+        <p>No refund is made for a plan terminated for use against the <a href="/legal/terms/">terms</a>, or for charges older than the periods above.</p>
+      </section>
+      <section id="updates">
+        <h2><span class="article__n">—</span>Changes to this page <a class="anchor" href="#updates" aria-label="Link to this section">#</a></h2>
+        <ul class="ruled ruled--dated">
+          <li><span class="date">2026-09-22</span><span>First publication of this page.</span></li>
+        </ul>
+        <p>Each later change is added here with its date.</p>
+      </section>
     </div>
   </div>
 </section>
@@ -186,7 +160,7 @@
         <p class="credit">Built by Denisas Bykovas.</p>
         <p class="credit credit--legal">Operated under licence by <a class="credit__brand" href="https://blynai.eu"><svg class="credit__mark credit__mark--blynai" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/><circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/></svg><span>MB „Blyn<i>AI</i>“</span></a> · Vilnius, Lithuania · <a href="https://blynai.eu">blynai.eu</a></p>
       </div>
-      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../../#agent">Agent <span class="nav-tag">prototype</span></a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../#dql">DQL</a><a href="../../#studio">Studio</a><a href="../../#api">API</a><a href="../../#agent">Agent <span class="nav-tag">planned</span></a><a href="../../#runner">Runner</a><a href="../../#arena">Arena <span class="nav-tag">beta</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a><a href="../../#services">Venues &amp; Platforms</a><a href="../../#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>

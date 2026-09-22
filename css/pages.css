@@ -69,3 +69,9 @@ tr.is-detail > td:first-child { padding-left: 34px; }
   .anchor { opacity: 1; }
   .ruled--dated > li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
+
+.legal-links { display: inline-flex; align-items: center; gap: 8px; }
+.legal-links a { color: var(--dk-text-muted); text-decoration: none; }
+.legal-links a:hover { color: var(--dk-text-accent); }
+.legal-links a.is-current { color: var(--dk-text-primary); }
+.legal-links span { color: var(--dk-text-faint); }

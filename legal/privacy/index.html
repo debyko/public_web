@@ -25,8 +25,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="../../css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="../../css/site.css?v=a65f713cd8">
-  <link rel="stylesheet" href="../../css/pages.css?v=146a23b92a">
+  <link rel="stylesheet" href="../../css/site.css?v=eb583cbfe0">
+  <link rel="stylesheet" href="../../css/pages.css?v=0cccc2f60a">
   <!-- importmap:begin -->
   <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=a435a3d8bb","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/live-v2.js":"/js/live-v2.js?v=b8212d1018","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
@@ -41,10 +41,12 @@
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Products</button>
         <div class="nav__menu" hidden>
-          <a href="../../arena/">Arena <span class="nav-tag">live</span></a>
-          <a href="../../#studio-pro">Studio Pro <span class="nav-tag">live</span></a>
-          <a href="../../#trader">Studio Trader <span class="nav-tag">in development</span></a>
-          <a href="../../#agent">Agent <span class="nav-tag">prototype</span></a>
+          <a href="../../#dql">DQL <span class="nav-tag">the core</span></a>
+          <a href="../../#studio">Studio <span class="nav-tag">free · live</span></a>
+          <a href="../../#api">API <span class="nav-tag">v1 live</span></a>
+          <a href="../../#agent">Agent <span class="nav-tag">planned</span></a>
+          <a href="../../#runner">Runner <span class="nav-tag">in development</span></a>
+          <a href="../../#arena">Arena <span class="nav-tag">closed beta</span></a>
         </div>
       </div>
       <div class="nav__item">
@@ -85,7 +87,7 @@
     <button class="menu-btn" aria-expanded="false">Menu</button>
   </div>
   <div class="mobile-nav" hidden>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader</a><a href="../../#agent">Agent</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="../../#dql">DQL</a><a href="../../#studio">Studio</a><a href="../../#api">API</a><a href="../../#agent">Agent</a><a href="../../#runner">Runner</a><a href="../../#arena">Arena</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="../../#pricing">Pricing</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
@@ -100,11 +102,11 @@
 
 <section class="section page-head">
   <div class="wrap stack gap-22">
-    <div class="page-head__meta"><span class="eyebrow">Legal · privacy</span><span class="label">Published 2026-09-18 · last change 2026-09-18</span></div>
+    <div class="page-head__meta"><span class="eyebrow">Legal · privacy</span><span class="label">Published 2026-09-18 · last change 2026-09-22</span><span class="label legal-links"><a href="/legal/terms/">Terms</a><span aria-hidden="true">·</span><a href="/legal/privacy/" class="is-current" aria-current="page">Privacy</a><span aria-hidden="true">·</span><a href="/legal/refund/">Refunds</a></span></div>
     <div class="split split--7-5 split--end">
       <div class="stack gap-18">
         <h1 class="h1">What this site collects, and what it does not.</h1>
-        <p class="lead">No cookies, no analytics, no tracking scripts. Personal data reaches us only when you send a form or write to us. This page names every party that sees a request from your browser, and changes only by a dated entry in the list at the end.</p>
+        <p class="lead">No cookies for visitors, no analytics, no tracking scripts. Personal data reaches us when you send a form, write to us, open an account or subscribe. This page names every party that sees a request from your browser and everything an account stores, and changes only by a dated entry in the list at the end.</p>
       </div>
       <p class="prose">Requests about your data, including deletion: <a href="mailto:hello@debyko.com">hello@debyko.com</a>.</p>
     </div>
@@ -123,6 +125,9 @@
         <p><b>Just by visiting: nothing.</b> The site sets no cookies, stores nothing in your browser, and runs no analytics or tracking scripts.</p>
         <p><b>When you send a form:</b> the Contact sales and Join the waitlist forms send what you type — your email address, and for a sales request the organisation, the engagement and the venues, instruments and period; for the waitlist the product you are interested in — to a function on this site, which passes it on by email to hello@debyko.com through Mailjet. The notification also carries your IP address and country, so that abuse can be recognised; they are not stored anywhere else. To limit abuse the function counts requests per IP address in Cloudflare’s key-value store; each count expires by itself after ten minutes.</p>
         <p><b>When you write to us directly:</b> the Subscribe buttons, and the address shown if a form cannot send, open your own email app. What you send is your email address, your name if your email app includes it, and what you write.</p>
+        <p><b>When you open an account:</b> your email address and the time the account was opened. Signing in works by a link sent to that address; the link is valid for fifteen minutes and is stored as a hash until then. The account keeps, for each API key, its first twelve characters and a hash of the rest — never the key itself — plus the plan, the dates it was issued, expires or was revoked, and a label you give it. A session cookie is set only after you sign in, only on your account pages, and only to keep you signed in.</p>
+        <p><b>When you use a key:</b> the API counts requests per key, per hour and per endpoint class, and the seconds a live stream stayed open. These counts enforce your plan’s limits and are the basis of usage shown in your account. The API does not keep a per-request log tied to your key. Your IP address is used only for short-lived rate counts that expire within an hour.</p>
+        <p><b>When you subscribe:</b> the checkout is Paddle’s. We receive from Paddle your name, email address, country, the plan, the subscription’s status and dates, and the identifiers Paddle uses for the subscription and its invoices. We never receive your card number.</p>
         <p><b>At the providers the pages use:</b> the technical data of each request your browser makes — IP address, time, requested address and browser details — as described in section 04.</p>
       </section>
       <section id="why">
@@ -131,6 +136,8 @@
           <li>A sales request is used to answer it and to prepare a scope — steps taken at your request before a contract (GDPR Art. 6(1)(b)).</li>
           <li>A waitlist address is used for one message when the chosen product opens — your consent (Art. 6(1)(a)), which you can withdraw at any time by writing to us.</li>
           <li>Request data at the hosting and delivery providers is processed to deliver the pages and keep them secure — legitimate interest (Art. 6(1)(f)).</li>
+          <li>Account, key and usage data are processed to provide the service you signed up for and enforce its limits — performance of a contract (Art. 6(1)(b)).</li>
+          <li>Subscription and invoice records are kept because accounting law requires it — a legal obligation (Art. 6(1)(c)).</li>
         </ul>
         <p>Nothing is sold, and nothing is shared for advertising.</p>
       </section>
@@ -142,6 +149,9 @@
           <li><b>The market-data API</b> at cryptosmithx.blynai.eu, operated by MB „Blynai“, answers the pages’ requests for figures. It keeps no access log of visitors. If a request fails with a server error, a technical error report without your IP address is sent to Sentry (Functional Software, Inc., EU region).</li>
           <li><b>Mailjet</b> (Sinch, EU) delivers the Contact sales and waitlist forms to hello@debyko.com: the form’s content, your email address as the reply-to, and your IP address and country. If a delivery fails, Mailjet’s error message is written to the function’s log at Cloudflare.</li>
           <li><b>Apple</b> hosts the hello@debyko.com mailbox (iCloud Mail); messages you send us, and the form notifications, are stored there.</li>
+          <li><b>Paddle.com Market Ltd</b> (Paddle) handles checkout, payment, tax and invoicing as our merchant of record. For the payment itself Paddle is an independent controller under its own privacy notice; it sends us the subscription data listed in section 02.</li>
+          <li><b>Mailjet</b> (Sinch, EU) also delivers sign-in links and subscription emails.</li>
+          <li><b>The account and API</b> at api.debyko.com and studio.debyko.com, operated by MB „Blynai“ on infrastructure rented from Microsoft (Azure, EU region), store account, key and usage data as described in section 02.</li>
         </ul>
         <p>Cloudflare, Google and Apple may process data outside the European Economic Area under their own safeguards for such transfers.</p>
       </section>
@@ -152,6 +162,10 @@
           <li>A sales request and the correspondence that follows: for as long as the conversation or the engagement lasts, and afterwards only as long as the law requires records to be kept.</li>
           <li>Your IP address in the form’s request count: ten minutes, in Cloudflare’s key-value store, then it expires.</li>
           <li>Request data at Cloudflare and Google, and delivery records at Mailjet: for the periods those providers set.</li>
+          <li>Account, key and plan data: for as long as the account exists, then deleted within thirty days of closure.</li>
+          <li>Usage counts per key: twelve months, then deleted.</li>
+          <li>Subscription and invoice records received from Paddle: for as long as accounting law requires, currently ten years.</li>
+          <li>Sign-in link hashes: fifteen minutes, then deleted; session cookie: until you sign out or thirty days.</li>
         </ul>
       </section>
       <section id="rights">
@@ -163,6 +177,7 @@
         <ul class="ruled ruled--dated">
           <li><span class="date">2026-09-18</span><span>First publication of this page.</span></li>
           <li><span class="date">2026-09-18</span><span>The Contact sales and waitlist forms send through a function on this site and Mailjet instead of opening your email app; Mailjet added as a processor, with the IP address and country the notification carries. The request count per IP address is kept in Cloudflare’s key-value store for ten minutes.</span></li>
+          <li><span class="date">2026-09-22</span><span>Accounts, API keys, usage counts and subscriptions added; Paddle added as merchant of record; Microsoft Azure added as hosting for the account and API; Mailjet now also delivers sign-in links; the session cookie set after sign-in described.</span></li>
         </ul>
         <p>Each later change is added here with its date.</p>
       </section>
@@ -179,11 +194,11 @@
         <p class="credit">Built by Denisas Bykovas.</p>
         <p class="credit credit--legal">Operated under licence by <a class="credit__brand" href="https://blynai.eu"><svg class="credit__mark credit__mark--blynai" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/><circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/></svg><span>MB „Blyn<i>AI</i>“</span></a> · Vilnius, Lithuania · <a href="https://blynai.eu">blynai.eu</a></p>
       </div>
-      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../arena/">Arena</a><a href="../../#studio-pro">Studio Pro</a><a href="../../#trader">Studio Trader <span class="nav-tag">soon</span></a><a href="../../#agent">Agent <span class="nav-tag">prototype</span></a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="../../#dql">DQL</a><a href="../../#studio">Studio</a><a href="../../#api">API</a><a href="../../#agent">Agent <span class="nav-tag">planned</span></a><a href="../../#runner">Runner</a><a href="../../#arena">Arena <span class="nav-tag">beta</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="../../#evidence">Execution Evidence</a><a href="../../#services">Data &amp; Research</a><a href="../../#services">Venues &amp; Platforms</a><a href="../../#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="../../data/coverage/">Coverage</a><a href="../../data/methodology/">Methodology</a><a href="../../data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="../../?open=sales">Contact Sales</a><a href="../../?open=wait">Join the Waitlist</a></div>
-      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="/legal/privacy/">Privacy</a><a href="/legal/terms/">Terms</a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Legal</span><a href="/legal/privacy/">Privacy</a><a href="/legal/terms/">Terms</a><a href="/legal/refund/">Refund</a></div>
     </div>
     <div class="site-footer__bottom"><span>© 2026 Denisas Bykovas</span><span>debyko.com · Times are UTC</span></div>
   </div>
