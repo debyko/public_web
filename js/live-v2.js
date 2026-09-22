@@ -56,6 +56,11 @@ function figure(col, v, unit, dp) {
     + (unit ? `<span class="fig__unit">${unit}</span>` : '');
 }
 const ageText = s => s == null ? '—' : s < 10 ? s.toFixed(1) + ' s' : Math.round(s) + ' s';
+// The age column moves for the same reason the figures did: "0.4 s" and "1.1 s" and "12 s" are not
+// the same width, and neither are LIVE and DELAYED, so the status word walked left and right on
+// every poll. Both get a box as wide as the widest they have shown.
+let ageW = 6;
+const STATUS_W = Math.max(...Object.values(WORD).map(w => w.length));
 const since = ms => ms < 90_000 ? Math.round(ms / 1000) + ' s' : Math.round(ms / 60_000) + ' min';
 
 // Kraken publishes funding as an absolute amount and as a relative rate; Hyperliquid as a rate. Both
@@ -191,7 +196,9 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
       const at = seenAt.get(tr.dataset.key);
       const age = at == null ? null : Math.max(0, (now - at) / 1000);
       const kind = kindOf(age);
-      setCell(tr, 'age', `<span class="ar-chip ar-chip--${kind === 'missing' ? 'stale' : kind}"><span class="ar-chip__val">${ageText(age)}</span>${WORD[kind]}</span>`,
+      const text = ageText(age);
+      ageW = Math.max(ageW, text.length);
+      setCell(tr, 'age', `<span class="ar-chip ar-chip--${kind === 'missing' ? 'stale' : kind}"><span class="ar-chip__val" style="min-width:${ageW}ch;text-align:right">${text}</span><span class="ar-chip__word" style="min-width:${STATUS_W}ch">${WORD[kind]}</span></span>`,
         age == null ? 'No ticker received for this listing yet' : 'Age since DEBYKO received the ticker · transport ' + (rows.get(tr.dataset.key)?.transport || '—'));
     }
     if (lastOk) {

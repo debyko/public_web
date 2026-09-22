@@ -416,6 +416,7 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .num { display: inline-flex; align-items: baseline; }
 .num__i { font-style: normal; text-align: right; }
 .num__f { font-style: normal; text-align: left; }
+.ar-chip__word { display: inline-block; text-align: left; }
 /* Fixed unit widths in characters of the unit's own font, left-aligned, so numbers share a right edge. */
 .fig__unit.u3, .arena-table .unit.u3 { display: inline-block; width: 3ch; text-align: left; }
 .fig__unit.u5, .arena-table .unit.u5 { display: inline-block; width: 5ch; text-align: left; }
