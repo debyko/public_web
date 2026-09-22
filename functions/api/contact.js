@@ -21,7 +21,7 @@ const ENGAGEMENTS = [
   // Offered before the 2026-09 product lineup; still accepted from pages cached before it.
   'Studio Pro access', 'Agent early access'
 ];
-const PRODUCTS = ['Studio subscription', 'Agent', 'Runner', 'All three', 'Studio Trader', 'Both'];
+const PRODUCTS = ['DQL', 'Studio subscription', 'Agent', 'Runner', 'All of them', 'Studio Trader', 'Both'];
 
 const LIMIT = 5;
 const WINDOW_MS = 10 * 60 * 1000;

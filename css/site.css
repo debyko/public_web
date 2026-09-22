@@ -18,6 +18,11 @@ svg { display: block; }
 .section { border-top: 1px solid var(--dk-border-hairline); padding: 88px 0; }
 .section--hero { border-top: 0; padding: 72px 0 64px; }
 .section--panel { background: var(--dk-surface-panel); }
+/* DQL is the product's core: the one full-width dark band on the page, like the OG card. */
+.section--core { background: var(--dk-surface-page); color: var(--dk-text-primary); border-top: 0; }
+.section--core + .section { border-top: 0; }
+.h2--core { font-size: 40px; line-height: 1.08; }
+@media (max-width: 720px) { .h2--core { font-size: 30px; } }
 
 .stack { display: flex; flex-direction: column; min-width: 0; }
 .gap-6 { gap: 6px; } .gap-8 { gap: 8px; } .gap-10 { gap: 10px; } .gap-14 { gap: 14px; }

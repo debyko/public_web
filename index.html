@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=56ed90d467">
-  <link rel="stylesheet" href="css/site.css?v=eb175ed6f9">
+  <link rel="stylesheet" href="css/site.css?v=7bd923bb75">
   <!-- importmap:begin -->
   <script type="importmap">{"imports":{"/js/api.js":"/js/api.js?v=64e58cdeaa","/js/arena-chart.js":"/js/arena-chart.js?v=cb82a9a31e","/js/format.js":"/js/format.js?v=5560141319","/js/home.js":"/js/home.js?v=495f6aaea6","/js/live-market.js":"/js/live-market.js?v=8bc75a96d9","/js/nav.js":"/js/nav.js?v=43d80b9eea","/js/pages/arena.js":"/js/pages/arena.js?v=38b1213083","/js/pages/coverage.js":"/js/pages/coverage.js?v=ead319db4c","/js/pages/methodology.js":"/js/pages/methodology.js?v=f4b739825e","/js/pages/shared.js":"/js/pages/shared.js?v=767b56feb7","/js/pages/status.js":"/js/pages/status.js?v=afb1780d53","/js/vendor/lightweight-charts-5.2.1.js":"/js/vendor/lightweight-charts-5.2.1.js?v=92b1a4d749"}}</script>
   <!-- importmap:end -->
@@ -47,9 +47,9 @@
       <div class="nav__item">
         <button class="nav__trigger" aria-expanded="false">Products</button>
         <div class="nav__menu" hidden>
+          <a href="#dql">DQL <span class="nav-tag">the core</span></a>
           <a href="#studio">Studio <span class="nav-tag">free · live</span></a>
           <a href="#api">API <span class="nav-tag">v1 live</span></a>
-          <a href="#dql">DQL <span class="nav-tag">in development</span></a>
           <a href="#agent">Agent <span class="nav-tag">planned</span></a>
           <a href="#runner">Runner <span class="nav-tag">in development</span></a>
           <a href="#arena">Arena <span class="nav-tag">closed beta</span></a>
@@ -93,7 +93,7 @@
     <button class="menu-btn" aria-expanded="false">Menu</button>
   </div>
   <div class="mobile-nav" hidden>
-    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="#studio" data-scroll="studio">Studio</a><a href="#api" data-scroll="api">API</a><a href="#dql" data-scroll="dql">DQL</a><a href="#agent" data-scroll="agent">Agent</a><a href="#runner" data-scroll="runner">Runner</a><a href="#arena" data-scroll="arena">Arena</a></div>
+    <div class="mobile-nav__group"><div class="mobile-nav__title">Products</div><a href="#dql" data-scroll="dql">DQL</a><a href="#studio" data-scroll="studio">Studio</a><a href="#api" data-scroll="api">API</a><a href="#agent" data-scroll="agent">Agent</a><a href="#runner" data-scroll="runner">Runner</a><a href="#arena" data-scroll="arena">Arena</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Solutions</div><a href="#evidence" data-scroll="evidence">Execution Evidence</a><a href="#services" data-scroll="services">Data &amp; Research</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Data</div><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Data Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
     <div class="mobile-nav__group"><div class="mobile-nav__title">Company</div><a href="#pricing" data-scroll="pricing">Pricing</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
@@ -113,13 +113,13 @@
       <div class="stack gap-22">
         <div class="eyebrow">Verifiable crypto market infrastructure</div>
         <h1 class="h1">Crypto market data, with the evidence attached.</h1>
-        <p class="lead">See one instrument on every venue that quotes it, query the market in DQL, get told when a condition becomes true, and place orders through a Runner on your own infrastructure — without hiding the source, age or absence of the underlying data.</p>
+        <p class="lead">Ask every venue the same question in DQL, see one instrument on every venue side by side, get told when a condition becomes true, and place orders through a Runner on your own infrastructure — without hiding the source, age or absence of the underlying data.</p>
         <div class="row gap-10" style="margin-top:4px">
           <a class="btn btn--primary" href="/arena/"><span>Explore live data</span></a>
-          <button class="btn" data-scroll="products"><span>Explore products</span></button>
+          <button class="btn" data-scroll="dql"><span>See DQL</span></button>
           <button class="text-btn" data-open="sales">Contact sales</button>
         </div>
-        <button class="link-btn" data-open="wait">Join the waitlist for the Studio subscription, Agent and Runner</button>
+        <button class="link-btn" data-open="wait">Join the waitlist for DQL, the Studio subscription, Agent and Runner</button>
       </div>
       <div id="live-slice" style="min-width:0;align-self:stretch"></div>
     </div>
@@ -139,6 +139,60 @@
     <div class="row gap-10">
       <a class="btn btn--primary" href="/arena/"><span>Open live comparison</span></a>
       <a class="btn" href="/data/methodology/"><span>View methodology</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- 2b · DQL — the core -->
+<section id="dql" class="section section--core" data-theme="dark">
+  <div class="wrap stack gap-48">
+    <div class="split split--7-5 split--end">
+      <div class="stack gap-18">
+        <div class="row gap-10">
+          <span class="label label--accent">The core · Query language</span>
+          <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
+        </div>
+        <div class="product-name">DQL · DEBYKO Query Language</div>
+        <h2 class="h2 h2--core">Ask every venue the same question, and see which ones could answer.</h2>
+        <p class="prose">One condition, evaluated per instrument across every venue that lists it — funding, spread, open interest, depth within a price band, indicators over candles. Ask it now, or as of any past moment. The same query drives Studio screening, the API and Agent.</p>
+        <p class="statement">A venue that did not answer is unknown, not false and not zero.</p>
+        <p class="prose">Studio screens with it. The API answers it. Agent watches it.</p>
+      </div>
+      <div class="stack gap-18">
+        <ul class="ruled">
+          <li>any, all and count across venues. Never an average</li>
+          <li>Present, stale, missing, not published, switched off: five states, never merged</li>
+          <li>Point in time: as of an instant, from what was actually received by then</li>
+          <li>Select by instrument, asset, venue or the venue's own symbol</li>
+          <li>ema, rsi, atr, percentiles with fixed, published windows</li>
+          <li>Text for people, JSON for machines, one meaning</li>
+        </ul>
+        <div class="row gap-10">
+          <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
+        </div>
+        <div class="meta">No buy, sell or signal anywhere in the language. It describes the market; what to do stays with you.</div>
+      </div>
+    </div>
+    <div class="workstation">
+      <div class="cell cell--left">
+        <div class="panel__head"><span class="label label--accent">Query</span><span class="meta-xs">DQL · draft syntax</span></div>
+        <pre class="snippet">count(venues where funding_8h &gt; 1bps) &gt;= 2
+  order by max(venues, funding_8h) desc
+  where base in (BTC, ETH, SOL)</pre>
+        <div class="panel__note">Instruments where at least two venues publish an 8-hour funding rate above one basis point, highest first. Add <code>as of 2026-09-21T09:30:00Z</code> and the same question is answered for that moment.</div>
+      </div>
+      <div class="cell">
+        <div class="panel__head"><span class="label">Answer</span><span class="meta-xs">Illustrative values</span></div>
+        <pre class="snippet">"instrument": "ETH-PERP", "result": "true",
+"venues": [
+  { "venue": "HYPERLIQUID", "symbol": "ETH",
+    "funding_8h": { "value": 0.00024, "age_ms": 1180, "status": "present" } },
+  { "venue": "KRAKEN-FUTURES", "symbol": "PF_ETHUSD",
+    "funding_8h": { "value": 0.00013, "age_ms": 2410, "status": "present" } },
+  { "venue": "VENUE-C", "symbol": "ETHUSDT",
+    "funding_8h": { "value": 0.00031, "age_ms": 605000, "status": "stale" } } ]</pre>
+        <div class="panel__note">The stale venue is shown with its true age and is not counted: two venues qualify, not three. Every venue listing the instrument is in the answer, including the ones that could not answer.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -277,63 +331,12 @@
   </div>
 </section>
 
-<!-- 6 · DQL -->
-<section id="dql" class="section">
-  <div class="wrap stack gap-48">
-    <div class="split split--7-5 split--end">
-      <div class="stack gap-18">
-        <div class="row gap-10">
-          <span class="label">03 / Query language</span>
-          <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
-        </div>
-        <div class="product-name">DQL · DEBYKO Query Language</div>
-        <h2 class="h2">Ask every venue the same question, and see which ones could answer.</h2>
-        <p class="prose">One condition, evaluated per instrument across every venue that lists it — funding, spread, open interest, depth within a price band, indicators over candles. Ask it now, or as of any past moment. The same query drives Studio screening, the API and Agent.</p>
-        <p class="statement">A venue that did not answer is unknown, not false and not zero.</p>
-      </div>
-      <div class="stack gap-18">
-        <ul class="ruled">
-          <li>any, all and count across venues. Never an average</li>
-          <li>Present, stale, missing, not published, switched off: five states, never merged</li>
-          <li>Point in time: as of an instant, from what was actually received by then</li>
-          <li>Text for people, JSON for machines, one meaning</li>
-        </ul>
-        <div class="row gap-10">
-          <button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button>
-        </div>
-        <div class="meta">No buy, sell or signal anywhere in the language. It describes the market; what to do stays with you.</div>
-      </div>
-    </div>
-    <div class="workstation">
-      <div class="cell cell--left">
-        <div class="panel__head"><span class="label label--accent">Query</span><span class="meta-xs">DQL · draft syntax</span></div>
-        <pre class="snippet">count(venues where funding_8h &gt; 1bps) &gt;= 2
-  order by max(venues, funding_8h) desc
-  where base in (BTC, ETH, SOL)</pre>
-        <div class="panel__note">Instruments where at least two venues publish an 8-hour funding rate above one basis point, highest first. Add <code>as of 2026-09-21T09:30:00Z</code> and the same question is answered for that moment.</div>
-      </div>
-      <div class="cell">
-        <div class="panel__head"><span class="label">Answer</span><span class="meta-xs">Illustrative values</span></div>
-        <pre class="snippet">"instrument": "ETH-PERP", "result": "true",
-"venues": [
-  { "venue": "HYPERLIQUID", "symbol": "ETH",
-    "funding_8h": { "value": 0.00024, "age_ms": 1180, "status": "present" } },
-  { "venue": "KRAKEN-FUTURES", "symbol": "PF_ETHUSD",
-    "funding_8h": { "value": 0.00013, "age_ms": 2410, "status": "present" } },
-  { "venue": "VENUE-C", "symbol": "ETHUSDT",
-    "funding_8h": { "value": 0.00031, "age_ms": 605000, "status": "stale" } } ]</pre>
-        <div class="panel__note">The stale venue is shown with its true age and is not counted: two venues qualify, not three. Every venue listing the instrument is in the answer, including the ones that could not answer.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 7 · Agent -->
+<!-- 6 · Agent -->
 <section id="agent" class="section">
   <div class="wrap split split--5-7 split--center">
     <div class="stack gap-18">
       <div class="row gap-10">
-        <span class="label">04 / Alerts</span>
+        <span class="label">03 / Alerts</span>
         <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>Planned</span></span>
       </div>
       <div class="product-name">Agent</div>
@@ -359,7 +362,7 @@
   </div>
 </section>
 
-<!-- 8 · Runner -->
+<!-- 7 · Runner -->
 <section id="runner" class="section">
   <div class="wrap split split--6-6 split--center">
     <div id="trader" class="dark-panel" data-theme="dark">
@@ -388,7 +391,7 @@
     </div>
     <div class="stack gap-18">
       <div class="row gap-10">
-        <span class="label">05 / Execution</span>
+        <span class="label">04 / Execution</span>
         <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>In development</span></span>
       </div>
       <div class="product-name">Runner</div>
@@ -409,12 +412,12 @@
   </div>
 </section>
 
-<!-- 9 · Arena -->
+<!-- 8 · Arena -->
 <section id="arena" class="section">
   <div class="wrap split split--7-5 split--end">
     <div class="stack gap-18">
       <div class="row gap-10">
-        <span class="label">06 / Agent board</span>
+        <span class="label">05 / Agent board</span>
         <span class="status-chip status-chip--sm"><svg class="icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg><span>Closed beta</span></span>
       </div>
       <div class="product-name">Arena</div>
@@ -430,7 +433,7 @@
   </div>
 </section>
 
-<!-- 10 · Execution evidence -->
+<!-- 9 · Execution evidence -->
 <section id="evidence" class="section section--panel">
   <div class="wrap stack gap-48">
     <div class="split split--6-6 split--end">
@@ -485,7 +488,7 @@
   </div>
 </section>
 
-<!-- 11 · Services -->
+<!-- 10 · Services -->
 <section id="services" class="section">
   <div class="wrap split split--4-8 split--start">
     <div class="stack gap-14">
@@ -504,7 +507,7 @@
   </div>
 </section>
 
-<!-- 12 · Methodology -->
+<!-- 11 · Methodology -->
 <section id="method" class="section section--panel">
   <div class="wrap stack gap-48">
     <div class="split split--5-7 split--end">
@@ -536,7 +539,7 @@
   </div>
 </section>
 
-<!-- 13 · Status -->
+<!-- 12 · Status -->
 <section id="status" class="section">
   <div class="wrap stack gap-32">
     <div class="split split--5-7 split--end">
@@ -559,7 +562,7 @@
   </div>
 </section>
 
-<!-- 14 · Pricing -->
+<!-- 13 · Pricing -->
 <section id="pricing" class="section">
   <div class="wrap split split--4-8 split--start">
     <div class="stack gap-14">
@@ -568,6 +571,7 @@
       <p class="prose">Products that do not exist yet are listed as such.</p>
     </div>
     <div class="stack">
+      <div class="pricing-row"><span class="offer__name">DQL</span><span class="offer__price" style="text-align:left">In the subscription, API v2 and Agent</span><span class="pricing-row__status hide-narrow">In development</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
       <div class="pricing-row"><span class="offer__name">Studio · Free</span><span class="offer__price" style="text-align:left">€0</span><span class="pricing-row__status hide-narrow">Live</span><a class="btn btn--sm btn--full" href="/arena/"><span>Open live comparison</span></a></div>
       <div class="pricing-row"><span class="offer__name">Studio · Individual</span><span class="offer__price" style="text-align:left">€99 / month</span><span class="pricing-row__status hide-narrow">Pre-launch</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
       <div class="pricing-row"><span class="offer__name">Studio · Team</span><span class="offer__price" style="text-align:left">€399 / month</span><span class="pricing-row__status hide-narrow">Pre-launch</span><button class="btn btn--sm btn--full" data-open="wait"><span>Join the waitlist</span></button></div>
@@ -582,7 +586,7 @@
   </div>
 </section>
 
-<!-- 14b · Compare plans (temporary, until a pricing page exists) -->
+<!-- 13b · Compare plans (temporary, until a pricing page exists) -->
 <section id="plans" class="section">
   <div class="wrap stack gap-32">
     <div class="split split--5-7 split--end">
@@ -624,12 +628,12 @@
   </div>
 </section>
 
-<!-- 15 · Closing -->
+<!-- 14 · Closing -->
 <section class="section section--panel">
   <div class="wrap split split--1-1">
     <div class="closing">
       <span class="label">Product interest</span>
-      <h2 class="h2 h2--small">Join the waitlist for the Studio subscription, Agent and Runner.</h2>
+      <h2 class="h2 h2--small">Join the waitlist for DQL, the Studio subscription, Agent and Runner.</h2>
       <p class="prose prose--sm">One address, one product of interest. Nothing else is asked.</p>
       <div><button class="btn btn--primary" data-open="wait"><span>Join the waitlist</span></button></div>
     </div>
@@ -651,7 +655,7 @@
         <p class="credit">Built by Denisas Bykovas.</p>
         <p class="credit credit--legal">Operated under licence by <a class="credit__brand" href="https://blynai.eu"><svg class="credit__mark credit__mark--blynai" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M16.5 9 L8.5 20 L16.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.5 9 L31.5 20 L23.5 31" stroke="#DE1A8C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17.5" r="2.1" fill="#EE2F72"/><circle cx="23" cy="17.5" r="2.1" fill="#B8129F"/><circle cx="17" cy="22.5" r="2.1" fill="#B8129F"/><circle cx="23" cy="22.5" r="2.1" fill="#EE2F72"/></svg><span>MB „Blyn<i>AI</i>“</span></a> · Vilnius, Lithuania · <a href="https://blynai.eu">blynai.eu</a></p>
       </div>
-      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="#studio">Studio</a><a href="#api">API</a><a href="#dql">DQL</a><a href="#agent">Agent <span class="nav-tag">planned</span></a><a href="#runner">Runner</a><a href="#arena">Arena <span class="nav-tag">beta</span></a></div>
+      <div class="site-footer__col"><span class="site-footer__title">Products</span><a href="#dql">DQL</a><a href="#studio">Studio</a><a href="#api">API</a><a href="#agent">Agent <span class="nav-tag">planned</span></a><a href="#runner">Runner</a><a href="#arena">Arena <span class="nav-tag">beta</span></a></div>
       <div class="site-footer__col"><span class="site-footer__title">Solutions</span><a href="#evidence">Execution Evidence</a><a href="#services">Data &amp; Research</a><a href="#services">Venues &amp; Platforms</a><a href="#agent">Trading &amp; Automation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Data</span><a href="/data/coverage/">Coverage</a><a href="/data/methodology/">Methodology</a><a href="/data/status/">Status</a><a href="https://cryptosmithx.blynai.eu/scalar/v1">API Documentation</a></div>
       <div class="site-footer__col"><span class="site-footer__title">Company</span><a href="#company">About</a><a href="?open=sales" data-open="sales">Contact Sales</a><a href="?open=wait" data-open="wait">Join the Waitlist</a></div>
@@ -668,9 +672,9 @@
       <button type="button" class="dialog__close" data-close aria-label="Close"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
     <div class="dialog__body">
       <div class="stack gap-14" data-part="form">
-        <p>The Studio subscription is pre-launch, Runner is in development and Agent is planned. The address is used for one message when the chosen product opens. No account is created.</p>
+        <p>DQL and Runner are in development, the Studio subscription is pre-launch and Agent is planned. The address is used for one message when the chosen product opens. No account is created.</p>
         <label class="field"><span class="field__label">Email</span><span class="field__box"><input type="email" name="email" placeholder="name@company.com" required></span></label>
-        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>Studio subscription</option><option>Agent</option><option>Runner</option><option>All three</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <label class="field"><span class="field__label">Product of interest</span><span class="field__box field__box--select"><select name="product"><option>DQL</option><option>Studio subscription</option><option>Agent</option><option>Runner</option><option>All of them</option></select><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
         <p class="form-error" data-part="error" role="alert" hidden></p>
         <span class="meta">Your address is used for one message when the chosen product opens, and for nothing else.</span>
