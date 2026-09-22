@@ -691,6 +691,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
           <span class="plan-card__name">Free</span>
           <span class="plan-card__price">€0</span>
           <p class="plan-card__desc">Two venues, ten instruments each. Live comparison, seven days of history, one live stream. No card, no time limit.</p>
+          <!-- TODO(get-a-key): "Get a key" opens the waitlist dialog because no key-issuing sign-up exists yet. Build the Free-plan sign-up that issues an API key (one key covers Studio, the API and Agent), then point this button at it instead of data-open="wait". Both "Get a key" buttons (plan card and compare-table footer) change together. -->
           <div class="plan-card__cta"><button class="btn btn--sm btn--full" data-open="wait"><span>Get a key</span></button></div>
         </div>
         <div class="plan-card">
@@ -776,6 +777,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         <tfoot>
           <tr>
             <th scope="row"></th>
+            <!-- TODO(get-a-key): "Get a key" opens the waitlist dialog because no key-issuing sign-up exists yet. Build the Free-plan sign-up that issues an API key (one key covers Studio, the API and Agent), then point this button at it instead of data-open="wait". Both "Get a key" buttons (plan card and compare-table footer) change together. -->
             <td><button class="btn btn--full" data-open="wait"><span>Get a key</span></button></td>
             <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
             <td><button class="btn btn--primary btn--full" data-open="wait"><span>Join the waitlist</span></button></td>
