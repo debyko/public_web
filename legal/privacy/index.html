@@ -11,12 +11,12 @@
   <!-- End Google Tag Manager -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Privacy | DEBYKO</title>
-  <meta name="description" content="What debyko.com collects and what it does not: no cookies, no analytics; who else sees a request; retention and your rights.">
+  <meta name="description" content="What debyko.com collects and what it does not: analytics only if you accept the banner; who else sees a request; retention and your rights.">
   <link rel="canonical" href="https://debyko.com/legal/privacy/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://debyko.com/legal/privacy/">
   <meta property="og:title" content="DEBYKO — Privacy">
-  <meta property="og:description" content="No cookies, no analytics. What reaches us, who else sees a request, and how long anything is kept.">
+  <meta property="og:description" content="Analytics only if you accept. What reaches us, who else sees a request, and how long anything is kept.">
   <meta property="og:image" content="https://debyko.com/og/debyko-og-1200x630.png?v=2">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
@@ -117,7 +117,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="split split--7-5 split--end">
       <div class="stack gap-18">
         <h1 class="h1">What this site collects, and what it does not.</h1>
-        <p class="lead">With your consent we collect some usage data with Google Analytics; without your consent, no cookies and no tracking scripts. Personal data reaches us when you send a form, write to us, open an account or subscribe. This page names every party that sees a request from your browser and everything an account stores, and changes only by a dated entry in the list at the end.</p>
+        <p class="lead">Visiting asks you one question: a banner offers analytics, and its own cookie remembers whichever way you answer. Google Analytics runs only if you accept, and sets its own cookies; decline and nothing is measured. Personal data reaches us when you send a form, write to us, open an account or subscribe. This page names every party that sees a request from your browser and everything an account stores, and changes only by a dated entry in the list at the end.</p>
       </div>
       <p class="prose">Requests about your data, including deletion: <a href="mailto:hello@debyko.com">hello@debyko.com</a>.</p>
     </div>
@@ -133,7 +133,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </section>
       <section id="collected">
         <h2><span class="article__n">02</span>What is collected <a class="anchor" href="#collected" aria-label="Link to this section">#</a></h2>
-        <p><b>Just by visiting:</b> with your consent we collect some usage data with Google Analytics, which sets cookies in your browser and sends the visit to Google. Without your consent the site sets no cookies, stores nothing in your browser, and runs no tracking scripts.</p>
+        <p><b>When you visit:</b> every page loads Google Tag Manager, which delivers the consent banner and, once you allow it, the analytics. Loading it tells Google your IP address and browser details, as fetching anything from another site does.</p>
+        <p>The banner is CookieHub. It stores your answer in a cookie in your browser — set whether you accept or decline, so the site stops asking — and you can change the answer at any time from the banner’s link in the footer.</p>
+        <p><b>If you accept analytics:</b> Google Analytics 4 sets its own cookies and sends Google the visit — the pages you open, the page that sent you, your device and browser, and a location derived from your IP address. We see it as counts and trends, never a name. <b>If you decline:</b> no analytics cookie is set, nothing is sent to Analytics, and the site works the same.</p>
         <p><b>When you send a form:</b> the Contact sales and Join the waitlist forms send what you type — your email address, and for a sales request the organisation, the engagement and the venues, instruments and period; for the waitlist the product you are interested in — to a function on this site, which passes it on by email to hello@debyko.com through Mailjet. The notification also carries your IP address and country, so that abuse can be recognised; they are not stored anywhere else. To limit abuse the function counts requests per IP address in Cloudflare’s key-value store; each count expires by itself after ten minutes.</p>
         <p><b>When you write to us directly:</b> the Subscribe buttons, and the address shown if a form cannot send, open your own email app. What you send is your email address, your name if your email app includes it, and what you write.</p>
         <p><b>When you open an account:</b> your email address and the time the account was opened. Signing in works by a link sent to that address; the link is valid for fifteen minutes and is stored as a hash until then. The account keeps, for each API key, its first twelve characters and a hash of the rest — never the key itself — plus the plan, the dates it was issued, expires or was revoked, and a label you give it. A session cookie is set only after you sign in, only on your account pages, and only to keep you signed in.</p>
@@ -156,7 +158,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h2><span class="article__n">04</span>Who else sees a request <a class="anchor" href="#processors" aria-label="Link to this section">#</a></h2>
         <ul class="ruled">
           <li><b>Cloudflare, Inc.</b> hosts debyko.com (Cloudflare Pages), runs the function that sends the forms, and sits in front of the market-data API. It processes the technical data of every request, and receives network-error reports from browsers that support them, under its own retention rules.</li>
-          <li><b>Google</b> serves the two typefaces the pages use (Google Fonts). When your browser fetches them it sends Google its IP address and browser details.</li>
+          <li><b>Google</b> serves the two typefaces the pages use (Google Fonts) and delivers Google Tag Manager on every page. When your browser fetches either, it sends Google its IP address and browser details. If you accept analytics, Google Analytics 4 also receives the visit described in section 02.</li>
+          <li><b>CookieHub</b> (CookieHub ehf, Iceland) shows the consent banner and records your answer. Its script is delivered through Google Tag Manager.</li>
           <li><b>The market-data API</b> at cryptosmithx.blynai.eu, operated by MB „Blynai“, answers the pages’ requests for figures. It keeps no access log of visitors. If a request fails with a server error, a technical error report without your IP address is sent to Sentry (Functional Software, Inc., EU region).</li>
           <li><b>Mailjet</b> (Sinch, EU) delivers the Contact sales and waitlist forms to hello@debyko.com: the form’s content, your email address as the reply-to, and your IP address and country. If a delivery fails, Mailjet’s error message is written to the function’s log at Cloudflare.</li>
           <li><b>Apple</b> hosts the hello@debyko.com mailbox (iCloud Mail); messages you send us, and the form notifications, are stored there.</li>
@@ -173,6 +176,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li>A sales request and the correspondence that follows: for as long as the conversation or the engagement lasts, and afterwards only as long as the law requires records to be kept.</li>
           <li>Your IP address in the form’s request count: ten minutes, in Cloudflare’s key-value store, then it expires.</li>
           <li>Request data at Cloudflare and Google, and delivery records at Mailjet: for the periods those providers set.</li>
+          <li>Your answer to the banner, in CookieHub’s cookie: for the period CookieHub sets it, or until you change the answer.</li>
+          <li>Analytics cookies in your browser and the visit data at Google: for the periods Google sets and the retention chosen in the Analytics property.</li>
           <li>Account, key and plan data: for as long as the account exists, then deleted within thirty days of closure.</li>
           <li>Usage counts per key: twelve months, then deleted.</li>
           <li>Subscription and invoice records received from Paddle: for as long as accounting law requires, currently ten years.</li>
@@ -189,6 +194,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li><span class="date">2026-09-18</span><span>First publication of this page.</span></li>
           <li><span class="date">2026-09-18</span><span>The Contact sales and waitlist forms send through a function on this site and Mailjet instead of opening your email app; Mailjet added as a processor, with the IP address and country the notification carries. The request count per IP address is kept in Cloudflare’s key-value store for ten minutes.</span></li>
           <li><span class="date">2026-09-22</span><span>Accounts, API keys, usage counts and subscriptions added; Paddle added as merchant of record; Microsoft Azure added as hosting for the account and API; Mailjet now also delivers sign-in links; the session cookie set after sign-in described.</span></li>
+          <li><span class="date">2026-09-24</span><span>Google Tag Manager added on every page; the CookieHub banner added, with the cookie that records your answer; Google Analytics 4 added, running only if you accept. Sections 02, 04 and 05 describe all three.</span></li>
         </ul>
         <p>Each later change is added here with its date.</p>
       </section>
