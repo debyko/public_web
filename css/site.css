@@ -605,10 +605,14 @@ a.credit__brand:hover { opacity: .65; }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 .site-footer { border-top: 1px solid var(--dk-border-strong); padding: 48px 0 32px; }
-.site-footer__cols { display: grid; grid-template-columns: minmax(0, 2fr) repeat(5, minmax(0, 1fr)); gap: 32px; }
+.site-footer__cols { display: grid; grid-template-columns: minmax(0, 2fr) repeat(6, minmax(0, 1fr)); gap: 32px; }
 .site-footer__col { display: flex; flex-direction: column; gap: 8px; }
 .site-footer__title { font: 600 10px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-faint); padding-bottom: 6px; }
 .site-footer__col a { font: 400 13px/1.4 var(--dk-font-text); color: var(--dk-text-primary); display: flex; gap: 8px; align-items: baseline; }
+/* Social links carry a mark; it sits with the word, not on its baseline. */
+.site-footer__col--socials a { align-items: center; gap: 7px; }
+.social-icon { width: 14px; height: 14px; flex: none; opacity: .75; }
+.site-footer__col--socials a:hover .social-icon { opacity: 1; }
 .site-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; border-top: 1px solid var(--dk-border-hairline); padding-top: 18px; font: 400 11px/1.5 var(--dk-font-mono); color: var(--dk-text-faint); }
 
 /* ── Live market: slice, full comparison, arena ─────────────────────────── */
