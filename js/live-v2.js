@@ -19,9 +19,22 @@ const HERO_MARKETS = 3;
 // Quote currencies compare like for like; these two lead, the rest follow alphabetically.
 const QUOTE_ORDER = ['USDT', 'USD'];
 
-// Ticker freshness: the DQL default bound for the ticker layer is 30 s. LIVE is kept far tighter
-// here because this panel exists to show what live means.
-const kindOf = age => age == null ? 'missing' : age < 2 ? 'live' : age < 30 ? 'delayed' : 'stale';
+// Ticker freshness, judged against the call's own expected cadence — which is what the copy under this
+// panel promises, and what a fixed threshold cannot deliver. A WebSocket venue pushes on change and has
+// no interval: two seconds is already slow, so it keeps the tight bound. A venue polled over REST every
+// 15 s is eleven seconds old most of the time and completely healthy; calling that DELAYED made every
+// REST venue permanently delayed by construction, which is how the panel looked on 2026-09-25 with six
+// venues wrongly flagged.
+//
+// cadence is the venue's declared ticker interval in seconds (snapshot.tickerCadenceSeconds), null for a
+// live feed. One interval of slack: a poll that lands late is late, not stale. Beyond two intervals the
+// venue has genuinely missed one.
+const LIVE_PUSH_S = 2;
+const kindOf = (age, cadence) => {
+  if (age == null) return 'missing';
+  const live = cadence == null ? LIVE_PUSH_S : cadence + LIVE_PUSH_S;
+  return age < live ? 'live' : age < live * 2 ? 'delayed' : 'stale';
+};
 const WORD = { live: 'LIVE', delayed: 'DELAYED', stale: 'STALE', missing: 'MISSING' };
 
 const priceFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 });
@@ -268,16 +281,25 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     }
   }
 
+  // Says what the row is judged against, so a DELAYED chip can be checked rather than believed.
+  function ageTitle(age, row) {
+    const cadence = row?.tickerCadenceSeconds ?? null;
+    const transport = row?.transport || '—';
+    return cadence == null
+      ? `Age since DEBYKO received the ticker · transport ${transport} · pushed on change`
+      : `Age since DEBYKO received the ticker · transport ${transport} · polled every ${cadence} s`;
+  }
+
   function paintAges() {
     const now = Date.now();
     for (const tr of body.querySelectorAll('tr[data-key]')) {
       const at = seenAt.get(tr.dataset.key);
       const age = at == null ? null : Math.max(0, (now - at) / 1000);
-      const kind = kindOf(age);
+      const kind = kindOf(age, rows.get(tr.dataset.key)?.tickerCadenceSeconds ?? null);
       const text = ageText(age);
       ageW = Math.max(ageW, text.length);
       setCell(tr, 'age', `<span class="ar-chip ar-chip--${kind === 'missing' ? 'stale' : kind}"><span class="ar-chip__val" style="min-width:${slot(ageW, 0.04)};text-align:right">${text}</span><span class="ar-chip__word" style="min-width:${slot(STATUS_W, 0.14)}">${WORD[kind]}</span></span>`,
-        age == null ? 'No ticker received for this listing yet' : 'Age since DEBYKO received the ticker · transport ' + (rows.get(tr.dataset.key)?.transport || '—'));
+        age == null ? 'No ticker received for this listing yet' : ageTitle(age, rows.get(tr.dataset.key)));
     }
     if (lastOk) {
       const parts = [failed ? `No answer · last response ${since(now - lastOk)} ago` : `api.debyko.com · response ${((now - lastOk) / 1000).toFixed(1)} s ago`];
