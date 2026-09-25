@@ -16,6 +16,8 @@ export const V2_BASE = 'https://api.debyko.com';
 const POLL_MS = 500;
 const REGISTRY_MS = 5 * 60 * 1000;
 const HERO_MARKETS = 3;
+// Quote currencies compare like for like; these two lead, the rest follow alphabetically.
+const QUOTE_ORDER = ['USDT', 'USD'];
 
 // Ticker freshness: the DQL default bound for the ticker layer is 30 s. LIVE is kept far tighter
 // here because this panel exists to show what live means.
@@ -162,14 +164,29 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     const market = heroMarkets(registry).find(m => m.code === selected);
     const tbody = body.querySelector('[data-slot="rows"]');
     if (!market || !tbody) return;
-    tbody.innerHTML = market.listings.map(l =>
-      `<tr data-key="${esc(l.segment)}/${esc(l.symbol)}"><td class="venue-cell">${esc(l.segment.toUpperCase())}<small>${esc(l.symbol)}${l.quote ? ' · ' + esc(l.quote) : ''}</small></td>` +
-      `<td><div class="fig-pair"><span class="fig" data-f="bid">—</span><span class="fig" data-f="ask">—</span></div></td>` +
-      `<td><span class="fig" data-f="spread">—</span></td><td><span class="fig" data-f="mark">—</span></td>` +
-      `<td><span class="fig" data-f="funding">—</span></td><td><span class="fig fig--chip" data-f="age">—</span></td></tr>`).join('');
+    // Prices in different quote currencies are different numbers, so the rows sit in bands by
+    // quote and nothing is compared across a band.
+    const rank = q => { const i = QUOTE_ORDER.indexOf(q); return i < 0 ? QUOTE_ORDER.length : i; };
+    const groups = new Map();
+    for (const l of market.listings) {
+      const q = l.quote || '—';
+      if (!groups.has(q)) groups.set(q, []);
+      groups.get(q).push(l);
+    }
+    const quotes = [...groups.keys()].sort((x, y) => rank(x) - rank(y) || x.localeCompare(y));
+    tbody.innerHTML = quotes.map(q => {
+      const ls = groups.get(q).sort((x, y) => x.segment.localeCompare(y.segment));
+      return `<tr class="lm-group"><td colspan="6"><span class="label label--accent">Quoted in ${esc(q)} · ${ls.length} ${ls.length === 1 ? 'venue' : 'venues'}</span></td></tr>` + rowsHtml(ls);
+    }).join('');
     paintValues();
     paintAges();
   }
+
+  const rowsHtml = listings => listings.map(l =>
+    `<tr data-key="${esc(l.segment)}/${esc(l.symbol)}" data-quote="${esc(l.quote || '—')}"><td class="venue-cell">${esc(l.segment.toUpperCase())}<small>${esc(l.symbol)}${l.quote ? ' · ' + esc(l.quote) : ''}</small></td>` +
+    `<td><div class="fig-pair"><span class="fig" data-f="bid">—</span><span class="fig" data-f="ask">—</span></div></td>` +
+    `<td><span class="fig" data-f="spread">—</span></td><td><span class="fig" data-f="mark">—</span></td>` +
+    `<td><span class="fig" data-f="funding">—</span></td><td><span class="fig fig--chip" data-f="age">—</span></td></tr>`).join('');
 
   root.addEventListener('click', e => {
     const tab = e.target.closest('[data-market]');
@@ -219,6 +236,35 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
       setCell(tr, 'spread', figure('spread', spread, 'bps', 2), spread == null ? 'Spread needs both a bid and an ask' : null);
       setCell(tr, 'mark', figure('mark', r.markPrice), r.markPrice == null ? 'The venue published no mark price' : null);
       setCell(tr, 'funding', figure('funding', f == null ? null : f * 100, '%', 4), f == null ? 'The venue published no funding rate' : null);
+    }
+    markEnds(trs);
+  }
+
+  /** Best and worst within a quote band, told by the colour of the figure and nothing else: highest
+   *  bid, lowest ask, narrowest spread. Values compare at full precision, so two venues share a mark
+   *  only when their raw numbers are identical; a band with fewer than two values, or with every
+   *  value equal, marks nothing. A missing value never wins or loses. */
+  function markEnds(trs) {
+    const COLS = [['bid', r => r.bid, 1], ['ask', r => r.ask, -1], ['spread', spreadOf, -1]];
+    const bands = new Map();
+    for (const tr of trs) {
+      for (const [f] of COLS) tr.querySelector(`[data-f="${f}"]`)?.classList.remove('is-best', 'is-worst');
+      const r = rows.get(tr.dataset.key);
+      if (!r) continue;
+      if (!bands.has(tr.dataset.quote)) bands.set(tr.dataset.quote, []);
+      bands.get(tr.dataset.quote).push({ tr, r });
+    }
+    for (const list of bands.values()) for (const [f, get, dir] of COLS) {
+      const c = list.filter(x => get(x.r) != null);
+      if (c.length < 2) continue;
+      const vs = c.map(x => get(x.r)), hi = Math.max(...vs), lo = Math.min(...vs);
+      if (hi === lo) continue;
+      const best = dir > 0 ? hi : lo, worst = dir > 0 ? lo : hi;
+      for (const x of c) {
+        const v = get(x.r), el = x.tr.querySelector(`[data-f="${f}"]`);
+        if (v === best) el.classList.add('is-best');
+        else if (v === worst) el.classList.add('is-worst');
+      }
     }
   }
 
