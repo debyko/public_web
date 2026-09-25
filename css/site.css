@@ -675,6 +675,9 @@ a.credit__brand:hover { opacity: .65; }
 [data-theme="dark"] { --dk-best-fg: #2FBF71; }
 .slice-table .fig.is-best { color: var(--dk-best-fg); }
 .slice-table .fig.is-worst { color: var(--dk-worst-fg); }
+/* The unit takes the mark's colour too: in the stacked bid / ask cell the word is what tells the
+   reader which of the two figures is the marked one. */
+.slice-table .fig.is-best .fig__unit, .slice-table .fig.is-worst .fig__unit { color: inherit; opacity: .8; }
 
 /* Hero quote groups: one ruled band per quote currency, the same head ground as the column heads. */
 .slice-table tr.lm-group td { padding: 7px 10px; background: var(--dk-surface-head); border-top: 1px solid var(--dk-border-strong); text-align: left; }
