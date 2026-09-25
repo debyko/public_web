@@ -413,6 +413,9 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .fig__unit { color: var(--dk-text-faint); font-size: 10px; margin-left: 4px; }
 /* A figure splits into integer and fraction so a column's decimal points line up: the integer box is
    right-aligned, the fraction box left-aligned, both as wide as the widest the column has shown. */
+/* The market tabs above the hero table. */
+.lm-tabs { padding: 10px 14px; border-bottom: 1px solid var(--dk-border-hairline); }
+.lm-tabs button { font: 600 11px/1 var(--dk-font-mono); letter-spacing: .12em; }
 .num { display: inline-flex; align-items: baseline; }
 .num__i { font-style: normal; text-align: right; }
 .num__f { font-style: normal; text-align: left; }

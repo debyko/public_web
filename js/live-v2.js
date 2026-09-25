@@ -127,10 +127,13 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
 
   const rows = new Map();     // "segment/symbol" → snapshot row
   const seenAt = new Map();   // "segment/symbol" → local ms of receipt (now − ageSeconds)
-  let registry = null, registryFailed = false, shown = '';
+  let registry = null, registryFailed = false, shown = '', selected = null;
   let lastOk = null, failed = false, timer = null, inFlight = false;
   const body = $('body');
 
+  // The markets are tabs, not one long stack: with a dozen venues quoting each of them, three
+  // stacked groups ran past the fold and the reader scrolled to compare what the panel exists to
+  // show side by side.
   function drawTable() {
     const markets = heroMarkets(registry);
     // Rebuilding on every registry refresh would throw away the rows mid-tick; only a changed set
@@ -143,17 +146,42 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
       return;
     }
     $('title').textContent = markets.map(m => m.code.replace(/-PERP$/, '')).join(' · ') + ' perpetual · every venue that quotes them';
-    body.innerHTML = `<div class="scroll-x"><table class="slice-table lm-table">
+    // A market the reader had open survives a registry refresh; one that left the registry does not.
+    if (!markets.some(m => m.code === selected)) selected = markets[0].code;
+    body.innerHTML = `<div class="lm-tabs segmented" role="tablist" aria-label="Market">${markets.map(m =>
+        `<button role="tab" data-market="${esc(m.code)}" aria-selected="${m.code === selected}" aria-pressed="${m.code === selected}">${esc(m.code)}</button>`).join('')}</div>
+      <div class="scroll-x"><table class="slice-table lm-table">
       <thead><tr><th class="l">Venue · symbol</th><th>Bid / Ask</th><th>Spread</th><th>Mark</th><th>Funding · 1 h</th><th>Age · status</th></tr></thead>
-      <tbody>${markets.map(m => `<tr><td class="group" colspan="6">${esc(m.code)}</td></tr>` + m.listings.map(l =>
-        `<tr data-key="${esc(l.segment)}/${esc(l.symbol)}"><td class="venue-cell">${esc(l.segment.toUpperCase())}<small>${esc(l.symbol)}${l.quote ? ' · ' + esc(l.quote) : ''}</small></td>` +
-        `<td><div class="fig-pair"><span class="fig" data-f="bid">—</span><span class="fig" data-f="ask">—</span></div></td>` +
-        `<td><span class="fig" data-f="spread">—</span></td><td><span class="fig" data-f="mark">—</span></td>` +
-        `<td><span class="fig" data-f="funding">—</span></td><td><span class="fig fig--chip" data-f="age">—</span></td></tr>`).join('')).join('')}
-      </tbody></table></div>`;
+      <tbody data-slot="rows"></tbody></table></div>`;
+    drawRows();
+  }
+
+  /** Only the open market's rows are in the document: a hidden row would still be measured, and the
+   *  column widths are shared, so switching markets must not make the figures jump. */
+  function drawRows() {
+    const market = heroMarkets(registry).find(m => m.code === selected);
+    const tbody = body.querySelector('[data-slot="rows"]');
+    if (!market || !tbody) return;
+    tbody.innerHTML = market.listings.map(l =>
+      `<tr data-key="${esc(l.segment)}/${esc(l.symbol)}"><td class="venue-cell">${esc(l.segment.toUpperCase())}<small>${esc(l.symbol)}${l.quote ? ' · ' + esc(l.quote) : ''}</small></td>` +
+      `<td><div class="fig-pair"><span class="fig" data-f="bid">—</span><span class="fig" data-f="ask">—</span></div></td>` +
+      `<td><span class="fig" data-f="spread">—</span></td><td><span class="fig" data-f="mark">—</span></td>` +
+      `<td><span class="fig" data-f="funding">—</span></td><td><span class="fig fig--chip" data-f="age">—</span></td></tr>`).join('');
     paintValues();
     paintAges();
   }
+
+  root.addEventListener('click', e => {
+    const tab = e.target.closest('[data-market]');
+    if (!tab) return;
+    selected = tab.dataset.market;
+    for (const b of root.querySelectorAll('[data-market]')) {
+      const on = b === tab;
+      b.setAttribute('aria-selected', String(on));
+      b.setAttribute('aria-pressed', String(on));
+    }
+    drawRows();
+  });
 
   const setCell = (tr, f, html, title) => {
     const el = tr.querySelector(`[data-f="${f}"]`);
