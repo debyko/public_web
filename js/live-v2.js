@@ -37,6 +37,25 @@ const kindOf = (age, cadence) => {
 };
 const WORD = { live: 'LIVE', delayed: 'DELAYED', stale: 'STALE', missing: 'MISSING' };
 
+// A venue of kind oracle (Avantis, GMX: a vault priced by an oracle) publishes funding, open interest
+// and its own depth and never a price. Since 2026-09-26 (ADR-016/018 amendment) /v1/snapshot carries its
+// rows with bid/ask/last null and `layers` — the age and cadence of every layer — and /v1/segments says
+// which datasets a venue declares. Such a row is judged by the newest layer it has, as the API's own
+// ageSeconds already is, and its price cells say why they are empty instead of reading MISSING: hiding
+// a live venue understates coverage the way unpublished Bybit and OKX once did.
+const LAYER_WORDS = { ticker: 'ticker', mark: 'mark', funding: 'funding', oi: 'open interest', stats: '24 h stats', venueDepth: 'venue depth', book: 'book' };
+const PRICELESS = 'This venue publishes no price (oracle-priced); funding, open interest and venue depth only';
+/** The layer a row's age belongs to: the ticker where there is one, otherwise the newest layer present. */
+function anchorOf(row) {
+  const layers = row?.layers || {};
+  if (!row || layers.ticker || !Object.values(layers).some(Boolean)) return { name: 'ticker', cadence: row?.tickerCadenceSeconds ?? null };
+  let best = null;
+  for (const [name, l] of Object.entries(layers)) {
+    if (l && (best == null || l.ageSeconds < best.l.ageSeconds)) best = { name, l };
+  }
+  return { name: best.name, cadence: best.l.cadenceSeconds ?? null };
+}
+
 const priceFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 });
 
 // Venues quote at their own price step and publish marks to their own precision, so the digits in a
@@ -104,7 +123,9 @@ async function fetchRegistry() {
     code: m.code,
     listings: (m.listings || []).filter(l => l.mappingStatus === 'mapped' && live.has(l.segment))
   })).filter(m => m.listings.length);
-  return { markets: mapped, segments: [...live], at: Date.now() };
+  // Segments that declare no `ticker` dataset will never carry a price; their rows say so.
+  const priceless = new Set(segments.filter(s => Array.isArray(s.datasets) && !s.datasets.includes('ticker')).map(s => s.segment));
+  return { markets: mapped, segments: [...live], priceless, at: Date.now() };
 }
 
 /** Which markets the hero shows, as a rule rather than a list: a market earns a place by being
@@ -233,20 +254,22 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     }
     for (const tr of trs) {
       const r = rows.get(tr.dataset.key);
+      const noPrice = registry.priceless.has(tr.dataset.key.split('/')[0]);
       // No row in the snapshot is not a zero: the cells keep their dash and say why.
       if (!r) {
         const why = 'The snapshot carries no value for this listing yet';
-        setCell(tr, 'bid', figure('px', null, 'bid'), why);
-        setCell(tr, 'ask', figure('px', null, 'ask'), why);
-        setCell(tr, 'spread', figure('spread', null, 'bps'), why);
+        setCell(tr, 'bid', figure('px', null, 'bid'), noPrice ? PRICELESS : why);
+        setCell(tr, 'ask', figure('px', null, 'ask'), noPrice ? PRICELESS : why);
+        setCell(tr, 'spread', figure('spread', null, 'bps'), noPrice ? PRICELESS : why);
         setCell(tr, 'mark', figure('mark', null), why);
         setCell(tr, 'funding', figure('funding', null, '%'), why);
         continue;
       }
       const spread = spreadOf(r), f = fundingOf(r);
-      setCell(tr, 'bid', figure('px', r.bid, 'bid'), r.bid == null ? 'The venue published no bid' : null);
-      setCell(tr, 'ask', figure('px', r.ask, 'ask'), r.ask == null ? 'The venue published no ask' : null);
-      setCell(tr, 'spread', figure('spread', spread, 'bps', 2), spread == null ? 'Spread needs both a bid and an ask' : null);
+      // A price on a venue that publishes none will never come: the cell says that, not "no bid".
+      setCell(tr, 'bid', figure('px', r.bid, 'bid'), r.bid == null ? (noPrice ? PRICELESS : 'The venue published no bid') : null);
+      setCell(tr, 'ask', figure('px', r.ask, 'ask'), r.ask == null ? (noPrice ? PRICELESS : 'The venue published no ask') : null);
+      setCell(tr, 'spread', figure('spread', spread, 'bps', 2), spread == null ? (noPrice ? PRICELESS : 'Spread needs both a bid and an ask') : null);
       setCell(tr, 'mark', figure('mark', r.markPrice), r.markPrice == null ? 'The venue published no mark price' : null);
       setCell(tr, 'funding', figure('funding', f == null ? null : f * 100, '%', 4), f == null ? 'The venue published no funding rate' : null);
     }
@@ -281,13 +304,14 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     }
   }
 
-  // Says what the row is judged against, so a DELAYED chip can be checked rather than believed.
-  function ageTitle(age, row) {
-    const cadence = row?.tickerCadenceSeconds ?? null;
+  // Says what the row is judged against, so a DELAYED chip can be checked rather than believed: the
+  // layer the age belongs to (the ticker, or on a priceless venue the newest layer present) and its cadence.
+  function ageTitle(age, row, anchor) {
     const transport = row?.transport || '—';
-    return cadence == null
-      ? `Age since DEBYKO received the ticker · transport ${transport} · pushed on change`
-      : `Age since DEBYKO received the ticker · transport ${transport} · polled every ${cadence} s`;
+    const layer = LAYER_WORDS[anchor.name] || anchor.name;
+    return anchor.cadence == null
+      ? `Age since DEBYKO received the ${layer} · transport ${transport} · pushed on change`
+      : `Age since DEBYKO received the ${layer} · transport ${transport} · polled every ${anchor.cadence} s`;
   }
 
   function paintAges() {
@@ -295,11 +319,15 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     for (const tr of body.querySelectorAll('tr[data-key]')) {
       const at = seenAt.get(tr.dataset.key);
       const age = at == null ? null : Math.max(0, (now - at) / 1000);
-      const kind = kindOf(age, rows.get(tr.dataset.key)?.tickerCadenceSeconds ?? null);
+      const row = rows.get(tr.dataset.key);
+      const anchor = anchorOf(row);
+      const kind = kindOf(age, anchor.cadence);
       const text = ageText(age);
       ageW = Math.max(ageW, text.length);
       setCell(tr, 'age', `<span class="ar-chip ar-chip--${kind === 'missing' ? 'stale' : kind}"><span class="ar-chip__val" style="min-width:${slot(ageW, 0.04)};text-align:right">${text}</span><span class="ar-chip__word" style="min-width:${slot(STATUS_W, 0.14)}">${WORD[kind]}</span></span>`,
-        age == null ? 'No ticker received for this listing yet' : ageTitle(age, rows.get(tr.dataset.key)));
+        age == null
+          ? (registry?.priceless?.has(tr.dataset.key.split('/')[0]) ? 'No values received for this listing yet' : 'No ticker received for this listing yet')
+          : ageTitle(age, row, anchor));
     }
     if (lastOk) {
       const parts = [failed ? `No answer · last response ${since(now - lastOk)} ago` : `api.debyko.com · response ${((now - lastOk) / 1000).toFixed(1)} s ago`];
