@@ -75,3 +75,41 @@ tr.is-detail > td:first-child { padding-left: 34px; }
 .legal-links a:hover { color: var(--dk-text-accent); }
 .legal-links a.is-current { color: var(--dk-text-primary); }
 .legal-links span { color: var(--dk-text-faint); }
+
+/* About page. The signal gradient is the brand's only gradient; here it sets two headline phrases,
+   at headline size only, where #EE2F72 → #B8129F clears 3:1 on paper. */
+.about-grad { background: var(--dk-gradient-signal); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.about-h1 { font-size: 56px; line-height: 1.02; }
+.about-record { display: grid; grid-template-columns: 16ch minmax(0, 1fr); margin: 0; }
+.about-record dt, .about-record dd { margin: 0; padding: 8px 14px; border-bottom: 1px solid var(--dk-border-hairline); }
+.about-record dt { font: 600 10px/1.5 var(--dk-font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dk-text-faint); padding-top: 10px; }
+.about-record dd { font: 400 13px/1.45 var(--dk-font-text); color: var(--dk-text-primary); padding-left: 0; }
+.about-record dd.num { font-size: 13px; }
+.about-record dt:nth-last-of-type(1), .about-record dd:last-of-type { border-bottom: 0; }
+.about-portrait { margin: 0; display: flex; flex-direction: column; border: 1px solid var(--dk-border-hairline); background: var(--dk-surface-panel); position: sticky; top: 70px; }
+.about-portrait img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 20%; border-bottom: 2px solid transparent; border-image: var(--dk-gradient-signal) 1; }
+.about-portrait figcaption { display: flex; flex-direction: column; gap: 6px; padding: 14px; }
+.about-portrait__name { font: 700 22px/1.2 var(--dk-font-display); letter-spacing: -.02em; color: var(--dk-text-primary); }
+.about-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--dk-border-strong); border-bottom: 1px solid var(--dk-border-hairline); }
+.about-stat { display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 18px 0; }
+.about-stat + .about-stat { border-left: 1px solid var(--dk-border-hairline); padding-left: 18px; }
+.about-stat__v { font: 600 30px/1 var(--dk-font-mono); letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--dk-text-primary); }
+.about-stat__u { font-size: 16px; font-weight: 400; color: var(--dk-text-faint); margin-left: 2px; }
+.about-stat__k { font: 400 13px/1.4 var(--dk-font-text); color: var(--dk-text-secondary); }
+.about-creds > li { display: flex; flex-direction: column; gap: 6px; }
+.about-rules td { padding-top: 10px; padding-bottom: 10px; vertical-align: top; font: 400 14px/1.5 var(--dk-font-text); color: var(--dk-text-secondary); }
+.about-rules td.td-venue { color: var(--dk-text-primary); padding-top: 12px; }
+.about-rules td:last-child { color: var(--dk-text-primary); }
+.about-own > li { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.about-worked { line-height: 1.8; }
+@media (max-width: 960px) {
+  .about-h1 { font-size: 40px; }
+  .about-founder { grid-template-columns: minmax(0, 1fr); }
+  .about-portrait { position: static; max-width: 320px; }
+  .about-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-stat:nth-child(3) { border-left: 0; padding-left: 0; }
+  .about-stat:nth-child(n+3) { border-top: 1px solid var(--dk-border-hairline); }
+  .about-record { grid-template-columns: minmax(0, 1fr); }
+  .about-record dt { border-bottom: 0; padding-bottom: 0; }
+  .about-record dd { padding-left: 14px; }
+}
