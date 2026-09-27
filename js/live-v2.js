@@ -163,7 +163,7 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
 
   const rows = new Map();     // "segment/symbol" → snapshot row
   const seenAt = new Map();   // "segment/symbol" → local ms of receipt (now − ageSeconds)
-  let registry = null, registryFailed = false, shown = '', selected = null;
+  let registry = null, registryFailed = false, shown = '', selected = null, quote = null;
   let lastOk = null, failed = false, timer = null, inFlight = false;
   const body = $('body');
 
@@ -184,22 +184,19 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     $('title').textContent = markets.map(m => m.code.replace(/-PERP$/, '')).join(' · ') + ' perpetual · every venue that quotes them';
     // A market the reader had open survives a registry refresh; one that left the registry does not.
     if (!markets.some(m => m.code === selected)) selected = markets[0].code;
-    body.innerHTML = `<div class="lm-tabs segmented" role="tablist" aria-label="Market">${markets.map(m =>
-        `<button role="tab" data-market="${esc(m.code)}" aria-selected="${m.code === selected}" aria-pressed="${m.code === selected}">${esc(m.code)}</button>`).join('')}</div>
+    body.innerHTML = `<div class="lm-tabs">
+        <div class="segmented" role="tablist" aria-label="Market">${markets.map(m =>
+          `<button role="tab" data-market="${esc(m.code)}" aria-selected="${m.code === selected}" aria-pressed="${m.code === selected}">${esc(m.code)}</button>`).join('')}</div>
+        <div class="segmented lm-tabs__quotes" role="tablist" aria-label="Quote currency" data-slot="quotes"></div>
+      </div>
       <div class="scroll-x"><table class="slice-table lm-table">
       <thead><tr><th class="l">Venue · symbol</th><th>Bid / Ask</th><th>Spread</th><th>Mark</th><th>Funding · 1 h</th><th>Age · status</th></tr></thead>
       <tbody data-slot="rows"></tbody></table></div>`;
     drawRows();
   }
 
-  /** Only the open market's rows are in the document: a hidden row would still be measured, and the
-   *  column widths are shared, so switching markets must not make the figures jump. */
-  function drawRows() {
-    const market = heroMarkets(registry).find(m => m.code === selected);
-    const tbody = body.querySelector('[data-slot="rows"]');
-    if (!market || !tbody) return;
-    // Prices in different quote currencies are different numbers, so the rows sit in bands by
-    // quote and nothing is compared across a band.
+  /** The quote currencies of the open market, in the order the bands used to stand in. */
+  function quotesOf(market) {
     const rank = q => { const i = QUOTE_ORDER.indexOf(q); return i < 0 ? QUOTE_ORDER.length : i; };
     const groups = new Map();
     for (const l of market.listings) {
@@ -207,11 +204,26 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
       if (!groups.has(q)) groups.set(q, []);
       groups.get(q).push(l);
     }
-    const quotes = [...groups.keys()].sort((x, y) => rank(x) - rank(y) || x.localeCompare(y));
-    tbody.innerHTML = quotes.map(q => {
-      const ls = groups.get(q).sort((x, y) => x.segment.localeCompare(y.segment));
-      return `<tr class="lm-group"><td colspan="6"><span class="label label--accent">Quoted in ${esc(q)} · ${ls.length} ${ls.length === 1 ? 'venue' : 'venues'}</span></td></tr>` + rowsHtml(ls);
-    }).join('');
+    return { groups, order: [...groups.keys()].sort((x, y) => rank(x) - rank(y) || x.localeCompare(y)) };
+  }
+
+  /** Only the open market's open quote band is in the document: prices in different currencies are
+   *  different numbers and were never compared across bands anyway, and three stacked bands ran the
+   *  panel past the fold. A hidden row would still be measured, so the rows are built, not hidden. */
+  function drawRows() {
+    const market = heroMarkets(registry).find(m => m.code === selected);
+    const tbody = body.querySelector('[data-slot="rows"]');
+    if (!market || !tbody) return;
+    const { groups, order } = quotesOf(market);
+    // USDT is where most venues quote, so it opens; a currency the reader picked survives a market
+    // change when the new market has it too.
+    if (!order.includes(quote)) quote = order.includes('USDT') ? 'USDT' : order[0];
+    const tabs = body.querySelector('[data-slot="quotes"]');
+    if (tabs) tabs.innerHTML = order.map(q =>
+      `<button role="tab" data-quote="${esc(q)}" aria-selected="${q === quote}" aria-pressed="${q === quote}">${esc(q)}</button>`).join('');
+    const ls = (groups.get(quote) || []).sort((x, y) => x.segment.localeCompare(y.segment));
+    tbody.innerHTML = rowsHtml(ls);
+    $('foot').textContent = `${ls.length} ${ls.length === 1 ? 'venue quotes' : 'venues quote'} ${market.code} in ${quote} · ${registry.segments.length} venues live in the registry`;
     paintValues();
     paintAges();
   }
@@ -223,10 +235,10 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
     `<td><span class="fig" data-f="funding">—</span></td><td><span class="fig fig--chip" data-f="age">—</span></td></tr>`).join('');
 
   root.addEventListener('click', e => {
-    const tab = e.target.closest('[data-market]');
+    const tab = e.target.closest('[data-market], [data-quote]');
     if (!tab) return;
-    selected = tab.dataset.market;
-    for (const b of root.querySelectorAll('[data-market]')) {
+    if (tab.dataset.market) selected = tab.dataset.market; else quote = tab.dataset.quote;
+    for (const b of tab.parentElement.querySelectorAll('button')) {
       const on = b === tab;
       b.setAttribute('aria-selected', String(on));
       b.setAttribute('aria-pressed', String(on));
@@ -342,7 +354,6 @@ export function mountLiveV2(root, { onFullComparison, onRegistry } = {}) {
       registry = await fetchRegistry();
       registryFailed = false;
       drawTable();
-      $('foot').textContent = `Venues and markets from the registry · ${registry.segments.length} venues live`;
       if (onRegistry) onRegistry(registry);
     } catch (err) {
       registryFailed = true;
