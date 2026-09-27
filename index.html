@@ -721,8 +721,14 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         <div class="plan-card">
           <span class="plan-card__name">Pro</span>
           <span class="plan-card__price">€99 / month</span>
-          <p class="plan-card__desc">Five keys under one account, everything in Standard, all history, twenty live streams, higher limits for bots and screens.</p>
+          <p class="plan-card__desc">Everything in Standard, all history, twenty live streams, higher limits for bots and screens.</p>
           <div class="plan-card__cta"><a class="btn btn--sm btn--full" href="https://studio.debyko.com/account?plan=pro"><span>Start the 7-day trial</span></a></div>
+        </div>
+        <div class="plan-card">
+          <span class="plan-card__name">Pro Plus</span>
+          <span class="plan-card__price">€149 / month</span>
+          <p class="plan-card__desc">Everything in Pro with twice the throughput: 100 requests a second, ten million a day, fifty live streams. No trial — paid at checkout.</p>
+          <div class="plan-card__cta"><a class="btn btn--sm btn--full" href="https://studio.debyko.com/account?plan=pro-plus"><span>Buy now</span></a></div>
         </div>
         <div class="plan-card">
           <span class="plan-card__name">Team and enterprise</span>
@@ -732,9 +738,9 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         </div>
     </div>
 
-    <p class="meta">A card is taken at the start of the trial and nothing is charged before day eight. Cancel any time from your account.</p>
+    <p class="meta">Mini, Standard and Pro start with a seven-day trial: a card is taken and nothing is charged before day eight. Pro Plus has no trial and is charged at checkout. Cancel any time from your account.</p>
 
-    <p class="prose prose--sm">Trials run seven days with a card on file and nothing charged until day eight; cancel before that and nothing is charged at all. Every plan renews monthly and can be cancelled at any time from your account — access runs to the end of the paid month. Checkout, invoices and VAT are handled by Paddle, our merchant of record; VAT is added at checkout where it applies. Refunds: see the <a href="/legal/refund/">refund policy</a>.</p>
+    <p class="prose prose--sm">Mini, Standard and Pro run a seven-day trial with a card on file and nothing charged until day eight; cancel before that and nothing is charged at all. Pro Plus is bought outright: the card is charged at checkout and there is no trial. One API key per account on every plan. Every plan renews monthly and can be cancelled at any time from your account — access runs to the end of the paid month. Checkout, invoices and VAT are handled by Paddle, our merchant of record; VAT is added at checkout where it applies. Refunds: see the <a href="/legal/refund/">refund policy</a>.</p>
 
     <div class="stack gap-14">
       <div class="label">Everything that is not a plan</div>
@@ -770,23 +776,23 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
             <th scope="col"><span class="plans__name">Free</span><span class="plans__price">€0</span><span class="plans__for">Anyone · no card</span></th>
             <th scope="col"><span class="plans__name">Mini</span><span class="plans__price">€9 / month</span><span class="plans__for">One person</span></th>
             <th scope="col"><span class="plans__name">Standard</span><span class="plans__price">€29 / month</span><span class="plans__for">One person · every venue</span></th>
-            <th scope="col"><span class="plans__name">Pro</span><span class="plans__price">€99 / month</span><span class="plans__for">Up to 5 keys · bot fleets</span></th>
+            <th scope="col"><span class="plans__name">Pro</span><span class="plans__price">€99 / month</span><span class="plans__for">Bots and screens</span></th>
+            <th scope="col"><span class="plans__name">Pro Plus</span><span class="plans__price">€149 / month</span><span class="plans__for">Twice Pro · paid at checkout</span></th>
           </tr>
         </thead>
         <tbody>
-            <tr><th scope="row">Venues</th><td><span class="plans__v">2</span></td><td><span class="plans__v">4</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
-            <tr><th scope="row">Instruments</th><td><span class="plans__v">10</span><span class="plans__sub">top by volume</span></td><td><span class="plans__v">50</span><span class="plans__sub">top by volume</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
-            <tr><th scope="row">Live comparison, with the age of every figure</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">History back</th><td><span class="plans__v">7 days</span></td><td><span class="plans__v">30 days</span></td><td><span class="plans__v">1 year</span></td><td><span class="plans__v">all</span></td></tr>
-            <tr><th scope="row">Order book</th><td><span class="plans__v">top 5 levels</span></td><td><span class="plans__v">top 25</span></td><td><span class="plans__v">full</span></td><td><span class="plans__v">full</span></td></tr>
-            <tr><th scope="row">Point-in-time replay (<span class="mono">as of</span>)</th><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td></tr>
-            <tr><th scope="row">DQL screening</th><td><span class="plans__v">10 / min</span></td><td><span class="plans__v">30 / min</span></td><td><span class="plans__v">120 / min</span></td><td><span class="plans__v">600 / min</span></td></tr>
-            <tr><th scope="row">API requests per second</th><td><span class="plans__v">2</span></td><td><span class="plans__v">5</span></td><td><span class="plans__v">20</span></td><td><span class="plans__v">50</span></td></tr>
-            <tr><th scope="row">API requests per day</th><td><span class="plans__v">5,000</span></td><td><span class="plans__v">50,000</span></td><td><span class="plans__v">500,000</span></td><td><span class="plans__v">5,000,000</span></td></tr>
-            <tr><th scope="row">Live stream connections</th><td><span class="plans__v">1</span></td><td><span class="plans__v">2</span></td><td><span class="plans__v">5</span></td><td><span class="plans__v">20</span></td></tr>
-            <tr><th scope="row">API keys</th><td><span class="plans__v">1</span></td><td><span class="plans__v">1</span></td><td><span class="plans__v">1</span></td><td><span class="plans__v">5</span></td></tr>
-            <tr><th scope="row">CSV export</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
-            <tr><th scope="row">Card required</th><td><span class="plans__v">no</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">trial</span></td></tr>
+            <tr><th scope="row">Venues</th><td><span class="plans__v">2</span></td><td><span class="plans__v">4</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
+            <tr><th scope="row">Instruments</th><td><span class="plans__v">10</span><span class="plans__sub">top by volume</span></td><td><span class="plans__v">50</span><span class="plans__sub">top by volume</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
+            <tr><th scope="row">Live comparison, with the age of every figure</th><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">History back</th><td><span class="plans__v">7 days</span></td><td><span class="plans__v">30 days</span></td><td><span class="plans__v">1 year</span></td><td><span class="plans__v">all</span></td><td><span class="plans__v">all</span></td></tr>
+            <tr><th scope="row">Order book</th><td><span class="plans__v">top 5 levels</span></td><td><span class="plans__v">top 25</span></td><td><span class="plans__v">full</span></td><td><span class="plans__v">full</span></td><td><span class="plans__v">full</span></td></tr>
+            <tr><th scope="row">Point-in-time replay (<span class="mono">as of</span>)</th><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td><td><span class="plans__v">within history</span></td></tr>
+            <tr><th scope="row">DQL screening</th><td><span class="plans__v">10 / min</span></td><td><span class="plans__v">30 / min</span></td><td><span class="plans__v">120 / min</span></td><td><span class="plans__v">600 / min</span></td><td><span class="plans__v">1,200 / min</span></td></tr>
+            <tr><th scope="row">API requests per second</th><td><span class="plans__v">2</span></td><td><span class="plans__v">5</span></td><td><span class="plans__v">20</span></td><td><span class="plans__v">50</span></td><td><span class="plans__v">100</span></td></tr>
+            <tr><th scope="row">API requests per day</th><td><span class="plans__v">5,000</span></td><td><span class="plans__v">50,000</span></td><td><span class="plans__v">500,000</span></td><td><span class="plans__v">5,000,000</span></td><td><span class="plans__v">10,000,000</span></td></tr>
+            <tr><th scope="row">Live stream connections</th><td><span class="plans__v">1</span></td><td><span class="plans__v">2</span></td><td><span class="plans__v">5</span></td><td><span class="plans__v">20</span></td><td><span class="plans__v">50</span></td></tr>
+            <tr><th scope="row">CSV export</th><td><span class="plan-no" aria-label="Not included">—</span></td><td><span class="plan-no" aria-label="Not included">—</span></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td><td><svg class="icon plan-yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+            <tr><th scope="row">Card required</th><td><span class="plans__v">no</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">trial</span></td><td><span class="plans__v">yes</span></td></tr>
         </tbody>
         <tfoot>
           <tr>
@@ -795,6 +801,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
             <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account?plan=mini"><span>Start the 7-day trial</span></a></td>
             <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account?plan=standard"><span>Start the 7-day trial</span></a></td>
             <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account?plan=pro"><span>Start the 7-day trial</span></a></td>
+            <td><a class="btn btn--primary btn--full" href="https://studio.debyko.com/account?plan=pro-plus"><span>Buy now</span></a></td>
           </tr>
         </tfoot>
       </table>
