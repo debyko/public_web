@@ -173,6 +173,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p>Age is now minus received time.</p>
         <p>Ticker, open interest and depth are separate calls with separate received times, so one row carries three ages. Each group keeps its own age, and every age is printed.</p>
         <p>There is no stored "written" or "available" time, so none is shown.</p>
+        <p>A live figure is the freshest reading we have seen. History is what we stored: most layers keep one reading per sampling window, and a stored reading counts from the end of its window. The live figure can be one reading ahead of history until that reading's window closes; in time the two readings can be further apart than one window where the venue updates less often. The window of each layer is <code>history_cadence</code> on <code>/v2/instruments</code>.</p>
       </section>
 
       <section id="thresholds">
@@ -269,6 +270,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li><span class="date">2026-09-17</span><span>BEST and WORST are ranked inside each quote-currency group, still LIVE values only; bid and ask marks name their side (BEST BID, WORST ASK). Before, one pair per column covered every group and moved between venues whenever a ticker crossed the LIVE threshold.</span></li>
           <li><span class="date">2026-09-17</span><span>Rank and state marks no longer use green, amber and red: fill, border and a line through the word carry them. Tied values are all marked, as BEST ×n or WORST ×n. On Arena the comparison table comes before the chart, its columns can be hidden by group, and six columns sort inside each quote group; all of it is kept in the page address.</span></li>
           <li><span class="date">2026-09-17</span><span>Spread is ranked on its computed value, no longer rounded to 0.01 bps first — rounding had given BEST to every venue one tick wide. The comparison table is grouped by quote currency.</span></li>
+          <li><span class="date">2026-09-29</span><span>Live figures and history are named as two things: the live figure is the freshest reading seen, history is what was stored, and the live figure can be one reading ahead until that reading's sampling window closes — further apart in time than one window where the venue updates less often.</span></li>
         </ul>
         <p>Each later change to a rule is added here with its date, so a figure can be read against the rules in force when it was shown.</p>
       </section>
