@@ -8,6 +8,11 @@
 /*
   Cache-Control: public, max-age=0, must-revalidate
 
+# The plans, one source for debyko.com and studio.debyko.com (tools/render-plans.mjs). Readable from
+# any origin, so another DEBYKO page or a CI job can compare its rendered block with it.
+/data/plans.json
+  Access-Control-Allow-Origin: *
+
 # Logos are content-stable: a new lock-up would be a new file.
 /assets/*
   Cache-Control: public, max-age=86400, must-revalidate

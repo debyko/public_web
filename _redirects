@@ -3,8 +3,12 @@
 /plans/*          /  302
 /og/README.md     /  302
 /og/*.svg         /  302
-# Dated copies of a page kept before a rewrite are backups, not pages.
-/index_*.html     /  302
+# Dated copies of a page kept before a rewrite are backups, not pages. The rule has no ".html":
+# Pages also serves /index_20260921 (its pretty URL), which "/index_*.html" did not catch.
+/index_*          /  302
+# Provenance notes and source lockups of the venue marks are working files, not pages.
+/assets/venues/SOURCES.md  /  302
+/assets/venues/source/*    /  302
 # The Pages Function source is compiled by Pages; its file is not a page.
 /functions/*      /  302
 /_routes.json     /  302

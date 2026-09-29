@@ -560,7 +560,10 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 .plan-card__name { font: 600 15px/1.3 var(--dk-font-display); letter-spacing: -.01em; color: var(--dk-text-primary); }
 .plan-card__price { font: 400 22px/1 var(--dk-font-mono); color: var(--dk-text-primary); }
 .plan-card__desc { margin: 0; font: 400 13px/1.55 var(--dk-font-text); color: var(--dk-text-secondary); }
-.plan-card__cta { margin-top: auto; padding-top: 14px; }
+.plan-card__cta { margin-top: auto; padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+/* While checkout is closed a paid plan shows a disabled button and, under it, the waitlist. */
+.plan-alt { font-size: 12px; }
+.plans .plan-alt { display: inline-block; margin-top: 8px; }
 @media (max-width: 1080px) { .plan-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .plan-cards > .plan-card:last-child { grid-column: 1 / -1; } }
 @media (max-width: 620px) { .plan-cards { grid-template-columns: minmax(0, 1fr); } }
 
@@ -599,18 +602,13 @@ button.ar-pop__row:hover{background:var(--dk-surface-subtle)}
 
 .closing { display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--dk-border-strong); padding-top: 22px; }
 
-/* Footer credit: the author, then the company that operates the site under licence, its mark at the cap height of the line. */
+/* Footer credit: the operator's legal line — company, code, registered address, author. */
 .credit { margin: 0; font: 400 12px/1.7 var(--dk-font-text); color: var(--dk-text-muted); }
-.credit__brand { display: inline-flex; align-items: baseline; gap: 3px; font-weight: 600; color: var(--dk-text-primary); white-space: nowrap; opacity: 1; }
-a.credit__brand:hover { opacity: .65; }
-.credit__brand i { font-style: normal; color: var(--dk-text-accent); }
-.credit__mark { display: inline-block; align-self: center; }
 .credit--legal a { color: var(--dk-text-primary); }
-.credit__mark--blynai { width: 14px; height: 14px; }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 .site-footer { border-top: 1px solid var(--dk-border-strong); padding: 48px 0 32px; }
-.site-footer__cols { display: grid; grid-template-columns: minmax(0, 2fr) repeat(6, minmax(0, 1fr)); gap: 32px; }
+.site-footer__cols { display: grid; grid-template-columns: minmax(0, 2fr) repeat(5, minmax(0, 1fr)); gap: 32px; }
 .site-footer__col { display: flex; flex-direction: column; gap: 8px; }
 .site-footer__title { font: 600 10px/1 var(--dk-font-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dk-text-faint); padding-bottom: 6px; }
 .site-footer__col a { font: 400 13px/1.4 var(--dk-font-text); color: var(--dk-text-primary); display: flex; gap: 8px; align-items: baseline; }

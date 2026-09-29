@@ -38,14 +38,17 @@ document.addEventListener('click', e => {
   const scroll = e.target.closest('[data-scroll]');
   if (scroll) { e.preventDefault(); $('.mobile-nav').hidden = true; scrollToId(scroll.dataset.scroll); }
   const opener = e.target.closest('[data-open]');
-  if (opener) { e.preventDefault(); openDialog(opener.dataset.open); }
+  if (opener) { e.preventDefault(); openDialog(opener.dataset.open, opener.dataset.product); }
 });
 
 // ── Dialogs ─────────────────────────────────────────────────────────────────────────────────
 
-function openDialog(name) {
+// `product` preselects the waitlist's product: a paid plan's "Join the waitlist" passes the checkout.
+function openDialog(name, product) {
   const dlg = document.getElementById('dialog-' + name);
   if (!dlg) return;
+  const select = dlg.querySelector('select[name="product"]');
+  if (select && product && [...select.options].some(o => o.value === product)) select.value = product;
   dlg.querySelector('[data-part="form"]').hidden = false;
   dlg.querySelector('[data-part="result"]').hidden = true;
   dlg.querySelector('[data-part="error"]').hidden = true;
@@ -110,10 +113,12 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.nav__menu').forEach(m => { m.hidden = true; });
 });
 
-// The data pages' header and footer link "Contact sales" and "Join the waitlist" here, at
-// ?open=sales / ?open=wait, because the dialogs live only in this document.
-const openOnLoad = new URLSearchParams(location.search).get('open');
-if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad);
+// The data pages' header and footer — and the footers of studio.debyko.com, docs.debyko.com and
+// agent.debyko.com — link "Contact sales" and "Join the waitlist" here, at ?open=sales / ?open=wait,
+// because the dialogs live only in this document. ?open=wait&product=studio preselects the checkout.
+const query = new URLSearchParams(location.search);
+const openOnLoad = query.get('open');
+if (openOnLoad === 'sales' || openOnLoad === 'wait') openDialog(openOnLoad, query.get('product') === 'studio' ? 'Studio subscription' : undefined);
 
 // ── Live market slice ───────────────────────────────────────────────────────────────────────
 
