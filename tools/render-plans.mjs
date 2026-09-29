@@ -6,11 +6,15 @@
 // from, so a drift guard can compare it with https://debyko.com/data/plans.json.
 //
 // Regions (each rewritten between its markers, the rest of the file untouched):
-//   index.html             <!-- plans-grid:begin -->   … <!-- plans-grid:end -->    the price list in #studio
-//                          <!-- plans-cards:begin -->  … <!-- plans-cards:end -->   the cards in #pricing
-//                          <!-- plans-table:begin -->  … <!-- plans-table:end -->   the table in #plans
-//   studio landing         <!-- plans:begin -->        … <!-- plans:end -->         the table in #plans
+//   index.html             <!-- plans-grid:begin -->          the price list in #studio
+//                          <!-- plans-cards:begin -->         the cards in #pricing
+//                          <!-- plans-note-pricing:begin -->  the trial/refund line and trial terms under them
+//                          <!-- plans-table:begin -->         the table in #plans
+//                          <!-- plans-note-compare:begin -->  the trial/refund line under the table
+//   studio landing         <!-- plans:begin -->               the table panel in #plans and the line under it
 //   (platform: deploy/studio-stub/index.html, given with --studio)
+// Every trial length, first-charge day and refund window on these pages comes from plans.json
+// (trial_days per plan, refund_days); nothing outside the regions states them.
 // Every region starts with <!-- plans:sha256=<sha256 of plans.json> -->.
 //
 // Usage:
@@ -53,12 +57,17 @@ function validate(d) {
     stream_connections: 'number', csv_export: 'boolean', api_keys: 'number' };
   if (!Array.isArray(d.plans) || !d.plans.length) fail('plans.json has no plans');
   for (const k of ['checkout_open']) if (typeof d[k] !== 'boolean') fail('plans.json: ' + k + ' must be true or false');
-  for (const k of ['checkout_url', 'free_url', 'waitlist_url']) if (typeof d[k] !== 'string') fail('plans.json: ' + k + ' is missing');
+  if (!Number.isInteger(d.refund_days) || d.refund_days <= 0) fail('plans.json: refund_days must be a positive whole number');
+  for (const k of ['checkout_url', 'free_url', 'waitlist_url', 'refund_url']) if (typeof d[k] !== 'string') fail('plans.json: ' + k + ' is missing');
   for (const p of d.plans) {
     for (const [k, t] of Object.entries(need)) if (typeof p[k] !== t) fail(`plans.json: ${p.code || '?'}.${k} must be a ${t}`);
     for (const k of ['venues', 'instruments', 'history_days', 'order_book_levels'])
       if (typeof p[k] !== 'number' && !['all', 'full'].includes(p[k])) fail(`plans.json: ${p.code}.${k} must be a number, "all" or "full"`);
+    if (p.trial_days > 0 && !p.card_required) fail(`plans.json: ${p.code} has a trial but no card; a trial takes a card at the start`);
   }
+  // The pricing line names one trial length for every plan that has a trial.
+  const lengths = new Set(d.plans.filter(p => p.trial_days > 0).map(p => p.trial_days));
+  if (lengths.size > 1) fail('plans.json: plans with a trial must share one trial_days (the pricing line states a single length)');
 }
 
 // ── formatting ─────────────────────────────────────────────────────────────────────────────
@@ -73,6 +82,18 @@ const paid = p => p.price_eur_month > 0;
 const checkoutUrl = p => data.checkout_url.replace('{code}', encodeURIComponent(p.code));
 const buyLabel = (p, short) => p.trial_days > 0 ? (short ? 'Start the trial' : `Start the ${p.trial_days}-day trial`) : 'Buy now';
 const pathOf = url => { const u = new URL(url); return u.pathname + u.search; };
+const names = ps => ps.map(p => p.name).join(', ').replace(/, ([^,]*)$/, ' and $1');
+const trialPlans = plans.filter(p => p.trial_days > 0);
+const trialDays = trialPlans.length ? trialPlans[0].trial_days : 0;
+const outright = plans.filter(p => paid(p) && p.trial_days === 0);
+
+/** The one line the owner fixed for both sites (2026-09-29); the numbers are plans.json's. */
+const LINE = (trialDays ? `${trialDays}-day free trial. Cancel any time during the trial and you are not charged. ` : '')
+  + `After payment, ${data.refund_days} days to request a full refund — no conditions.`;
+/** How the trial works, per plan, from the same numbers. */
+const TRIAL_TERMS = (trialPlans.length
+  ? `${names(trialPlans)} ${trialPlans.length > 1 ? 'start' : 'starts'} with the trial: a card is taken at the start and the first charge is on day ${trialDays + 1}. ` : '')
+  + (outright.length ? `${names(outright)} ${outright.length > 1 ? 'have' : 'has'} no trial and ${outright.length > 1 ? 'are' : 'is'} charged at checkout.` : '');
 
 /** The rows both tables show, in this order. `v` gives [value, sub-line] for one plan, or a boolean. */
 const ROWS = [
@@ -134,6 +155,20 @@ function renderCards() {
   return out;
 }
 
+function renderNotePricing() {
+  const closed = data.checkout_open ? '' : 'Checkout opens soon: until it does, the paid plans cannot be bought here — '
+    + '<a href="/?open=wait" data-open="wait" data-product="Studio subscription">join the waitlist</a> for one email when they can. '
+    + 'The Free plan needs no checkout; its key works today. ';
+  return [
+    `<p class="prose">${esc(LINE)}</p>`,
+    `<p class="meta">${closed}${esc(TRIAL_TERMS)} <a href="/legal/refund/">Refund policy</a>.</p>`
+  ];
+}
+
+function renderNoteCompare() {
+  return [`<p class="prose prose--sm">${esc(LINE)} <a href="/legal/refund/">Refund policy</a>.</p>`];
+}
+
 function renderTable() {
   const cell = v => v === true ? YES : v === false ? NO
     : `<span class="plans__v">${esc(v[0])}</span>` + (v[1] ? `<span class="plans__sub">${esc(v[1])}</span>` : '');
@@ -160,7 +195,7 @@ function renderTable() {
 
 // ── studio.debyko.com ──────────────────────────────────────────────────────────────────────
 
-// Uses only classes the studio stub already styles (css/studio.css: .st-plans, th.l/td.l, td.n,
+// Replaces the stub's <div class="panel scroll-x"> around the table and the note under it. Uses only classes the studio stub already styles (css/studio.css: .st-plans, th.l/td.l, td.n,
 // .st-plan-for; css/site.css: .btn, .btn--sm, .btn--full, .btn:disabled). Links to its own account
 // pages are relative, as on the rest of that page; the waitlist is debyko.com's dialog.
 function renderStudio() {
@@ -172,6 +207,7 @@ function renderStudio() {
       + `<a class="st-plan-for" href="${esc(data.waitlist_url)}">Join the waitlist</a>`;
   };
   return [
+    '<div class="panel scroll-x">',
     '<table class="st-plans">',
     `  <thead><tr><th class="l">Included</th>${plans.map(p => `<th>${esc(p.name)}<span class="st-plan-for">${esc(price(p))} · ${esc(p.for)}</span></th>`).join('')}</tr></thead>`,
     '  <tbody>',
@@ -182,7 +218,9 @@ function renderStudio() {
     ...plans.map(p => `      <td class="n">${action(p)}</td>`),
     '    </tr>',
     '  </tfoot>',
-    '</table>'
+    '</table>',
+    '</div>',
+    `<p class="st-note">${esc(LINE)} <a href="${esc(data.refund_url)}">Refund policy</a>.</p>`
   ];
 }
 
@@ -199,7 +237,8 @@ function region(html, name, lines, file) {
   return html.slice(0, m.index) + body + html.slice(m.index + m[0].length);
 }
 
-const targets = [{ file: indexPath, regions: [['plans-grid', renderGrid], ['plans-cards', renderCards], ['plans-table', renderTable]] }];
+const targets = [{ file: indexPath, regions: [['plans-grid', renderGrid], ['plans-cards', renderCards], ['plans-note-pricing', renderNotePricing],
+  ['plans-table', renderTable], ['plans-note-compare', renderNoteCompare]] }];
 if (studioPath) targets.push({ file: studioPath, regions: [['plans', renderStudio]] });
 
 let stale = 0;

@@ -411,12 +411,12 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         <li>Orders go to your own Runner, never through DEBYKO</li>
       </ul>
       <!-- plans-grid:begin -->
-      <!-- plans:sha256=9836bbf1616a342d631ff70e7f529038c2613ba3f76478ebfa153bdb61eb5410 -->
+      <!-- plans:sha256=ee0a7af430b2f7623643ae8daf62c02f5f50c017e966e55a4339b3069fa5ec65 -->
       <div class="price-grid">
         <span class="label">Free</span><span class="price-line__value">€0 · live now</span>
-        <span class="label">Mini</span><span class="price-line__value">€9 / month · 7-day trial</span>
-        <span class="label">Standard</span><span class="price-line__value">€29 / month · 7-day trial</span>
-        <span class="label">Pro</span><span class="price-line__value">€99 / month · 7-day trial</span>
+        <span class="label">Mini</span><span class="price-line__value">€9 / month · 14-day trial</span>
+        <span class="label">Standard</span><span class="price-line__value">€29 / month · 14-day trial</span>
+        <span class="label">Pro</span><span class="price-line__value">€99 / month · 14-day trial</span>
         <span class="label">Pro Plus</span><span class="price-line__value">€149 / month · no trial</span>
       </div>
       <!-- plans-grid:end -->
@@ -425,7 +425,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
         <a class="btn" href="https://studio.debyko.com"><span>Open Studio ↗</span></a>
         <a class="btn" href="#plans" data-scroll="plans"><span>Compare plans</span></a>
       </div>
-      <p class="meta">Checkout for the paid plans opens soon. <a href="/?open=wait" data-open="wait" data-product="Studio subscription">Join the waitlist</a> for one email when it does; the Free key works today. <a href="/legal/refund/">Refund policy</a>: fourteen days on any payment, no conditions.</p>
+      <p class="meta">Checkout for the paid plans opens soon. <a href="/?open=wait" data-open="wait" data-product="Studio subscription">Join the waitlist</a> for one email when it does; the Free key works today. Trial and refund terms: <a href="#pricing" data-scroll="pricing">Pricing</a> · <a href="/legal/refund/">Refund policy</a>.</p>
     </div>
   </div>
 </section>
@@ -704,7 +704,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
     </div>
 
     <!-- plans-cards:begin -->
-    <!-- plans:sha256=9836bbf1616a342d631ff70e7f529038c2613ba3f76478ebfa153bdb61eb5410 -->
+    <!-- plans:sha256=ee0a7af430b2f7623643ae8daf62c02f5f50c017e966e55a4339b3069fa5ec65 -->
     <div class="plan-cards">
       <div class="plan-card">
         <span class="plan-card__name">Free</span>
@@ -745,9 +745,13 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
     </div>
     <!-- plans-cards:end -->
 
-    <p class="meta">Checkout opens soon: until it does, the paid plans cannot be bought here — <a href="/?open=wait" data-open="wait" data-product="Studio subscription">join the waitlist</a> for one email when they can. The Free plan needs no checkout; its key works today. Mini, Standard and Pro start with a seven-day trial: a card is taken and nothing is charged before day eight. Pro Plus has no trial and is charged at checkout. Cancel any time from your account.</p>
+    <!-- plans-note-pricing:begin -->
+    <!-- plans:sha256=ee0a7af430b2f7623643ae8daf62c02f5f50c017e966e55a4339b3069fa5ec65 -->
+    <p class="prose">14-day free trial. Cancel any time during the trial and you are not charged. After payment, 14 days to request a full refund — no conditions.</p>
+    <p class="meta">Checkout opens soon: until it does, the paid plans cannot be bought here — <a href="/?open=wait" data-open="wait" data-product="Studio subscription">join the waitlist</a> for one email when they can. The Free plan needs no checkout; its key works today. Mini, Standard and Pro start with the trial: a card is taken at the start and the first charge is on day 15. Pro Plus has no trial and is charged at checkout. <a href="/legal/refund/">Refund policy</a>.</p>
+    <!-- plans-note-pricing:end -->
 
-    <p class="prose prose--sm">Mini, Standard and Pro run a seven-day trial with a card on file and nothing charged until day eight; cancel before that and nothing is charged at all. Pro Plus is bought outright: the card is charged at checkout and there is no trial. One API key per account on every plan. Every plan renews monthly and can be cancelled at any time from your account — access runs to the end of the paid month. Checkout, invoices and VAT are handled by Paddle, our merchant of record; VAT is added at checkout where it applies. Any payment can be refunded in full within fourteen days, for any reason: see the <a href="/legal/refund/">refund policy</a>.</p>
+    <p class="prose prose--sm">One API key per account on every plan. Every plan renews monthly and can be cancelled at any time from your account — access runs to the end of the paid month. Checkout, invoices and VAT are handled by Paddle, our merchant of record; VAT is added at checkout where it applies.</p>
 
     <div class="stack gap-14">
       <div class="label">Everything that is not a plan</div>
@@ -777,7 +781,7 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
     </div>
     <div class="panel scroll-x">
       <!-- plans-table:begin -->
-      <!-- plans:sha256=9836bbf1616a342d631ff70e7f529038c2613ba3f76478ebfa153bdb61eb5410 -->
+      <!-- plans:sha256=ee0a7af430b2f7623643ae8daf62c02f5f50c017e966e55a4339b3069fa5ec65 -->
       <table class="plans plans--5">
         <thead>
           <tr>
@@ -819,7 +823,11 @@ POST /v2/snapshots/history  at [2026-09-22T14:03:07Z]        → what your bot c
     </div>
     <div class="stack gap-10">
       <p class="prose prose--sm">Instruments are counted once and shown on every venue your plan includes; &ldquo;top by volume&rdquo; is recomputed daily and dated on <a href="/data/coverage/">Coverage</a>.</p>
-      <div class="meta">Monthly prices, VAT added at checkout where it applies. No annual plan, no discounts. Checkout opens soon · <a href="/legal/refund/">Refund policy</a>: fourteen days on any payment, no conditions.</div>
+      <!-- plans-note-compare:begin -->
+      <!-- plans:sha256=ee0a7af430b2f7623643ae8daf62c02f5f50c017e966e55a4339b3069fa5ec65 -->
+      <p class="prose prose--sm">14-day free trial. Cancel any time during the trial and you are not charged. After payment, 14 days to request a full refund — no conditions. <a href="/legal/refund/">Refund policy</a>.</p>
+      <!-- plans-note-compare:end -->
+      <div class="meta">Monthly prices, VAT added at checkout where it applies. No annual plan, no discounts. Checkout opens soon.</div>
     </div>
   </div>
 </section>

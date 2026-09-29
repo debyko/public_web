@@ -47,8 +47,17 @@ https://debyko.com/data/plans.json, and three blocks are generated from it by `t
 |---|---|---|
 | `index.html` | `<!-- plans-grid:begin -->` … `<!-- plans-grid:end -->` | the price list in #studio |
 | `index.html` | `<!-- plans-cards:begin -->` … `<!-- plans-cards:end -->` | the plan cards in #pricing |
+| `index.html` | `<!-- plans-note-pricing:begin -->` … `<!-- plans-note-pricing:end -->` | the trial/refund line under the cards, and how the trial works |
 | `index.html` | `<!-- plans-table:begin -->` … `<!-- plans-table:end -->` | the comparison table in #plans |
-| platform `deploy/studio-stub/index.html` | `<!-- plans:begin -->` … `<!-- plans:end -->` | the table in the studio.debyko.com landing's #plans |
+| `index.html` | `<!-- plans-note-compare:begin -->` … `<!-- plans-note-compare:end -->` | the trial/refund line under the table |
+| platform `deploy/studio-stub/index.html` | `<!-- plans:begin -->` … `<!-- plans:end -->` | the `panel scroll-x` with the table in the studio.debyko.com landing's #plans, and the trial/refund line under it |
+
+Trial lengths (`trial_days` per plan), the first-charge day and the refund window (`refund_days`) are stated
+only inside these regions — no hand-written sentence on the site repeats a number of trial or refund days.
+The line itself is fixed: "<trial>-day free trial. Cancel any time during the trial and you are not charged.
+After payment, <refund> days to request a full refund — no conditions." Plans with a trial must share one
+length. The exceptions are the Terms (§06 names the trial length and changes by a dated entry) and the refund
+policy page (its own dated text).
 
 Each region starts with `<!-- plans:sha256=… -->`, the sha256 of the plans.json it was rendered from; the
 platform's CI compares the studio stub's with the published file.
