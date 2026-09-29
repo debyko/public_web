@@ -10,8 +10,9 @@
 //                          <!-- plans-cards:begin -->         the cards in #pricing
 //                          <!-- plans-note-pricing:begin -->  the trial/refund line and trial terms under them
 //                          <!-- plans-table:begin -->         the table in #plans
+//                          <!-- plans-note-history:begin -->  the history footnote under the table
 //                          <!-- plans-note-compare:begin -->  the trial/refund line under the table
-//   studio landing         <!-- plans:begin -->               the table panel in #plans and the line under it
+//   studio landing         <!-- plans:begin -->               the table panel in #plans, the history footnote and the line under it
 //   (platform: deploy/studio-stub/index.html, given with --studio)
 // Every trial length, first-charge day and refund window on these pages comes from plans.json
 // (trial_days per plan, refund_days); nothing outside the regions states them.
@@ -100,7 +101,7 @@ const ROWS = [
   { k: 'Venues', v: p => [String(p.venues)] },
   { k: 'Instruments', v: p => [String(p.instruments), p.instruments_rule] },
   { k: 'Live comparison, with the age of every figure', v: () => true },
-  { k: 'History back', v: p => [history(p)] },
+  { k: 'History access: up to', v: p => [history(p)] },
   { k: 'Order book', v: p => [book(p)] },
   { k: 'Point-in-time replay (<span class="mono">as of</span>)', studio: 'Point-in-time replay (as of)', v: () => ['within history'] },
   { k: 'DQL screening', v: p => [num(p.dql_per_minute) + ' / min'] },
@@ -193,6 +194,13 @@ function renderTable() {
   ];
 }
 
+// The footnote under both plans tables: the history row is a plan limit, not what every venue actually holds.
+const HISTORY_NOTE = '*Plan limit, not a guarantee. Actual history starts when each venue was connected — see ';
+const COVERAGE_URL = 'https://debyko.com/data/coverage/';
+function renderHistoryNote() {
+  return [`<p class="prose prose--sm">${esc(HISTORY_NOTE)}<a href="/data/coverage/">coverage</a> for exact dates per venue.</p>`];
+}
+
 // ── studio.debyko.com ──────────────────────────────────────────────────────────────────────
 
 // Replaces the stub's <div class="panel scroll-x"> around the table and the note under it. Uses only classes the studio stub already styles (css/studio.css: .st-plans, th.l/td.l, td.n,
@@ -220,6 +228,7 @@ function renderStudio() {
     '  </tfoot>',
     '</table>',
     '</div>',
+    `<p class="st-note">${esc(HISTORY_NOTE)}<a href="${esc(COVERAGE_URL)}">coverage</a> for exact dates per venue.</p>`,
     `<p class="st-note">${esc(LINE)} <a href="${esc(data.refund_url)}">Refund policy</a>.</p>`
   ];
 }
@@ -238,7 +247,7 @@ function region(html, name, lines, file) {
 }
 
 const targets = [{ file: indexPath, regions: [['plans-grid', renderGrid], ['plans-cards', renderCards], ['plans-note-pricing', renderNotePricing],
-  ['plans-table', renderTable], ['plans-note-compare', renderNoteCompare]] }];
+  ['plans-table', renderTable], ['plans-note-history', renderHistoryNote], ['plans-note-compare', renderNoteCompare]] }];
 if (studioPath) targets.push({ file: studioPath, regions: [['plans', renderStudio]] });
 
 let stale = 0;
