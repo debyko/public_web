@@ -101,7 +101,7 @@ const ROWS = [
   { k: 'Venues', v: p => [String(p.venues)] },
   { k: 'Instruments', v: p => [String(p.instruments), p.instruments_rule] },
   { k: 'Live comparison, with the age of every figure', v: () => true },
-  { k: 'History access: up to', v: p => [history(p)] },
+  { k: 'History access: up to*', v: p => [history(p)] },
   { k: 'Order book', v: p => [book(p)] },
   { k: 'Point-in-time replay (<span class="mono">as of</span>)', studio: 'Point-in-time replay (as of)', v: () => ['within history'] },
   { k: 'DQL screening', v: p => [num(p.dql_per_minute) + ' / min'] },
@@ -195,6 +195,7 @@ function renderTable() {
 }
 
 // The footnote under both plans tables: the history row is a plan limit, not what every venue actually holds.
+// Its link is relative on debyko.com and absolute on the Studio landing, which lives on another domain — keep it so.
 const HISTORY_NOTE = '*Plan limit, not a guarantee. Actual history starts when each venue was connected — see ';
 const COVERAGE_URL = 'https://debyko.com/data/coverage/';
 function renderHistoryNote() {
